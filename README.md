@@ -1,4 +1,4 @@
-# UCLA DLCV Course Project
+# UCLA CS269 Spring2022 human AI Course Project
 
 Project page: https://ucladeepvision.github.io/humanAI-projects-2022Spring/
 

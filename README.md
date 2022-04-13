@@ -25,9 +25,9 @@ You should see an address pop on the terminal (http://127.0.0.1:4000/humanAI-pro
 
 1. Create a folder with your team id under ```./assets/images/your-teamid```, you will use this folder to store all the images in your project.
 
-2. Copy the template at ```./_posts/2021-01-18-team00-instruction-to-post.md``` and rename it with format "year-month-date-yourteamid-projectshortname.md" under ```./_posts/```, for example, **2021-01-27-team01-object-detection.md**
+2. Copy the template at ```./_posts/2021-04-10-team00-instruction-to-post.md``` and rename it with format "year-month-date-yourteamid-projectshortname.md" under ```./_posts/```, for example, **2021-04-10-team01-object-detection.md**
 
-3. Check out the sample post we provide at https://ucladeepvision.github.io/CS188-Projects-2022Winter/ and the source code at https://raw.githubusercontent.com/UCLAdeepvision/CS188-Projects-2022Winter/main/_posts/2021-01-18-team00-instruction-to-post.md as well as basic Markdown syntax at https://www.markdownguide.org/basic-syntax/
+3. Check out the sample post we provide at https://ucladeepvision.github.io/humanAI-projects-2022Spring/ and the source code at https://raw.githubusercontent.com/UCLAdeepvision/humanAI-projects-2022Spring/main/_posts/2021-04-10-team00-instruction-to-post.md as well as basic Markdown syntax at https://www.markdownguide.org/basic-syntax/
 
 4. Start your work in your .md file. You may only edit the .md file you just copied and renamed, and add images to ```./assets/images/your-teamid```. Please do **NOT** change any other files in this repo.
 

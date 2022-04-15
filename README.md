@@ -28,8 +28,7 @@ You should see an address pop on the terminal (http://127.0.0.1:4000/CS269-proje
 
 2. Copy the template at ```./_posts/2022-04-10-team00-instruction-to-post.md``` and rename it with format "year-month-date-yourteamid-projectshortname.md" under ```./_posts/```, for example, **2022-04-10-team01-object-detection.md**
 
-3. Check out the sample post we provide at https://ucladeepvision.github.io/CS269-projects-2022spring
-/ and the source code at https://raw.githubusercontent.com/UCLAdeepvision/CS269-projects-2022spring/main/_posts/2022-04-10-team00-instruction-to-post.md as well as basic Markdown syntax at https://www.markdownguide.org/basic-syntax/
+3. Check out the [sample posts](https://ucladeepvision.github.io/CS269-projects-2022spring) we provide and the [source code](https://raw.githubusercontent.com/UCLAdeepvision/CS269-projects-2022spring/main/_posts/2022-04-10-team00-instruction-to-post.md) as well as [basic Markdown syntax](https://www.markdownguide.org/basic-syntax/).
 
 4. Start your work in your .md file. You may only edit the .md file you just copied and renamed, and add images to ```./assets/images/your-teamid```. Please do **NOT** change any other files in this repo.
 

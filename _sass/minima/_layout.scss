@@ -114,7 +114,7 @@
   list-style: none;
 
   > li {
-    margin-bottom: $spacing-unit * 2;
+    margin-bottom: $spacing-unit ;
   }
 }
 
@@ -200,7 +200,7 @@ div.qa {
 
   h2 {
     @include relative-font-size(1.95);
-    margin-top: $spacing-unit * 1.55;
+    margin-top: 0 ;
     font-weight: 700;
     @include media-query($on-laptop) {
       @include relative-font-size(1.75);
@@ -209,7 +209,7 @@ div.qa {
 
   h3 {
     @include relative-font-size(1.5);
-    margin-top: $spacing-unit * 1.1;
+    margin-top: 0;
     line-height: 1.25;
     font-weight: 600;
     @include media-query($on-laptop) {

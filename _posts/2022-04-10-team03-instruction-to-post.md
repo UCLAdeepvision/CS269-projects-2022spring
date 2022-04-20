@@ -67,9 +67,24 @@ or you can write in-text formula $$y = wx + b$$.
 ### More Markdown Syntax
 You can find more Markdown syntax at [this page](https://www.markdownguide.org/basic-syntax/).
 
+
+
+
+
+
 ## Reference
 Please make sure to cite properly in your work, for example:
 
-[1] Redmon, Joseph, et al. "You only look once: Unified, real-time object detection." *Proceedings of the IEEE conference on computer vision and pattern recognition*. 2016.
+[1] Gao, Wan, et al. "TS-CAM: Token Semantic Coupled Attention Map for Weakly Supervised Object Localization." *International Conference on Computer Vision*. 2021.
+
+[2] Radford, Kimm et al. "Learning Transferable Visual Models From Natural Language Supervision." *Arxiv*. 2021.
+
+[3] Wang et al. "Score-CAM: Score-Weighted Visual Explanations for Convolutional Neural Networks." *Conference on Computer Vision and Pattern Recognition*. 2019.
+
+[4] Zhou et al. "Learning Deep Features for Discriminative Localization." *Conference on Computer Vision and Pattern Recognition*. 2016.
+
+[5] Selvaraju et al. "Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization." *International Conference on Computer Vision*. 2017.
+
+[6] Chen et al. "LCTR: On Awakening the Local Continuity of Transformer for Weakly Supervised Object Localization." *the Association for the Advancement of Artificial Intelligence*. 2017.
 
 ---

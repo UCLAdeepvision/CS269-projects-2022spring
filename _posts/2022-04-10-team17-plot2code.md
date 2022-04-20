@@ -7,13 +7,24 @@ date: 2022-04-10
 ---
 
 
-> This block is a brief introduction of your project. You can put your abstract here or any headers you want the readers to know.
+> In this work, we will explore code generation task when conditioned on visualization plot as input image. Motivated by the OpenAI's Codex, this project will allow us to understand the challenges in program synthesis. This work can be useful to reduce the complexity involved in working with visualization tools such as Matplotlib.
 
 <!--more-->
 {: class="table-of-content"}
 * TOC
 {:toc}
 
+## Introduction
+Given an input image containing visualization (line plot, bar graph, pie chart), the model will output corresponding code to generate the plot. We consider code for Matplotlib library in this work due to limited resource. This problem is a step towards developing alternative ways to interact with visualization libraries, which have grown over time to become significantly complex. Our work will lower the barrier to entry for newcomers. It will also prove to be useful for others possesing some knowledge of the library, which generally contains thousands of APIs. [1] tackle the same problem with a different approach, where local code context along with natural language instructions are used to generate code for visualization.
+
+## Related work
+There has been a similar attempt for Pandas library, where authors generate program given input and output specifications pertaining to dataframe maniputlations [9]. Earlier works on visualization have explored applications such as sketch to visualization [4], extracting information from bar chart images [5], generation of visualization images given input data [2]. Code generation from webpage layout [10], code recommendations for Android GUI [3] etc. have also been explored. Our work is directly related to both the topics. Another line of work identifies type of visualization (bar, plot etc.) given input image [6]. Also, there has been growing interest in code generation task due to its immense applications [11, 12, 13]. We hope to leverage some of these works for our task as described below.
+
+## Our Approach
+This is a sequence modeling problem similar to image captioning task, where we train an encoder-decoder model. Due to lack of dataset, we hope to pre-train image encoder with plot images from [6] or similar dataset, and use open-source decoder for code generation. We plan to create our own dataset to finetune these models jointly. Metrics such as BLUE can be used to evaluate the model performance.
+
+## Expected Output
+<!-- 
 ## Main Content
 Your article starts here. You can refer to the [source code](https://github.com/lilianweng/lil-log/tree/master/_posts) of [lil's blogs](https://lilianweng.github.io/lil-log/) for article structure ideas or Markdown syntax. We've provided a [sample post](https://ucladeepvision.github.io/CS188-Projects-2022Winter/2017/06/21/an-overview-of-deep-learning.html) from Lilian Weng and you can find the source code [here](https://raw.githubusercontent.com/UCLAdeepvision/CS188-Projects-2022Winter/main/_posts/2017-06-21-an-overview-of-deep-learning.md)
 
@@ -62,6 +73,31 @@ You can find more Markdown syntax at [this page](https://www.markdownguide.org/b
 ## Reference
 Please make sure to cite properly in your work, for example:
 
-[1] Redmon, Joseph, et al. "You only look once: Unified, real-time object detection." *Proceedings of the IEEE conference on computer vision and pattern recognition*. 2016.
+[1] Redmon, Joseph, et al. "You only look once: Unified, real-time object detection." *Proceedings of the IEEE conference on computer vision and pattern recognition*. 2016.-->
+[1] Chen, Xinyun et al. “PlotCoder: Hierarchical Decoding for Synthesizing Visualization Code in Programmatic Context.” ACL (2021).
+
+[2] Dibia, Victor C. and Çagatay Demiralp. “Data2Vis: Automatic Generation of Data Visualizations Using Sequence-to-Sequence Recurrent Neural Networks.” IEEE Computer Graphics and Applications 39 (2019): 33-46.
+
+[3] Zhao, Yanjie et al. “Icon2Code: Recommending code implementations for Android GUI components.” Inf. Softw. Technol. 138 (2021): 106619.
+
+[4] Teng, Zhongwei et al. “Sketch2Vis: Generating Data Visualizations from Hand-drawn Sketches with Deep Learning.” 2021 20th IEEE International Conference on Machine Learning and Applications (ICMLA) (2021): 853-858.
+
+[5] Zhou, Fangfang et al. “Reverse-engineering bar charts using neural networks.” Journal of Visualization 24 (2021): 419-435.
+
+[6] Deng, Dazhen et al. “VisImages: A Fine-Grained Expert-Annotated Visualization Dataset.” IEEE transactions on visualization and computer graphics PP (2022).
+
+[7] Al-Hossami, Erfan and Samira Shaikh. “A Survey on Artificial Intelligence for Source Code: A Dialogue Systems Perspective.” ArXiv abs/2202.04847 (2022).
+
+[8] Borkin, Michelle et al. “What Makes a Visualization Memorable?” IEEE Transactions on Visualization and Computer Graphics 19 (2013): 2306-2315.
+
+[9] Bavishi, Rohan et al. “AutoPandas: neural-backed generators for program synthesis.” Proceedings of the ACM on Programming Languages 3 (2019): 1 - 27.
+
+[10] Beltramelli, Tony. “pix2code: Generating Code from a Graphical User Interface Screenshot.” Proceedings of the ACM SIGCHI Symposium on Engineering Interactive Computing Systems (2018).
+
+[11] Lachaux, Marie-Anne et al. “Unsupervised Translation of Programming Languages.” ArXiv abs/2006.03511 (2020).
+
+[12] Chen, Mark et al. “Evaluating Large Language Models Trained on Code.” ArXiv abs/2107.03374 (2021).
+
+[13] Nijkamp, Erik et al. “A Conversational Paradigm for Program Synthesis.” ArXiv abs/2203.13474 (2022).
 
 ---

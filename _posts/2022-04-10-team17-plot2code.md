@@ -1,13 +1,13 @@
 ---
 layout: post
 comments: true
-title: Post Template
-author: UCLAdeepvision
+title: Visualization plot to code
+author: Ankur Kumar, Pranay Shirodkar
 date: 2022-04-10
 ---
 
 
-> In this work, we will explore code generation task when conditioned on visualization plot as input image. Motivated by the OpenAI's Codex, this project will allow us to understand the challenges in program synthesis. This work can be useful to reduce the complexity involved in working with visualization tools such as Matplotlib.
+> In this work, we will explore code generation task when conditioned on visualization plot as input image. Motivated by OpenAI's Codex, this project will allow us to understand the challenges in program synthesis. This work can be useful to reduce the complexity involved in working with visualization tools such as Matplotlib.
 
 <!--more-->
 {: class="table-of-content"}
@@ -15,15 +15,46 @@ date: 2022-04-10
 {:toc}
 
 ## Introduction
-Given an input image containing visualization (line plot, bar graph, pie chart), the model will output corresponding code to generate the plot. We consider code for Matplotlib library in this work due to limited resource. This problem is a step towards developing alternative ways to interact with visualization libraries, which have grown over time to become significantly complex. Our work will lower the barrier to entry for newcomers. It will also prove to be useful for others possesing some knowledge of the library, which generally contains thousands of APIs. [1] tackle the same problem with a different approach, where local code context along with natural language instructions are used to generate code for visualization.
+Given an input image containing visualization (line plot, bar graph, pie chart), the model will output the corresponding code to generate the plot. We constrain the code generated to use the Matplotlib python package only due to resource limitations. This problem is a step towards developing alternative ways to interact with visualization libraries, which have grown over time to become popular and significantly complex. Our work will lower the barrier to entry for newcomers by allowing them to generate sophisticated visualizations. It will also prove to be useful for others possessing some knowledge of the library, which generally contains thousands of APIs. [1] tackles the same problem with a different approach, where local code context along with natural language instructions are used to generate code for visualization.
 
 ## Related work
-There has been a similar attempt for Pandas library, where authors generate program given input and output specifications pertaining to dataframe maniputlations [9]. Earlier works on visualization have explored applications such as sketch to visualization [4], extracting information from bar chart images [5], generation of visualization images given input data [2]. Code generation from webpage layout [10], code recommendations for Android GUI [3] etc. have also been explored. Our work is directly related to both the topics. Another line of work identifies type of visualization (bar, plot etc.) given input image [6]. Also, there has been growing interest in code generation task due to its immense applications [11, 12, 13]. We hope to leverage some of these works for our task as described below.
+There has been a similar attempt for Pandas library, where authors generate program given input and output specifications pertaining to dataframe manipulations [9]. Earlier works on visualization have explored applications such as sketch to visualization [4], extracting information from bar chart images [5], generation of visualization images given input data [2]. Code generation from webpage layout [10], code recommendations for Android GUI [3] etc, have also been explored. Our work is directly related to both the topics. Another line of work identifies the type of visualization (bar, plot etc.) given input image [6]. Also, there has been growing interest in code generation task due to its immense applications [11, 12, 13]. We hope to leverage some of these works for our task as described below.
 
 ## Our Approach
-This is a sequence modeling problem similar to image captioning task, where we train an encoder-decoder model. Due to lack of dataset, we hope to pre-train image encoder with plot images from [6] or similar dataset, and use open-source decoder for code generation. We plan to create our own dataset to finetune these models jointly. Metrics such as BLUE can be used to evaluate the model performance.
+This is a sequence modeling problem similar to image captioning task, where we train an encoder-decoder model. Due to the lack of an existing dataset, we hope to pre-train image encoder with plot images from [6] or similar dataset, and use open-source decoder for code generation. We plan to create our own dataset to fine-tune these models jointly. Metrics such as BLEU can be used to evaluate the model performance.
 
-## Expected Output
+## Example
+
+### Sample Input
+![Model Input]({{ '/assets/images/team17/example_input.png' | relative_url }})
+{: style="width: 400px; max-width: 100%;"}
+*Fig 1: An example visualization plot as input to the model.*
+
+### Sample Output
+```
+import matplotlib.pyplot as plt
+
+## user should define x, y1, y2 here
+x = 
+y1 = 
+y2 = 
+
+# plot the function
+plt.plot(x,y1, 'r', label = "y = x^2",
+linestyle = 'dashed')
+plt.plot(x,y2, 'g', label = "y = x^2 + 2x - 15",
+linestyle = 'dashed')
+plt.xticks(rotation = 45)
+plt.yticks(rotation = 45)
+plt.xlabel("x")
+plt.ylabel("y", rotation=0)
+plt.legend(loc="lower right")
+plt.title("Two quadratic graphs")
+
+# show the plot
+plt.show()
+```
+
 <!-- 
 ## Main Content
 Your article starts here. You can refer to the [source code](https://github.com/lilianweng/lil-log/tree/master/_posts) of [lil's blogs](https://lilianweng.github.io/lil-log/) for article structure ideas or Markdown syntax. We've provided a [sample post](https://ucladeepvision.github.io/CS188-Projects-2022Winter/2017/06/21/an-overview-of-deep-learning.html) from Lilian Weng and you can find the source code [here](https://raw.githubusercontent.com/UCLAdeepvision/CS188-Projects-2022Winter/main/_posts/2017-06-21-an-overview-of-deep-learning.md)
@@ -74,6 +105,8 @@ You can find more Markdown syntax at [this page](https://www.markdownguide.org/b
 Please make sure to cite properly in your work, for example:
 
 [1] Redmon, Joseph, et al. "You only look once: Unified, real-time object detection." *Proceedings of the IEEE conference on computer vision and pattern recognition*. 2016.-->
+
+## References
 [1] Chen, Xinyun et al. “PlotCoder: Hierarchical Decoding for Synthesizing Visualization Code in Programmatic Context.” ACL (2021).
 
 [2] Dibia, Victor C. and Çagatay Demiralp. “Data2Vis: Automatic Generation of Data Visualizations Using Sequence-to-Sequence Recurrent Neural Networks.” IEEE Computer Graphics and Applications 39 (2019): 33-46.

@@ -29,5 +29,5 @@ Third, we'll also further explore the generality of CLIP. Whether its good featu
 Please make sure to cite properly in your work, for example:
 
 [1] Radford, Alec, et al. "Learning Transferable Visual Models From Natural Language Supervision" *arXiv*. 2021.
-
+## Appendix
 ---

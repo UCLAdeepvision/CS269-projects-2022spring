@@ -7,7 +7,7 @@ date: 2022-04-22
 ---
 
 
-> In this project, we hope to incorporate human interactions into the training scenarios of reinforcement learning and autonomous driving, as a supplement to the compositionality and flexibility of MetaDrive platform.
+> In this project, we hope to incorporate human interactions into the training scenarios of reinforcement learning and autonomous driving, as a supplement to the compositionality, diversity, and flexibility of MetaDrive platform.
 
 <!--more-->
 {: class="table-of-content"}
@@ -33,14 +33,22 @@ MetaDrive largely facilitates the generalization of  RL in autonomous driving. O
 
 ## Motivation
 
-Human interaction will help the training of reinforcement learning and autonomous driving from many aspects: On the one hand, human could provide necessary guidance to RL agents in training. On the other hand, human involvement could augment the complexity of driving scenarios, so that it could further improve the generalization of RL agents. Including human in the loop also makes the scenarios closer to the situations in real-world applications, where human collaborate with machine in driving tasks.
+Human interaction will help the training of reinforcement learning and autonomous driving from many aspects: On the one hand, human could provide necessary guidance to RL agents in training. On the other hand, human involvement could augment the complexity and diversity of driving scenarios, so that it could further improve the generalization of RL agents. Including human in the loop also makes the scenarios closer to the situations in real-world applications, where human collaborate with machine in driving tasks.
 
 ## Research Plan
-### Implementations
+### Overview
 
-### Experimental Design
+Our goal is to contribute to diverse and flexible usages of MetaDrive platform. Specifically, we will let users to generate traffics on the road by clicking the mouse, which will be done after the simulation of road network. Since the default MetaDrive have already generated some traffics, mouse clicking could add additional vehicles on the road network. As visualization shows, the generation happens when user enters the top-down view. Users could choose any location to add vehicles if there is space. These additional vehicles, by default, belong to different categories, for example different colors and sizes. Apart from handling the interface, we should also pay attention to the multi-model observations provided by the MetaDrive  platform, because these new generated vehicles should also be captured by the corresponding perception devices. For example, the new vehicles could be represented by the Lidar’s point cloud and captured by camera if they are not occluded. 
 
-### Timeline
+
+
+![MetaDrive]({{ '/assets/images/13/figure_2.png' | relative_url }})
+{: style="width: 600px; max-width: 200%;"}
+*Fig 2. The top-down view of vehicles and traffics in MetaDrive*
+
+### Next Step
+
+Our next step is to simulate dangerous situations and corner cases, which are rarely captured by real-world datasets. In practical settings, there are many dangerous corner cases, for example, some objects could occasionally appear in front of the cars and some cars are driven in abnormal ways. These corner cases are rare, but they could lead to fatal traffic accidents. To this end, we hope to simulate these dangerous scenarios, which could be used by the machine learning algorithms to improve the road safety. Therefore, we will simulate more diverse obstacles and abnormal traffics. For example, obstacles owning different appearances and sizes, may appear randomly in front of the target vehicle. Vehicles could also change lanes frequently. These new features of MetaDrive could be used as simulation data for both reinforcement learning and perception tasks.
 
 ## Reference
 

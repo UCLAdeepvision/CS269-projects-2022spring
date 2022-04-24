@@ -7,7 +7,7 @@ date: 2022-04-18
 ---
 
 
-> Abstract here
+> Image inpainting is to fill in missing parts of images precisely based on the surrounding area using deep learning. Our goal is to implement a GAN-based model that takes an image as input and changes objects in the image selected by the user while keeping the realisticness.
 
 <!--more-->
 {: class="table-of-content"}
@@ -15,7 +15,7 @@ date: 2022-04-18
 {:toc}
 
 ## Introduction
-
+Image inpainting is a popular topic of image generation in recent years. The goal of image inpainting is to fill in missing parts of images precisely based on the surrounding area using deep learning. Currently, image inpainting models using Generative Adversarial Network (GAN) can achieve such realistic results that humans cannot visually detect the reconstructed area. We intend to dive into image inpainting and explore how to utilize it to complete other image generation tasks. Our high-level idea is to implement a GAN-based model that takes an image as input and changes objects in the image selected by the user while keeping the realisticness. One possible direction is to implement a model that takes two images where the first image has a region masked and the second image has the target object that the user wants to put on the masked area of the first image. The user can roughly sketch the target object on the masked region, based on which the model can generate the target object in the first image with realisticness. We may change our direction once we find other more interesting and feasible directions.
 
 ## Related works
 Recently, GAN-based structure [1] and deep learning are increasingly integrated into image inpainting techniques.  Iizuka et al [2] designed the first state-of-art algorithm by introducing global and local adversarial loss to the structure. [2] also proposed the dilated convolution to enlarge the receptive field in order to capture global information. Yu et al [3] further improved this structure with a contextual attention layer. Their method consists of a two-step structure that first generates a coarse inpainting. In the next step, a trainable contextual attention layer can use the features of known patches as convolutional filters to refine the generated patches. A year later, Yu et al [4] proposed gated convolution to make convolution weights for masked areas a learnable parameter. With gated convolution, [4] is capable of free-from mask, user guided generation, and photorealistic inpainting. 

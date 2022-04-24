@@ -15,9 +15,9 @@ date: 2022-04-18
 {:toc}
 
 ## Motivation
-To create a character for games, anime, etc. it takes years of training to acquire drawing skills and master digital art software for virtualizing the design ideas. Furthermore, the process of designing a character takes days, even months, to draw and refine the design. If we utilize automation, we could ease the creation process. For example, we can use neural network based model to help coloring sketch or line art. We can also use GAN to generate characters pictures to have a starting point for designing a character.
-(Something related to few data)
-Since the design of the character is based on human, animals, or items, there are lots of models are trained on these data. We are wondering if we are able to do domain transfer on these models for character design. (Ending)
+To create a character for games, anime, etc. it takes years of training to acquire drawing skills and master digital art software for virtualizing the design ideas. Furthermore, the process of designing a character takes days, even months, to draw and refine the design. If we can utilize automation, we can ease the creation process. For example, neural network based model can help with coloring sketches or line art. GAN can generate characters' pictures to have a starting point for designing a character or even characters that can be directly put into practice.
+
+Each piece of work has its particular style when designing characters. For example, Pokemon series tends to have a unified color for a Pokemon due to the type system. Also, the line art of Pokemon is cleaner compared to Digimon. However, the design of the characters for both works is based on humans, animals, plants, or items. We are wondering if we can distill knowledge from old designs and apply them to new concept arts.
 
 
 ## Goals
@@ -41,11 +41,11 @@ We are working on combining the images from different dataset. Therefore, we hav
 
 
 ### Line Art of Image
-We have successfully run HED to extract line art from the Pokemon image.
+We have successfully run HED [1] to extract line art from the Pokemon image.
 
 
 
-## StyleGAN
+### StyleGAN
 
 
 

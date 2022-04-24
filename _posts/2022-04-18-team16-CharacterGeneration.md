@@ -1,8 +1,8 @@
 ---
 layout: post
 comments: true
-title: Post Template
-author: 
+title: Character Generation
+author: Jiayue Sun, Yu-Hsuan Liu
 date: 2022-04-18
 ---
 

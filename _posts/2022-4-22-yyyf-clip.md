@@ -34,7 +34,7 @@ Third, we'll also further explore the generality of CLIP. Whether its good featu
 
 ## Method 
 
-# Tested model: 
+### Tested model: 
 
 The experiment is run on the following model, there are 3 type of model
 
@@ -52,7 +52,7 @@ Type 3: Model with self-supervised pretraining
 - DINO [7]
 - Data2vec [8]
 
-# Dataset
+#### Dataset
 
 There are two type of dataset we will test:
 
@@ -66,7 +66,7 @@ Dataset different from CLIP pretraining data
 
 More dataset will be added in comming weeks.....
 
-# Experiment: 
+### Experiment: 
 
 Classification:
  - For each dataset, sample different amount data for training and value it on test set
@@ -74,7 +74,7 @@ Classification:
 Clustering
  - Use the input before classification layer as feature, do dimension reduction with Umap and do clustering with Kmeans++. 
 
-# Evaluation
+### Evaluation
 
 Classification task:
  - PR-AUC: Area under precision and recall curve.
@@ -105,12 +105,19 @@ Clustering task:
 ## Reference
 
 [1] Radford, Alec, et al. "Learning Transferable Visual Models From Natural Language Supervision" *arXiv*. 2021.
+
 [2] Alexey, Lucas, et al. "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale" 
+
 [3] Zhuang, Hanzi Mao1 et al. "A ConvNet for the 2020s"
+
 [4] Mingxing, Quoc "EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks"
+
 [5] Hangbo, Li, Furu "BEiT: BERT Pre-Training of Image Transformers"
+
 [6] Kaiming, Xinlei et al "Masked Autoencoders Are Scalable Vision Learners"
+
 [7] Mathilde, Hugo et al "Emerging Properties in Self-Supervised Vision Transformers"
+
 [8] Alexei, Wei-Ning et al  "data2vec: A General Framework for Self-supervised Learning in Speech, Vision and Language"
 
 ## Appendix

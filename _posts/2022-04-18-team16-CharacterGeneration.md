@@ -31,18 +31,29 @@ The challenge is when people are trying to design a new character for new work, 
 2. 
 
 ## Related Work
+### Segmentation
+
+
+### Sketch
+
+
+### Image Generation
+
+
+
+
+### Colorization
 
 
 
 
 
 ## Current Progress
-
 ### Data Preprocessing
 We are working on combining the images from different dataset. We have to unify the size of the image and the format of the image among different datasets. 
 
 
-### Line Art of Image
+### Sketch
 We have successfully run HED [1] to extract line art from the Pokemon image.
 
 (Add images later on)

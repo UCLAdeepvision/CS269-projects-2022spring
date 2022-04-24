@@ -26,7 +26,9 @@ The challenge is when people are trying to design a new character for new work, 
 3. 
 
 ## Datasets
+1. Pokemon Images Dataset (https://www.kaggle.com/datasets/kvpratama/pokemon-images-dataset)
 
+2. 
 
 ## Related Work
 
@@ -37,12 +39,13 @@ The challenge is when people are trying to design a new character for new work, 
 ## Current Progress
 
 ### Data Preprocessing
-We are working on combining the images from different dataset. Therefore, we have to unify the size of the image and the format of the image. 
+We are working on combining the images from different dataset. We have to unify the size of the image and the format of the image among different datasets. 
 
 
 ### Line Art of Image
 We have successfully run HED [1] to extract line art from the Pokemon image.
 
+(Add images later on)
 
 
 ### StyleGAN
@@ -56,15 +59,13 @@ We have successfully run HED [1] to extract line art from the Pokemon image.
 | Week 3        | Project Proposal Presentation |
 | Week 4        | Decide Topic and Project Proporsal Report  |
 | Week 5        | Clean Data and Test Existing Models |
-| Week 6        | Train Models |
-| Week 7        | Text        |
+| Week 6        | Modify and Train Models |
+| Week 7        | Modify and Train Models |
 | Week 8        | Finalize Models |
 | Week 9 - 11   | Prepare Project Presentation and Finish Project Report |
 
 
 ## Reference
-
-[1] Redmon, Joseph, et al. "You only look once: Unified, real-time object detection." *Proceedings of the IEEE conference on computer vision and pattern recognition*. 2016.
 
 [1] Xie, Saining and Tu, Zhuowen. "Holistically-Nested Edge Detection" *Proceedings of the IEEE International Conference on Computer Vision (ICCV)*. 2015.
 

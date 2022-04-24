@@ -21,7 +21,7 @@ Imagine you are a machine learning engineer. One day, you want to add some new f
 But could we just maintain some easily accessible data like image with language supervision and then train a model like clip instead of maintain lots of specialized model and data? For example, CLIP representation is very powerful and able to outperform many existing model with only CLIP image feature and linear classifier. Could we just maintain CLIP model and its training data and do simple ML classification instead of train deep model each time? 
 
 
-## Introduction
+## What we hope to demonstrate
 Recently, there is a trend in industry to train large-scale self-supervised models. Such models utilize huge amount of unlabeled data to learn the intrinsic features, and in this way get more general and robust prediction result. CLIP is such a model consisting of an image encoder and a text encoder. In the forward stage, it calculates the loss based on the difference between the image/text feature vector pair with an image/text-description pair as input, and optimizes the two encoders' parameters simultaneously. Typical usage of the CLIP model includes using the image encoder as pretrained model to finetune, and formulizing the prediction task as text queries, together with the image feeding into CLIP to get a score vector. 
 
 We believe CLIP have more usage than what's shown in the original paper, as it has great feature extraction ability.
@@ -99,7 +99,6 @@ Clustering task:
   - In week 6, we should have some result for classification and clustering tasks.
 - Week 7-8: Wait for training and test result and focus on further testing on label noise or distribution shift.
 - Week 9-10: Start writing report and prepare for presentation.
-
 
 
 ## Reference

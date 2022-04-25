@@ -19,7 +19,12 @@ To create a new and unique character for games, anime, etc. it takes years of th
 
 The challenge is when people are trying to design a new character for new work, it is a new concept of art. There are only few data to reference. We are wondering if we can still utilize automation to help with the character design. For example, Pokemon series tends to have a unified color for a Pokemon due to the type system. Also, the line art of Pokemon is cleaner compared to Digimon. To design a new Pokemon, there are only 905 existed Pokemon for us to train. However, the design of the characters for both works is based on humans, animals, plants, or items. We are wondering if we can distill knowledge from all similar designs and apply them to new concept arts.
 
-## Models
+## Method
+
+### Line Art Recognition
+
+### Image Generation
+
 Due to the success of StyleGAN [3] and StyleGAN2 [4] on photo and anime-style art generation, we are going to focus on the extension and analysis of StyleGAN in this process. In this section we will introduce what is StyleGAN, StyleGAN2 and the direction discovery can be performed on StyleGAN. 
 
 ![StyleGAN Architecture]({{ '/assets/images/team16/StyleGAN_architect.png' | relative_url }})
@@ -29,6 +34,8 @@ Due to the success of StyleGAN [3] and StyleGAN2 [4] on photo and anime-style ar
 </div>
 
 
+### Colorization
+
 
 ## Goals
 1. Collect and clean up pokemon data (add in data of eighth generation yet). Add in line art, part segmentation mask and pokemon metadata labels. 
@@ -37,21 +44,13 @@ Due to the success of StyleGAN [3] and StyleGAN2 [4] on photo and anime-style ar
 4. Possible Extension: see if we can allow human input to control line art and drawing as separate steps. 
 
 
+## Dataset
 | Dataset  | Image Number  | Tasks       |
 | :---           | :---          |    :----:   | 
 | Veekun Sprites 256x256 | 819       | https://www.kaggle.com/datasets/kvpratama/pokemon-images-dataset |
 | Images without label   | 7357      | https://www.kaggle.com/datasets/djilax/pkmn-image-datasett  |
 | Official Art mix sizes | 833       | https://www.kaggle.com/datasets/daemonspade/pokemon-images|
 |Images with label | 10K+       | https://www.kaggle.com/datasets/thedagger/pokemon-generation-one |
-
-### Image Generation
-
-
-
-
-### Colorization
-
-
 
 
 

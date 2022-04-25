@@ -7,7 +7,7 @@ date: 2022-04-19
 ---
 
 
-> Our project focuses on module weak supervision. And we are mainly interested in the area of zero-shot weakly supervised localization. We aimed at using CLIP as backbone because of its outstanding performance on zero shot classification tasks. We would like to extend other methods such as class activation/attention map, LCTR transformer and TS transformer to CLIP so that we can achieve localization prediction on novel datasets.
+> Our project focuses on module weak supervision. And we are mainly interested in the area of zero-shot weakly supervised localization. We aimed at using CLIP as backbone because of its outstanding performance on zero shot classification tasks. We would like to adapt other methods such as class activation/attention to CLIP like architectures so that we can achieve localization prediction on novel datasets.
  
 <!--more-->
 {: class="table-of-content"}
@@ -15,11 +15,11 @@ date: 2022-04-19
 {:toc}
 
 ## Main Content
-We aimed at using CLIP as backbone because of its outstanding performance on zero shot classification tasks. We would like to extend other methods such as class activation/attention map, LCTR transformer and TS transformer to CLIP so that we can achieve localization prediction on novel datasets. This page will introduce this project from the aspect of background introduction and method analysis. 
+We aimed at using CLIP as backbone because of its outstanding performance on zero shot classification tasks. We would like to adapt other methods such as class activation/attention to CLIP like architectures so that we can achieve localization prediction on novel datasets. This page will introduce this project from the aspect of background introduction and our proposed method. 
 
 ## Background 
 
-Weakly supervised localization is important as it can effectively reduce the cost of annotation for bounding boxes. Zero shot learning is attractive because it can not only solve problems targeting at pre-determined object category, but also non-predetermined category. 
+Weakly supervised object localization is an important task as it can effectively reduce the cost of annotation for bounding boxes. Zero shot learning is attractive because it does not only solve problems targeting at pre-determined object categories, but also non-predetermined categories, which eliminates the cost of training on new datasets. 
 
 ### What is weakly supervised localization 
 
@@ -30,7 +30,7 @@ Object localization is a well known research problem in computer vision. Within 
 *Fig 1. Weakly supeprvised localization only needs image label. There is no need to provide localization ground truth.*
 
 
-### What is zero shot
+### What is zero shot learning
 The idea of Zero shot was first rasied in paper Dataless classification ([Chang, et al. 2008](http://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf)). Zero shot learning means the model learns from pre-determined class categories, but at the same time, it has the ability to predict and test non-defined classes. Our idea is driven by CLIP ([Radford, et al. 2021](https://arxiv.org/pdf/2103.00020.pdf)). The pre-trained neural network can be applied to other dataset which including non-trained categories. As shown in Figure for example, to classify animals, network is trained to recognized some classes including horse, but has never been given a zebra during training. In zero shot localization, ideally it should be able to recognize a zebra.
 
 ![Zero Shot]({{ '/assets/images/team03/2.png' | relative_url }})
@@ -53,12 +53,14 @@ During a new classification test, given a set of labels and input image, CLIP us
 {: style="width: 700px; max-width: 100%;"}
 *Fig 3. CLIP's structure. From CLIP ([Radford, et al. 2021](https://arxiv.org/pdf/2103.00020.pdf))*
 
-CLIP pretrained image classification model with language supervision. Then by combining CLIP with class activation/attention map methods, we assume the activated area can be regarded as localization on novel datasets. Similarly, if we apply LCTR transformer or TS-CAM transformer into CLIP, it may still have the ability of weakly supervised localization.
+CLIP pretrained image classification model with language supervision. Then by combining CLIP with class activation/attention map methods, we assume the activated area can be regarded as localization on novel datasets.
 
 
-### Score CAM
+### Score-CAM
 
-Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf)) is a popular method to generate saliency maps for CNN based image classifiers. It often produces more accurate and stable results than gradient based methods. According to Fig. 4, given an input image, score cam takes the activation maps from the last convolution layer, and uses these maps as masks over the the input image. The masked input images are processed by the CNN again to generate a weight for each activation map. The weights are normalized the weighted sum of the maps is used as the final output. We can naively adapt the method to CLIP by changing the definition of the score from the logit of the target class to the inner product between the masked input image embedding resulted from the CLIP image encoder and the text embedding generated by the text encoder. 
+Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf)) is a popular method to generate saliency maps for CNN based image classifiers. It often produces more accurate and stable results than gradient based methods from experimental results. According to Fig. 4, given an input image, score cam takes the activation maps from the last convolution layer, and uses these maps as masks over the the input image. The masked input images are processed by the CNN again to generate a weight for each activation map. The weights are normalized the weighted sum of the maps is used as the final output. 
+
+Comparing to saliency methods that utilizes gradients, Score-CAM adapts to CLIP more naturally due to its simple implementation.  We can naively adapt the method to CLIP by changing the definition of the score from the logit of the target class to the inner product between the masked input image embedding resulted from the CLIP image encoder and the text embedding generated by the text encoder. However, this naive adaptation can lead suboptimal result as shown in . Therefore, we would need come up with more sophisticated strategies by conducting and analyzing more experiments. 
 
 
 ![Score-CAM]({{ '/assets/images/team03/4.png' | relative_url }})
@@ -66,13 +68,18 @@ Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf)) is a popul
 *Fig 4. Score CAM's structure. From Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf))*
 
 
-### TS-CAM transformer
+### TS-CAM 
 Vision transformer has become an important architecture in the field of computer vision. However, producing saliency maps from ViT architectures is not as straightforward as with CNN architectures, since the attention map among difference patches does not directly encode semantic information, which resides in the class token. TS-CAM is one of the first methods that addresses this problem and shows SOTA performance on weakly supervised object localization tasks. It consists of two modules: a semantic reallocation module that seeks to transfer class semantics from the class token to the patch tokens, which requires training of additional CNN layers, and an attention module that extracts global relationship between image patches from attention maps in each transformer block. We may apply this approach to accomodate ViT image encoders pretrained in CLIP. 
 
+However, since this method requires training of additional CNN layers, we need to reformulate the cost function of CLIP to incorporate the training objective on the CNN layers. Additionally, the ability of these newly trained layers to generalize on novel datasets is to be explored. 
 
-### LCTR transformer
-TS-CAM lacks locality detail while focusing on global features. Thus local features might be ignored. Local continuity Transformer([Chen, et al. 2021](https://arxiv.org/pdf/2112.05291.pdf)) does well in enhancing the precision of local details compared with global features. It contains two main projects: relational patch-attention module(RPAM) and cur digging module(CDM). RPAM uses class-token attention map, which emphasizes the global feature representation. CDM aims at highlighting local details. We plan to extend LCTR method to CLIP model. 
+### LCTR 
+TS-CAM lacks locality detail while focusing on global features. Thus local features might be ignored. Local continuity Transformer([Chen, et al. 2021](https://arxiv.org/pdf/2112.05291.pdf)) does well in enhancing the precision of local details compared with global features. It contains two main projects: relational patch-attention module(RPAM) and cur digging module(CDM). RPAM uses class-token attention map, which emphasizes the global feature representation. CDM aims at highlighting local details. 
 
+LCTR provides an alternative to TS-CAM for generating saliency maps from CLIP's ViT image encoders. While it demonstrates better localization accuracy performance than TS-CAM according to the experiment results in the paper, the implementation and training are more complicated, which makes the adaptation to CLIP less straightforward.
+
+### Prompt Engineering 
+Prompt engineering refers to the process of generating contextual sentences for the target classes an image might belong to in the context of CLIP, in order to achieve classification accuracy. It has been shown in the original paper that prompt engineering is important for good zero-shot classification performance. However, we speculate that the prompts that are optimized for classfication may not be the best choice for object localization. Additionally, we may provide details such as spatial information in the prompts to assist the process of localization.
 
 ## Solution Plan
 

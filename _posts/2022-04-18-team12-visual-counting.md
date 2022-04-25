@@ -2,8 +2,8 @@
 layout: post
 comments: true
 title: Visual Counting
-author: Srinath
-date: 2022-04-19
+author: Srinath Naik Ajmeera, Sonia Jaiswal
+date: 2022-04-24
 ---
 
 
@@ -16,10 +16,7 @@ date: 2022-04-19
 
 ## Introduction
 
-Our introduction
-various Repetition natures and difficulties
-Difficulties w.r.t our targeted problem.
-Why we think this task is possible.
+We find that the ability to count repetitive tasks from a video is interesting enough. It has associated challenges that the repetition may not be exact, non-uniform period length of the repeating task, being class agnostic for varied actions, handling high to low frequency task variations and feel it is worth exploring and applying to scenario of counting currency. We think that this task of counting currency is achievable because with introduction of sufficient slow motion in the video, human beings are able to count the number of paper bills exactly (We tried this and are able to do it). As humans(processing power of around 24 fps) are able to do this and latest samrtphone camera captures vary around 30-60 fps, we hope its not impossible to achieve this task.   
 
 ## Related Work
 
@@ -34,13 +31,12 @@ TO-DO : Add Image
 
 The first part of the architecture is to embed the input frames into a 512 dimentional feature vector and create a Temporal Self Similarity Matrix(**TSM**). A TSM can be thought of as an indicator to measure similarity of the video frames within itself, essentially the $$(i, j)'th$$ element of TSM $$(TSM[i][j])$$, represents the similarity score between frame $$i$$ and frame $$j$$ in the input video. This particular idea of using a TSM differentiates this work from others and accounts for its class agnostic nature, we do not need to care about the task which is going on, all we need is its similarity through time!!
 
-The next part is to pass the created TSM as an input to a Transformer based deep neural network(referred as '**Period Predictor**') to predict the period length and periodicity for each frame. Period length is a discrete quantity $$\in \{2,3,...,\frac{N}{2}\}$$ where $$N$$ represents the number of input frames, where as Periodicity is a binary quantity $$\in \{0,1\}$$ indicating whether a frame is part of the repeating task or not. Using per frame period and periodicity in a video, it is possible to infer the count and length of a repeating task in a video as described in the inference section.
+The next part is to pass the created TSM as an input to a Transformer based deep neural network(referred as '**Period Predictor**') to predict the period length and periodicity for each frame. Period length is a discrete quantity $$\in \{2,3,...,\frac{N}{2}\}$$ where $$N$$ represents the number of input frames, where as Periodicity is a binary quantity $$\in \{0,1\}$$ indicating whether a frame is part of the repeating task or not.
 
 #### Data && Training
 
 In order to train this network, they have created a synthetic dataset called **Countix**, consisting of real life repeating actions covering diverse set of periods and counts. The dataset is synthetic in a sense that certain actions from Kinetics[2] dataset are selected and their annotated segments are used to create repetition videos by joining same segment multiple times by varying in frequency, reversing the action video etc. The created videos are approximately around 10 seconds. The model is trained for 400K steps with learning rate of $$6e^{-6}$$, using ADAM optimizer and bacth size of 5 videos each with 64 frames.
 
-#### Inference
 #### Evaluation Metrics
 
 TO-DO : Write about MAE and OBO error metrics.
@@ -59,31 +55,40 @@ We have tested the model on our task of counting currency. As currency bundles a
         <div style="display: table-cell; margin: 5;">
             <iframe width="200" height="300" src="https://www.youtube.com/embed/hklIYi-9ZPY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>  
             <p style="margin: 0;">currency - normal speed</p>    
-			<p style="margin: 0;">30 fps | AC > 41 | PC = 28</p>
+			<p>30 fps | AC > 41 | PC = 28</p>
         </div>
         <div style="display: table-cell; margin: 5;"> 
             <iframe width="200" height="300" src="https://www.youtube.com/embed/cptyDu-wREM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             <p style="margin: 0;">book pages - slow</p>
-			<p style="margin: 0;">30 fps | AC > 0 | PC = 0</p>
+			<p>30 fps | AC > 0 | PC = 0</p>
         </div>
         <div style="display: table-cell; margin: 5;"> 
             <iframe width="200" height="300" src="https://www.youtube.com/embed/lHKVVW-HnmU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             <p style="margin: 0;">book pages - very slow</p>
-			<p style="margin: 0;">30 fps | AC = 20 | PC = 18</p>
+			<p>30 fps | AC = 20 | PC = 18</p>
         </div>
     </div>
 </div>
 
 ## Tentative Approach
 
-As we could clearly observe that RepNet doesn't work to the expectation for our task, the first step we would like to pursue is to create more videos(around 10) of various scenarious of page flippings by varying capture fps, speed of flipping etc. and we will test them using RepNet. These videos will also help us eventually to evaluate our system.
+As we could clearly observe that RepNet doesn't work to the expectation for our task, the first step we would like to pursue is to create more videos(around 10) of various scenarious of page flippings by varying capture fps, speed of flipping etc. and we will test them using RepNet. These videos will also help us eventually to evaluate our system. There are several videos on which RepNet works well, we would like to speed up them to change the frequency of action and see the performance on different frequencies of the same video (Thanks **Ankur** for the suggestion).
 
-## Expected Results
+The next step is to analyze the TSM for these tasks and high frequency tasks in general, especially we would like to get some insights into the difference betwen TSM for regular tasks where RepNet works well and for high frequency tasks.
 
-Our expected results
+Once we are more confident that the issue is w.r.t high frequency videos, we would like to adapt the RepNet training framework and train using the same dataset but instead speed up the videos to increase the frequency of the associated task and evaluate it for our use case.
+
+Finally, we would like to explore the idea of using/simplifying the model to account for real time counting on a computer or smartphone, which might involve model pruning techniques.
+
+## Note
+
+We are open for ideas, suggestions for this project. Feel free to comment or reach out in case you have some related interesting things to discuss or if you find any papers which might be relevant to solving this particular problem :)   
+Contact : ***srinath@g.ucla.edu***, ***soniajaiswal@g.ucla.edu***   
 
 ## References
 
-Our references
+[1] Dwibedi, Debidatta, et al. "Counting out time: Class agnostic video repetition counting in the wild." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2020.     
+
+[2] Kay, Will, et al. "The kinetics human action video dataset." arXiv preprint arXiv:1705.06950 (2017).
 
 ---

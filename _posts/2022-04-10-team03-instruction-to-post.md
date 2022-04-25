@@ -71,9 +71,7 @@ Vision transformer has become an important architecture in the field of computer
 
 
 ### LCTR transformer
-Local continuity Transformer([Chen, et al. 2021](https://arxiv.org/pdf/2112.05291.pdf)) does well in enhancing the precision of local details compared with global features. It contains two main projects: relational patch-attention module(RPAM) and cur digging module(CDM). RPAM uses class-token attention map, which emphasizes the global feature representation. CDM aims at highlighting local details. It has similar structure compared with 
-
-
+TS-CAM lacks locality detail while focusing on global features. Thus local features might be ignored. Local continuity Transformer([Chen, et al. 2021](https://arxiv.org/pdf/2112.05291.pdf)) does well in enhancing the precision of local details compared with global features. It contains two main projects: relational patch-attention module(RPAM) and cur digging module(CDM). RPAM uses class-token attention map, which emphasizes the global feature representation. CDM aims at highlighting local details. We plan to extend LCTR method to CLIP model. 
 
 
 ## Solution Plan

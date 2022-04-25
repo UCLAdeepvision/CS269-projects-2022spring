@@ -74,7 +74,10 @@ Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf)) is famous 
 
 
 
+### Data Plan
+To compare with previous results from  works in the area of weakly supervised object localization, we plan to test our method on the ILSVRC dataset that was commonly used in the field. However, due to the size of dataset and our limited compututaion resources, we are going to manually select a subset of ten classes from the entire dataset, and go into detailed analysis and optimization of the proposed on the selected data. We aim to select a classes that represent distinct concepts(e.g. animals and tools) and have difference visual features(e.g. flowers and boat), so that our analysis will generalize to the larger set of classes.
 
+To ensure consistency, we use the same data preprocessing scheme from the original CLIP model. 
 
 ## Reference
 [1] Gao, Wan, et al. "TS-CAM: Token Semantic Coupled Attention Map for Weakly Supervised Object Localization." *International Conference on Computer Vision*. 2021.

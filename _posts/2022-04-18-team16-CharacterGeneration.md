@@ -7,7 +7,7 @@ date: 2022-04-24
 ---
 
 
-> Character design is a challenging process: artists need to create a new set of characters tailored to the specific game/animation requirements while still following the general anatonomy and perspective rules. The quesiton  
+> Character design is a challenging process: artists need to create a new set of characters tailored to the specific game or animated feature requirements while still following the basic anatonomy and perspective rules. The key question is: can AI help human to project their ideas into concrete drawings? In this project, we will investigate 1) How well can the existing network StyleGAN generalize to design drawing generation with clear outline and high-contrast coloring 2) if adding more discriminator branches of different drawing tasks can further disentangle the GAN latent space and make it more human controllable. 
 
 <!--more-->
 {: class="table-of-content"}
@@ -19,7 +19,7 @@ To create a new and unique character for games, anime, etc. it takes years of th
 
 The challenge is when people are trying to design a new character for new work, it is a new concept of art. There are only few data to reference. We are wondering if we can still utilize automation to help with the character design. For example, Pokemon series tends to have a unified color for a Pokemon due to the type system. Also, the line art of Pokemon is cleaner compared to Digimon. To design a new Pokemon, there are only 905 existed Pokemon for us to train. However, the design of the characters for both works is based on humans, animals, plants, or items. We want to investigate if we can distill knowledge from all similar designs and apply them to new concept arts.
 
-## Method
+## Related Work
 
 ### Line Art Recognition
 
@@ -34,17 +34,19 @@ Due to the success of StyleGAN [2] and StyleGAN2 [3] on photo and anime-style ar
   <i>Fig 1. Traditional GAN vs. StyleGAN structure. (Image source: <a> https://arxiv.org/abs/1812.04948 </a>)</i>
 </div>
 
-Unlike the traditional GAN where the generator takes an random latent input $z$, StyleGAN takes latent input $z$ and map it to an intermediate late space $\mathcal{W}$, whose vector $w$ will be affine transformed into style $y$ and modulates AdaIN. 
+Unlike the traditional GAN where the generator takes an random latent input $z$, StyleGAN genereator takes a constant input of size 4x4x512 and its latent input $z$ is only used to generate the styles. Specifically, $z$ is mapped to an intermediate late space $\mathcal{W}$, whose vector $w$ will be affine transformed into style $y$. We can see in figure 1 that these feature map-specific styles are used to modulate adaptive instance normalization (AdaIN) operations.
+
+Another type of input for StyleGAN generator is the noise image injected into each layer of the network (module B in StyleGAN). These noise are introduced to generate stochastic scale-specific details (i.e. hair and freckels) into the image generation.
+
+### Direction Discovery
 
 
-### Colorization
 
-
-## Goals
-1. Collect and clean up pokemon data (add in data of eighth generation yet). Add in line art, part segmentation mask and pokemon metadata labels. 
-2. Train StyleGAN and StyleGAN2 on cleaned Pokemon data. Add the line art/segemntation/pokemon metadata prediction discriminator branches to it.
-3. Compare the latent space changes before and after adding the above branches. See if disentanglement along these dimensions happen. 
-4. Possible Extension: see if we can allow human input to control line art and coloring as separate steps. 
+## Contribution
+1. Curate a clean collection of Pokemon image data from all 8 generations along with metadata in the game. The labels will include line art, part segmentation mask and pokemon metadata labels. 
+2. Analyze how well StyleGAN performed on the Pokemon dataset after direct fine-tuning or learning the styles from pokemon images instead of random input.
+3. Extend existing StyleGAN model with more discriminator branches of different prediction tasks and analyze how the latent space of StyleGAN change: is it more disentangled? 
+4. Possible Extension: see if we can allow human input to control line art and coloring discretely as separate steps. 
 
 
 ## Dataset

@@ -33,6 +33,8 @@ Due to the success of StyleGAN [3] and StyleGAN2 [4] on photo and anime-style ar
   <i>Fig 1. Traditional GAN vs. StyleGAN structure. (Image source: <a> https://arxiv.org/abs/1812.04948 </a>)</i>
 </div>
 
+Unlike the traditional GAN where the generator takes an random latent input $z$, StyleGAN takes latent input $z$ and map it to an intermediate late space $\mathcal{W}$, whose vector $w$ will be affine transformed into style $y$ and modulates AdaIN. 
+
 
 ### Colorization
 
@@ -45,8 +47,9 @@ Due to the success of StyleGAN [3] and StyleGAN2 [4] on photo and anime-style ar
 
 
 ## Dataset
+
 | Dataset                 | Image Number| Tasks       |
-| :---                    | :---        |    :----:   | 
+| :---                    | :---:        |    :----:   | 
 | Veekun Sprites 256x256  | 819         | [kaggle link](https://www.kaggle.com/datasets/kvpratama/pokemon-images-dataset)|
 | Images without label    | 7357        | [kaggle link](https://www.kaggle.com/datasets/djilax/pkmn-image-datasett)       |
 | Official Art mix sizes  | 833         | [kaggle link](https://www.kaggle.com/datasets/daemonspade/pokemon-images)|

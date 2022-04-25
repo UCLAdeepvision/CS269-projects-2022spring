@@ -45,10 +45,15 @@ Unlike the traditional GAN where the generator takes an random latent input $$z$
 Another type of input for StyleGAN generator is the noise image injected into each layer of the network (module B in StyleGAN). These noise are introduced to generate stochastic scale-specific details (i.e. hair and freckels) into the image generation.
 
 ### Latent Space Analysis
-Many recent research have explored methods to understand the semantics of GAN networks. Among these works, direction discovery in GAN latent space enables human to control certain aspects of GAN generation results without retraining GAN 
+Many recent research have explored methods to understand the semantics of GAN latent space. Among these works, disentangled direction or manifold discovery in GAN latent space enables human to control certain aspects of GAN generation results without retraining GAN. 
 
-In the lecture module, we've seen [SeFa](https://genforce.github.io/sefa/) from Shen and Zhou [4], which explores the GAN latent space through finding the $$k$$ most important directions that can cause the largest variations after the projection of transformation step $$A$$.
+In the lecture module, we've seen [SeFa](https://genforce.github.io/sefa/) from Shen and Zhou [4], which explores the GAN latent space through finding the $$k$$ most important directions that can cause the largest variations after the projection of transformation step $$A$$. Since SeFa had relative good performance on StyleGAN trained on anime art, we are going to use it for analysis of latent space disentanglement and see whether adding new discriminator branches can increase the degree of disentanglement.
 
+![SeFa Direction Control Results]({{ '/assets/images/team16/SeFa.png' | relative_url }})
+{: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
+<div style="text-align: center;">
+  <i>Fig 3. SeFa Direction Control Results </i>
+</div>
 
 
 

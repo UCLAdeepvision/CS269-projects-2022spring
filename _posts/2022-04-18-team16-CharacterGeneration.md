@@ -7,7 +7,7 @@ date: 2022-04-24
 ---
 
 
-> Character design is a challenging process: artists need to create a new set of characters tailored to the specific game or animated feature requirements while still following the basic anatonomy and perspective rules. The key question is: can AI help human to project their ideas into concrete drawings? In this project, we will investigate 1) How well can the existing network StyleGAN generalize to design drawing generation with clear outline and high-contrast coloring 2) if adding more discriminator branches of different drawing tasks can further disentangle the GAN latent space and make it more human controllable. 
+> Character design is a challenging process: artists need to create a new set of characters tailored to the specific game or animated feature requirements while still following the basic anatomy and perspective rules. The key question is: can AI help humans to project their ideas into concrete drawings? In this project, we will investigate (1) How well can the existing network StyleGAN generalize to design drawing generation with a clear outline and high-contrast coloring. (2) If adding more discriminator branches of different drawing tasks can further disentangle the GAN latent space and make it more human controllable. 
 
 <!--more-->
 {: class="table-of-content"}
@@ -32,7 +32,7 @@ The challenge is when people are trying to design a new character for new work, 
 
 ### Image Generation
 
-Due to the success of [StyleGAN](https://arxiv.org/pdf/1812.04948.pdf) and [StyleGAN2](https://arxiv.org/pdf/1912.04958.pdf) on photo and anime-style art generation, we are going to focus on the extension and analysis of StyleGAN in this process. In this section we will introduce what is StyleGAN, StyleGAN2 and the direction discovery can be performed on StyleGAN. 
+Due to the success of [StyleGAN](https://arxiv.org/pdf/1812.04948.pdf) and [StyleGAN2](https://arxiv.org/pdf/1912.04958.pdf) on the photo and anime-style art generation, we are going to focus on the extension and analyze StyleGAN in this process. In this section we will introduce what is StyleGAN, StyleGAN2 and the direction discovery can be performed on StyleGAN. 
 
 ![StyleGAN Architecture]({{ '/assets/images/team16/StyleGAN_architect.png' | relative_url }})
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
@@ -49,12 +49,11 @@ In the lecture module, we've seen the work SeFa from Shen and Zhou, which is the
 
 
 
-## Contribution
-1. Curate a clean collection of Pokemon image data from all 8 generations along with metadata in the game. The labels will include line art, part segmentation mask and pokemon metadata labels. 
+## Contributions
+1. Curate a clean collection of Pokemon image data from all 8 generations along with metadata in the game. The labels will include line art, part segmentation mask, and pokemon metadata labels. 
 2. Analyze how well StyleGAN performed on the Pokemon dataset after direct fine-tuning or learning the styles from pokemon images instead of random input.
-3. Extend existing StyleGAN model with more discriminator branches of different prediction tasks and analyze how the latent space of StyleGAN change: is it more disentangled? 
+3. Extend the existing StyleGAN model with more discriminator branches of different prediction tasks and analyze how the latent space of StyleGAN changes: is it more disentangled? 
 4. Possible Extension: see if we can allow human input to control line art and coloring discretely as separate steps. 
-
 
 ## Dataset
 
@@ -69,7 +68,8 @@ In the lecture module, we've seen the work SeFa from Shen and Zhou, which is the
 
 ## Current Progress
 ### Data Preprocessing
-We are working on combining the images from different dataset. We have to unify the size of the image and the format of the image among different datasets. 
+We are working on combining the images from different datasets. We unify the size and the format of Pokemon images from different datasets. We also include the newest generation Pokemon images that do not exist in any current dataset.
+
 
 
 ### Sketch
@@ -100,7 +100,7 @@ We have succesfully trained StyleGAN on pokemon sprites (256x256 images) and get
 | :---          |    :----:   | 
 | Week 3        | Project Proposal Presentation |
 | Week 4        | Decide Topic and Project Proporsal Report  |
-| Week 5        | Clean Data and Test Existed Models |
+| Week 5        | Clean Data and Test Existing Models |
 | Week 6        | Train Models |
 | Week 7        | Fine-tune & Adjust Models  |
 | Week 8        | Analyze Model Latent Space |

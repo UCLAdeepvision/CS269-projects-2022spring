@@ -52,7 +52,7 @@ As part of the literatre survey, we also study the tool Eve [7], which we found 
 - This application performs color and other detailing on the tool, and requires sketching to be done on the tool. We feel that allowing hand-drawn sketches might be more convenient. 
 - The tool does not expose any code/results apart from a single set of screenshots, which limits study of its extensiveness. 
 
-![Eve Interation Model]({{ '/assets/images/team04/eve_image.png' | relative_url }})
+![Eve Interation Model]({{ '/assets/images/team04/eve_image.PNG' | relative_url }})
 {: style="width: 800px; max-width: 100%;"}  
 
 <p style="text-align:center;">

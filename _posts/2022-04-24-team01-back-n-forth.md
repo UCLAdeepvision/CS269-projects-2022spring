@@ -1,8 +1,8 @@
 ---
 layout: post
 comments: true
-title: "Back-N-Forth: A Self-diagnosing Mechanism for Human-Collaborating ML Systems"
-author: Sidi Lu and Yufei
+title: "Back-N-Forth (BNF): A Self-diagnosing Mechanism for Human-Collaborating ML Systems"
+author: Sidi Lu and Yufei Tian
 date: 2022-04-24
 ---
 
@@ -96,6 +96,22 @@ We will follow the standard adversarial attack detect and defense pipeline, and 
 
 ## Reference
 
-[1] Redmon, Joseph, et al. "You only look once: Unified, real-time object detection." *Proceedings of the IEEE conference on computer vision and pattern recognition*. 2016.
+[1] You C, Robinson D P, Vidal R. Provable self-representation based outlier detection in a union of subspaces, *Proceedings of the ieee conference on computer vision and pattern recognition,* 2017
+
+[2] Chen Z, Yeo C K, Lee B S, et al. Evolutionary multi-objective optimization based ensemble autoencoders for image outlier detection. *Neurocomputing,* 2018
+
+[3] Sabokrou M, Pourreza M, Fayyaz M, et al. Avid: Adversarial visual irregularity detection. *Asian Conference on Computer Vision,* 2018
+
+[4] Yao L, Peng N, et al. Plan-and-write: Towards better automatic storytelling. *Proceedings of the AAAI Conference on Artificial Intelligence,* 2019
+
+[5] Nayak A, Timmapathini H, et al. Domain adaptation challenges of BERT in tokenization and sub-word representations of Out-of-Vocabulary words, *Proceedings of the First Workshop on Insights from Negative Results in NLP.* 2020
+
+[6] Bazzi I. Modelling out-of-vocabulary words for robust speech recognition. *Massachusetts Institute of Technology,* 2002.
+
+[7] Baehrens D, Schroeter T, et al. How to explain individual classification decisions. *The Journal of Machine Learning Research,* 2010
+
+[8] Hsieh C Y, Yeh C K, et al. Evaluations and methods for explanation through robustness analysis. *International Conference on Learning Representations*, 2020.
+
+[9] Sundararajan M, Taly A, Yan Q. Axiomatic attribution for deep networks. *International conference on machine learning,* 2017:
 
 ---

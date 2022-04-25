@@ -27,7 +27,7 @@ There is no public dataset with human-drawn sketch and corresponding visualizati
 We plan to experiment with 2 types of sketches, XKCD and style-transferred XKCD, for input. XKCD image is very similar to normal visualization images, whereas many details are missing in style-transferred images, which appears to be rough sketch. A sample image for each of these types are shown below. We have prepared aligned dataset for the first type (i.e. XKCD sketch and corresponding visualization)  and also done preliminary experiments as discussed in next section. Next, we will apply style-transfer to the generated XKCD images to create a more realistic sketch dataset.
 
 ![Model Input]({{ '/assets/images/team17/examples.png' | relative_url }})
-{: style="width: 400px; max-width: 100%;"}
+{: style="width: 600px; max-width: 100%;"}
 *Fig 1: Example XKCD sketch (left), target distribution (middle) and style-transferred image (right).*
 
 ### Sketch to code dataset
@@ -74,7 +74,7 @@ We show the initial results for model a trained on XKCD sketch for 20 epochs and
 *Fig 3: Training loss for initial conditional-GAN model.*
 
 ![Model Input]({{ '/assets/images/team17/xkcd_output.png' | relative_url }})
-{: style="width: 400px; max-width: 100%;"}
+{: style="width: 600px; max-width: 100%;"}
 *Fig 4: Sample result for conditional-GAN model trained for 20 epochs.*
 
 ### Sketch to code

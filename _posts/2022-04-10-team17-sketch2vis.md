@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-title: Visualization plot to code
+title: Sketch to visualization
 author: Ankur Kumar, Pranay Shirodkar
 date: 2022-04-10
 ---

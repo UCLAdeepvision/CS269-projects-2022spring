@@ -15,10 +15,9 @@ date: 2022-04-24
 {:toc}
 
 ## Motivation
-To create a character for games, anime, etc. it takes years of training to acquire drawing skills and master digital art software for virtualizing the design ideas. Furthermore, the process of designing a character takes days, even months, to draw and refine the design. If we can utilize automation, we can ease the creation process. For example, neural network based model can help with coloring sketches or line art. GAN can generate characters' pictures to have a starting point for designing a character or even characters that can be directly put into practice.
+To create a new and unique character for games, anime, etc. it takes years of the art training to master drawing skills and digital art software for virtualizing the design ideas. Even acquiring these skills, the process of designing a character takes days, even months, to refine and finalize the design. If we can utilize automation, we can ease the creation process. For example, some research uses neural network based model to do automatic coloring for sketches or line art. If we provide a segmentation map, some models can generate the illustration. Models like GAN can generate characters' pictures to have a starting point for designing a character or even characters that can be directly put into practice.
 
-Each piece of work has its particular style when designing characters. For example, Pokemon series tends to have a unified color for a Pokemon due to the type system. Also, the line art of Pokemon is cleaner compared to Digimon. However, the design of the characters for both works is based on humans, animals, plants, or items. We are wondering if we can distill knowledge from old designs and apply them to new concept arts.
-
+The challenge is when people are trying to design a new character for new work, it is a new concept of art. There are only few data to reference. We are wondering if we can still utilize automation to help with the character design. For example, Pokemon series tends to have a unified color for a Pokemon due to the type system. Also, the line art of Pokemon is cleaner compared to Digimon. To design a new Pokemon, there are only 905 existed Pokemon for us to train. However, the design of the characters for both works is based on humans, animals, plants, or items. We are wondering if we can distill knowledge from all similar designs and apply them to new concept arts.
 
 ## Models
 Due to the success of StyleGAN [3] and StyleGAN2 [4] on photo and anime-style art generation, we are going to focus on the extension and analysis of StyleGAN in this process. In this section we will introduce what is StyleGAN, StyleGAN2 and the direction discovery can be performed on StyleGAN. 
@@ -30,13 +29,13 @@ Due to the success of StyleGAN [3] and StyleGAN2 [4] on photo and anime-style ar
 </div>
 
 
+
 ## Goals
 1. Collect and clean up pokemon data (add in data of eighth generation yet). Add in line art, part segmentation mask and pokemon metadata labels. 
 2. Train StyleGAN and StyleGAN2 on cleaned Pokemon data. Add the line art/segemntation/pokemon metadata prediction discriminator branches to it.
 3. Compare the latent space changes before and after adding the above branches. See if disentanglement along these dimensions happen. 
 4. Possible Extension: see if we can allow human input to control line art and drawing as separate steps. 
 
-## Datasets
 
 | Dataset  | Image Number  | Tasks       |
 | :---           | :---          |    :----:   | 
@@ -45,16 +44,26 @@ Due to the success of StyleGAN [3] and StyleGAN2 [4] on photo and anime-style ar
 | Official Art mix sizes | 833       | https://www.kaggle.com/datasets/daemonspade/pokemon-images|
 |Images with label | 10K+       | https://www.kaggle.com/datasets/thedagger/pokemon-generation-one |
 
+### Image Generation
+
+
+
+
+### Colorization
+
+
+
+
 
 ## Current Progress
-
 ### Data Preprocessing
-We are working on combining the images from different dataset. Therefore, we have to unify the size of the image and the format of the image. 
+We are working on combining the images from different dataset. We have to unify the size of the image and the format of the image among different datasets. 
 
 
-### Line Art of Image
+### Sketch
 We have successfully run HED [1] to extract line art from the Pokemon image.
 
+(Add images later on)
 
 
 ### StyleGAN

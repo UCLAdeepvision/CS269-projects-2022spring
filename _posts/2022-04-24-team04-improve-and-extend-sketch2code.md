@@ -7,7 +7,7 @@ date: 2022-04-24
 ---
 
 
-> <p style="text-align:justify;"> The area of Web-UI design continues to evolve , often reqiuring a balance of effort between designers and developers to come up with a suitable user interface. One of the key challenges in standard Web UI development involves reaching an interface between desginers and developers, in being able to convert designs to code. To this end, several works in recent years have taken atempts to try and automate this task, or provide for easy conversion from design to code. Works such as Microsoft sketch2code and pix2code , provide automation by converting sketches and screenshots respectively to code. However, there still remains room for further work in this domain, such as including more element types, encoding more information in the sketch and allowing for more variablity.  The proposed project seeks to improve upon the Sketch-to-code framework, by first constructing an enriched dataset and then allowing for embedding more information in the sketch such as color , font-style etc, allowing custom genrated images using GANs, and building a larger dataset of Web-UI samples in order to facilitate tihs model. </p>
+> <p style="text-align:justify;"> The area of Web-UI design continues to evolve , often reqiuring a balance of effort between designers and developers to come up with a suitable user interface. One of the key challenges in standard Web UI development involves reaching an interface between desginers and developers, in being able to convert designs to code. To this end, several works in recent years have taken atempts to try and automate this task, or provide for easy conversion from design to code. Works such as Microsoft sketch2code and pix2code , provide automation by converting sketches and screenshots respectively to code. However, there still remains room for further work in this domain, such as including more element types, encoding more information in the sketch and allowing for more variablity.  The proposed project seeks to improve upon the Sketch-to-code framework, by first constructing an enriched dataset of Web-UI samples  and then allowing for embedding more information in the sketch such as color , font-style etc as well as allowing custom generated images using GANs.</p>
 
 <!--more-->
 {: class="table-of-content"}
@@ -33,7 +33,7 @@ Some of the key goals of the project include:
 Other more ambitious goals include:
 1. Adding improvements to the current models performing object recognition and OCR for converting the sketch to code.  
 2. Scraping real websites to generate more realisitc dataset samples.
-3. Adding interactivity specifications (such as JavaScript embedding) potential in sketches.  
+3. Adding interactivity specification (such as JavaScript embedding) potential in sketches.  
 
 ## State of the Art Work
 A study of some of the state-of-the-art in the domain can be described as below.  
@@ -63,8 +63,8 @@ As part of the literatre survey, we also study the tool Eve [7], which we found 
 1. Custom dataset from pix2code  
 The UI dataset from pix2code is a sequence of (HTML screenshots, GUI files containing DSL) . The sketch2code approach converts this to an image captioning problem of the form (sketch, DSL) by manipulating the CSS of the webpages in the HTML screenshots.
 
-2. Dataset generation using Web Generator
-This module generates a dataset of webpage samples (html files with different properties). A key step would involve writing a method that parses these html files into DSL structure, and adding language embeddings for various color properties.  
+2. Dataset generation using Web Generator  
+This module generates a dataset of webpage samples (html files with different properties). A key step would involve writing a method that parses these html files into DSL structure, and adding language embeddings for various styling properties.  
 
 3. Dataset samples from Microsoft sketch2Code  
 The sketch2code Github Reporsitory also exposes a training-set of examples that could be promising in improving the current training set.
@@ -113,11 +113,11 @@ By following the steps as per the Github link to the WebGenerator project, we we
 ## References
 [1] Microsoft Corporation, [Sketch2Code : https://www.microsoft.com/en-us/ai/ai-lab-sketch2code](https://www.microsoft.com/en-us/ai/ai-lab-sketch2code)  
 [2] Tony Beltramelli. 2018. Pix2code: Generating Code from a Graphical User Interface Screenshot. In <i>Proceedings of the ACM SIGCHI Symposium on Engineering Interactive Computing Systems</i> (<i>EICS '18</i>). Association for Computing Machinery, New York, NY, USA, Article 3, 1–6. [DOI:https://doi.org/10.1145/3220134.3220135](https://doi.org/10.1145/3220134.3220135)  
-[3] Biplab Deka, Zifeng Huang, Chad Franzen, Joshua Hibschman, Daniel Afergan, Yang Li, Jeffrey Nichols, and Ranjitha Kumar. 2017. Rico: A Mobile App Dataset for Building Data-Driven Design Applications. In <i>Proceedings of the 30th Annual ACM Symposium on User Interface Software and Technology</i> (<i>UIST '17</i>). Association for Computing Machinery, New York, NY, USA, 845–854. [DOI:https://doi.org/10.1145/3126594.3126651](DOI:https://doi.org/10.1145/3126594.3126651)  
+[3] Biplab Deka, Zifeng Huang, Chad Franzen, Joshua Hibschman, Daniel Afergan, Yang Li, Jeffrey Nichols, and Ranjitha Kumar. 2017. Rico: A Mobile App Dataset for Building Data-Driven Design Applications. In <i>Proceedings of the 30th Annual ACM Symposium on User Interface Software and Technology</i> (<i>UIST '17</i>). Association for Computing Machinery, New York, NY, USA, 845–854. [DOI:https://doi.org/10.1145/3126594.3126651](https://doi.org/10.1145/3126594.3126651)  
 [4] sketch2code, Anchen, [https://github.com/mzbac/sketch2code](https://github.com/mzbac/sketch2code)  
 [5] SketchCode, Ashwin Kumar, [https://github.com/ashnkumar/sketch-code](https://github.com/ashnkumar/sketch-code)  
 [6] Emil Wallner, [https://blog.floydhub.com/turning-design-mockups-into-code-with-deep-learning/?source=techstories.org](https://blog.floydhub.com/turning-design-mockups-into-code-with-deep-learning/?source=techstories.org)  
-[7] Sarah Suleri, Vinoth Pandian Sermuga Pandian, Svetlana Shishkovets, and Matthias Jarke. 2019. Eve: A Sketch-based Software Prototyping Workbench. In <i>Extended Abstracts of the 2019 CHI Conference on Human Factors in Computing Systems</i> (<i>CHI EA '19</i>). Association for Computing Machinery, New York, NY, USA, Paper LBW1410, 1–6. [DOI:https://doi.org/10.1145/3290607.3312994](DOI:https://doi.org/10.1145/3290607.3312994)  
+[7] Sarah Suleri, Vinoth Pandian Sermuga Pandian, Svetlana Shishkovets, and Matthias Jarke. 2019. Eve: A Sketch-based Software Prototyping Workbench. In <i>Extended Abstracts of the 2019 CHI Conference on Human Factors in Computing Systems</i> (<i>CHI EA '19</i>). Association for Computing Machinery, New York, NY, USA, Paper LBW1410, 1–6. [DOI:https://doi.org/10.1145/3290607.3312994](https://doi.org/10.1145/3290607.3312994)  
 [8] Google Material Design, [https://material.io/](https://material.io/)  
 [9] Andrés Soto, Héctor Mora, Jaime A. Riascos,Web Generator: An open-source software for synthetic web-based user interface dataset generation,SoftwareX,Volume 17,2022,100985,ISSN 2352-7110,[https://doi.org/10.1016/j.softx.2022.100985](https://doi.org/10.1016/j.softx.2022.100985).  
 [10] Wang, Peng & Yang, An & Men, Rui & Lin, Junyang & Bai, Shuai & Li, Zhikang & Ma, Jianxin & Zhou, Chang & Zhou, Jingren & Yang, Hongxia. (2022). Unifying Architectures, Tasks, and Modalities Through a Simple Sequence-to-Sequence Learning Framework [https://doi.org/10.48550/arXiv.2202.03052](https://doi.org/10.48550/arXiv.2202.03052)  

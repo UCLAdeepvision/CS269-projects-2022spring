@@ -34,9 +34,9 @@ We plan to experiment with 2 types of sketches, XKCD and style-transferred XKCD,
 We are currently modifying the original code to generate matplotlib code for the above images. It requires us to understand the intermediate language specifications and map it back to Matplotlib code. We hope to complete this along with the style-transfer dataset by next week.
 
 #### Sample Input
-![Model Input]({{ '/assets/images/team17/example_input.png' | relative_url }})
+![Model Input]({{ '/assets/images/team17/sketch_input.png' | relative_url }})
 {: style="width: 400px; max-width: 100%;"}
-*Fig 2: An example visualization plot as input to the model.*
+*Fig 2: An example sketch as input to the model.*
 
 #### Sample Output
 ```

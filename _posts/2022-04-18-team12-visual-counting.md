@@ -6,7 +6,6 @@ author: Srinath Naik Ajmeera, Sonia Jaiswal
 date: 2022-04-24
 ---
 
-
 > Repetition of a task is quite common in our day to day life ranging from a simple pendulum to the periodic day and night pattern of earth, everything repeats. Counting repetitions through time from a video has interesting applications into healthcare, sports and fitness domains for tracking reps in exercises, shots in a badminton rally etc. Through this project, we would like to explore existing literature towards class agnostic counting from video and specifically apply/invent to a scenario of counting paper bills(currency) from a video. Although machines exist for this particular task, being able to do the same just by using a smartphone camera has its advantages of being widely accessible and availability at low cost. We believe that this task is also a perfect fit for this course as it needs both human and AI collaboration!. We also like to mention that this seemingly simple task might be ambitious to achieve and thereby planning to explore other directions to mould existing counting mechanisms which process video as a whole towards real time counting systems, so that they can be used in day to day life.
 
 <!--more-->
@@ -26,8 +25,9 @@ In our quest for a system which could possibly count currency flippings from a v
 
 #### Architecture
 
-The following is the architecture of 'RepNet'.  
-TO-DO : Add Image   
+The following is the architecture of 'RepNet'. 
+  ![RepNet Architecture]({{ '/assets/images/team12/Archi.png' | relative_url }})
+ 
 
 The first part of the architecture is to embed the input frames into a 512 dimentional feature vector and create a Temporal Self Similarity Matrix(**TSM**). A TSM can be thought of as an indicator to measure similarity of the video frames within itself, essentially the $$(i, j)'th$$ element of TSM $$(TSM[i][j])$$, represents the similarity score between frame $$i$$ and frame $$j$$ in the input video. This particular idea of using a TSM differentiates this work from others and accounts for its class agnostic nature, we do not need to care about the task which is going on, all we need is its similarity through time!!
 
@@ -39,12 +39,15 @@ In order to train this network, they have created a synthetic dataset called **C
 
 #### Evaluation Metrics
 
-TO-DO : Write about MAE and OBO error metrics.
+The existing literature uses two main metrics for evaluating repetition counting in videos:\
+**Off-By-One (OBO) count error:** If the predicted count is within one count of the ground truth value, then the video is considered to be classified correctly, otherwise it is a mis-classification. The OBO error is the mis-classification rate over the entire dataset.
+
+**Mean Absolute Error (MAE) of count:** This metric measures the absolute difference between the ground truth count and the predicted count, and then normalizes it by dividing with the ground truth count. The reported MAE error is the mean of the normalized absolute differences over the entire dataset.
 
 #### Results
 
 The paper presents promising results on some actions like *jumping jacks*, *squats*, *slicing onion* etc. The counts are also near perfect in cases of varying periodicity and change of tempo in the repetitions. It also mentions lower error metrics, **MAE** and **OBO** of **0.104** and **0.17** respectively while comparing with other methods. Some of the tasks on which the count is accurate are shown below.
-TO-DO : Add Image
+  ![Results]({{ '/assets/images/team12/res.gif' | relative_url }})
 
 #### Performance on our task
 

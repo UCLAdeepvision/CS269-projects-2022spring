@@ -73,7 +73,7 @@ In the lecture module, we've seen [SeFa](https://genforce.github.io/sefa/) from 
 
 ## Dataset
 
-| Dataset                 | Image Number| Tasks       |
+| Dataset                 | Image Number| Link       |
 | :---                    | :---:        |    :----:   | 
 | Veekun Sprites 256x256  | 819         | [kaggle link](https://www.kaggle.com/datasets/kvpratama/pokemon-images-dataset)|
 | Images without label    | 7357        | [kaggle link](https://www.kaggle.com/datasets/djilax/pkmn-image-dataset)       |

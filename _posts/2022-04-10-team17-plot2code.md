@@ -7,7 +7,7 @@ date: 2022-04-10
 ---
 
 
-> In this work, we will explore code generation task when conditioned on visualization plot as input image. Motivated by OpenAI's Codex, this project will allow us to understand the challenges in program synthesis. This work can be useful to reduce the complexity involved in working with visualization tools such as Matplotlib.
+> In this work, we will explore sketch to visualization (line plot, bar graph, pie chart etc) task via image generation as well as code generation. This work can be useful to reduce the complexity involved in working with visualization tools such as Matplotlib. Also, this project will allow us to understand the challenges in image generation and program synthesis.
 
 <!--more-->
 {: class="table-of-content"}
@@ -15,22 +15,30 @@ date: 2022-04-10
 {:toc}
 
 ## Introduction
-Given an input image containing visualization (line plot, bar graph, pie chart), the model will output the corresponding code to generate the plot. We constrain the code generated to use the Matplotlib python package only due to resource limitations. This problem is a step towards developing alternative ways to interact with visualization libraries, which have grown over time to become popular and significantly complex. Our work will lower the barrier to entry for newcomers by allowing them to generate sophisticated visualizations. It will also prove to be useful for others possessing some knowledge of the library, which generally contains thousands of APIs. [1] tackles the same problem with a different approach, where local code context along with natural language instructions are used to generate code for visualization.
+Given an input sketch containing visualization, the task is to create a refined version. This can be achieved by either generating corresponding code, followed by rendering, or creating the final image directly. We use the Matplotlib python package only for code generation due to resource limitations. This problem is a step towards developing alternative ways to interact with visualization libraries, which have grown over time to become popular and significantly complex. Our work will lower the barrier to entry for newcomers by allowing them to generate sophisticated visualizations. It will also prove to be useful for others possessing some knowledge of the library, which generally contains thousands of APIs.
 
 ## Related work
-There has been a similar attempt for Pandas library, where authors generate program given input and output specifications pertaining to dataframe manipulations [9]. Earlier works on visualization have explored applications such as sketch to visualization [4], extracting information from bar chart images [5], generation of visualization images given input data [2]. Code generation from webpage layout [10], code recommendations for Android GUI [3] etc, have also been explored. Our work is directly related to both the topics. Another line of work identifies the type of visualization (bar, plot etc.) given input image [6]. Also, there has been growing interest in code generation task due to its immense applications [11, 12, 13]. We hope to leverage some of these works for our task as described below.
+There has been a similar attempt for Pandas library, where authors generate program given input and output specifications pertaining to dataframe manipulations [9]. Earlier works on visualization have explored applications such as classification of input visualizaiton into line, bar etc. [6], extracting information from bar chart images [5], and generation of visualization images given input data [2]. [1] tackles a similar problem, where local code context along with natural language instructions are used to generate code for visualization. Code generation from webpage layout [10], code recommendations for Android GUI [3] etc, have also been explored. Our work is directly related to [4], which outputs (*intermediate*) code for input sketch. However, we are interested in directly generating Matplotlib code as opposed to manually defined intermediate language. We also want to explore the effectiveness of conditional image generation methods for this task.
 
-## Our Approach
-This is a sequence modeling problem similar to image captioning task, where we train an encoder-decoder model. Due to the lack of an existing dataset, we hope to pre-train image encoder with plot images from [6] or similar dataset, and use open-source decoder for code generation. We plan to create our own dataset to fine-tune these models jointly. Metrics such as BLEU can be used to evaluate the model performance.
+## Dataset
+There is no public dataset with human-drawn sketch and corresponding visualization plots. [4] create a synthetic dataset for their task of sketch to *intermediate* code generation. The dataset is not available but the code to create the dataset has been released [11]. It randomly generates data such as `plot type, x, y, legend, color` etc. required to create XKCD plot, which looks cartoonish, using Matplotlib APIs. Then they apply style transfer to generate images which look like hand drawn sketches. We adapt their code to create aligned dataset (10,000 samples) for our task as follows. The resulting dataset is divided into train, dev and test split in the ratio 70:10:20.
 
-## Example
+### Sketch to image dataset
+We plan to experiment with 2 types of sketches, XKCD and style-transferred XKCD, for input. XKCD image is very similar to normal visualization images, whereas many details are missing in style-transferred images, which appears to be rough sketch. A sample image for each of these types are shown below. We have prepared aligned dataset for the first type (i.e. XKCD sketch and corresponding visualization)  and also done preliminary experiments as discussed in next section. Next, we will apply style-transfer to the generated XKCD images to create a more realistic sketch dataset.
 
-### Sample Input
+![Model Input]({{ '/assets/images/team17/examples.png' | relative_url }})
+{: style="width: 400px; max-width: 100%;"}
+*Fig 1: Example XKCD sketch (left), target distribution (middle) and style-transferred image (right).*
+
+### Sketch to code dataset
+We are currently modifying the original code to generate matplotlib code for the above images. It requires us to understand the intermediate language specifications and map it back to Matplotlib code. We hope to complete this along with the style-transfer dataset by next week.
+
+#### Sample Input
 ![Model Input]({{ '/assets/images/team17/example_input.png' | relative_url }})
 {: style="width: 400px; max-width: 100%;"}
-*Fig 1: An example visualization plot as input to the model.*
+*Fig 2: An example visualization plot as input to the model.*
 
-### Sample Output
+#### Sample Output
 ```
 import matplotlib.pyplot as plt
 
@@ -54,6 +62,31 @@ plt.title("Two quadratic graphs")
 # show the plot
 plt.show()
 ```
+
+## Our Approach
+
+### Sketch to image
+It is natural to formulate the task of obtaining refined visualization as sketch to image generation. We use existing pix2pix code repository [12] as it serves as a strong baseline model for supervised conditional image generation. The training loss has two components: 1. GAN loss 2. L1-reconstruction loss. Model performance can be evaluated using automated metrics like FID score as well as human evaluation. 
+
+We show the initial results for model a trained on XKCD sketch for 20 epochs and default configurations from pix2pix repository.
+![Model Input]({{ '/assets/images/team17/xkcd_loss.png' | relative_url }})
+{: style="width: 400px; max-width: 100%;"}
+*Fig 3: Training loss for initial conditional-GAN model.*
+
+![Model Input]({{ '/assets/images/team17/xkcd_output.png' | relative_url }})
+{: style="width: 400px; max-width: 100%;"}
+*Fig 4: Sample result for conditional-GAN model trained for 20 epochs.*
+
+### Sketch to code
+This is a sequence modeling problem similar to image captioning task, where we train an encoder-decoder model. We hope to use open-source decoder for code generation. The model is trained using cross-entropy loss and evaluated using metrics such as BLEU.
+
+
+## Next Steps
+1. Finish data preparation for style-transferred case and generate corresponding Matplotlib code
+2. Parameter tuning for XKCD sketch to image training
+3. Train conditional GAN for style-transferred images as input
+4. Train encoder-decoder model for sketch-to-code task
+5. Evaluations
 
 <!-- 
 ## Main Content
@@ -104,7 +137,14 @@ You can find more Markdown syntax at [this page](https://www.markdownguide.org/b
 ## Reference
 Please make sure to cite properly in your work, for example:
 
-[1] Redmon, Joseph, et al. "You only look once: Unified, real-time object detection." *Proceedings of the IEEE conference on computer vision and pattern recognition*. 2016.-->
+[1] Redmon, Joseph, et al. "You only look once: Unified, real-time object detection." *Proceedings of the IEEE conference on computer vision and pattern recognition*. 2016.
+
+[11] Lachaux, Marie-Anne et al. “Unsupervised Translation of Programming Languages.” ArXiv abs/2006.03511 (2020).
+
+[12] Chen, Mark et al. “Evaluating Large Language Models Trained on Code.” ArXiv abs/2107.03374 (2021).
+
+[13] Nijkamp, Erik et al. “A Conversational Paradigm for Program Synthesis.” ArXiv abs/2203.13474 (2022).
+-->
 
 ## References
 [1] Chen, Xinyun et al. “PlotCoder: Hierarchical Decoding for Synthesizing Visualization Code in Programmatic Context.” ACL (2021).
@@ -127,10 +167,8 @@ Please make sure to cite properly in your work, for example:
 
 [10] Beltramelli, Tony. “pix2code: Generating Code from a Graphical User Interface Screenshot.” Proceedings of the ACM SIGCHI Symposium on Engineering Interactive Computing Systems (2018).
 
-[11] Lachaux, Marie-Anne et al. “Unsupervised Translation of Programming Languages.” ArXiv abs/2006.03511 (2020).
+[11] https://github.com/magnumresearchgroup/Sketch2Vis
 
-[12] Chen, Mark et al. “Evaluating Large Language Models Trained on Code.” ArXiv abs/2107.03374 (2021).
-
-[13] Nijkamp, Erik et al. “A Conversational Paradigm for Program Synthesis.” ArXiv abs/2203.13474 (2022).
+[12] https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
 
 ---

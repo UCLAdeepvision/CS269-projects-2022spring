@@ -45,12 +45,12 @@ Due to the success of StyleGAN [3] and StyleGAN2 [4] on photo and anime-style ar
 
 
 ## Dataset
-| Dataset  | Image Number  | Tasks       |
-| :---           | :---          |    :----:   | 
-| Veekun Sprites 256x256 | 819       | https://www.kaggle.com/datasets/kvpratama/pokemon-images-dataset |
-| Images without label   | 7357      | https://www.kaggle.com/datasets/djilax/pkmn-image-datasett  |
-| Official Art mix sizes | 833       | https://www.kaggle.com/datasets/daemonspade/pokemon-images|
-|Images with label | 10K+       | https://www.kaggle.com/datasets/thedagger/pokemon-generation-one |
+| Dataset                 | Image Number| Tasks       |
+| :---                    | :---        |    :----:   | 
+| Veekun Sprites 256x256  | 819         | [kaggle link](https://www.kaggle.com/datasets/kvpratama/pokemon-images-dataset)|
+| Images without label    | 7357        | [kaggle link](https://www.kaggle.com/datasets/djilax/pkmn-image-datasett)       |
+| Official Art mix sizes  | 833         | [kaggle link](https://www.kaggle.com/datasets/daemonspade/pokemon-images)|
+|Images with label        | 10K+        | [kaggle link](https://www.kaggle.com/datasets/thedagger/pokemon-generation-one) |
 
 
 

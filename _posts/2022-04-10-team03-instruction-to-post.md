@@ -49,13 +49,9 @@ The detailed structure is shown in Fig.3. Model consists of an image encoder and
 
 During a new classification test, given a set of labels and input image, CLIP uses the pretrained text encoder to embed the labels. Then compute the inner product between the text embeddings and the image embedding from the image encoder. Finally, the class that generates the highest similarity score will be the prediction answer. 
 
-
-
 ![CLIP]({{ '/assets/images/team03/3.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
 *Fig 3. CLIP's structure. From CLIP ([Radford, et al. 2021](https://arxiv.org/pdf/2103.00020.pdf))*
-
-
 
 CLIP pretrained image classification model with language supervision. Then by combining CLIP with class activation/attention map methods, we assume the activated area can be regarded as localization on novel datasets. Similarly, if we apply LCTR transformer or TS-CAM transformer into CLIP, it may still have the ability of weakly supervised localization.
 
@@ -68,12 +64,16 @@ Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf)) is a popul
 ![Score-CAM]({{ '/assets/images/team03/4.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
 *Fig 4. Score CAM's structure. From Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf))*
-### LCTR transformer
-Local continuity Transformer([Chen, et al. 2021](https://arxiv.org/pdf/2112.05291.pdf)) does well in enhancing the precision of local details compared with global features. It contains two main projects: relational patch-attention module(RPAM) and cur digging module(CDM). RPAM uses class-token attention map, which emphasizes the global feature representation. CDM aims at highlighting local details.
 
 
 ### TS-CAM transformer
 Vision transformer has become an important architecture in the field of computer vision. However, producing saliency maps from ViT architectures is not as straightforward as with CNN architectures, since the attention map among difference patches does not directly encode semantic information, which resides in the class token. TS-CAM is one of the first methods that addresses this problem and shows SOTA performance on weakly supervised object localization tasks. It consists of two modules: a semantic reallocation module that seeks to transfer class semantics from the class token to the patch tokens, which requires training of additional CNN layers, and an attention module that extracts global relationship between image patches from attention maps in each transformer block. We may apply this approach to accomodate ViT image encoders pretrained in CLIP. 
+
+
+### LCTR transformer
+Local continuity Transformer([Chen, et al. 2021](https://arxiv.org/pdf/2112.05291.pdf)) does well in enhancing the precision of local details compared with global features. It contains two main projects: relational patch-attention module(RPAM) and cur digging module(CDM). RPAM uses class-token attention map, which emphasizes the global feature representation. CDM aims at highlighting local details. It has similar structure compared with 
+
+
 
 
 ## Solution Plan

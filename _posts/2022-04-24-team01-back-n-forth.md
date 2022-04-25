@@ -48,7 +48,7 @@ We argue all of these can be resolved in a unified fashion, by introducing a mod
 3. Adversarial attack diagosis and defense.
 ## Methodology
 ### Formulation
-Given input $X = [x_0, x_1, ..., x_D]$ and target output $Y = [y_0, y_1, ..., y_M]$ ($x_i$, $y_j$ are the individual random variables of the input/output variable groups):
+Given input $$X = [x_0, x_1, ..., x_D]$$ and target output $$Y = [y_0, y_1, ..., y_M]$$ ($$x_i$$, $$y_j$$ are the individual random variables of the input/output variable groups):
 
 Assuming the injected model is defined as a series of transformations from the input to the output:
 
@@ -62,24 +62,26 @@ $$......$$
 
 $$O_N = f_N(O_{N-1}); O_3 = F_N(X) = f_N(f_{N-1}(...f_1(X)...))$$
 
-where $f_i$ indicates the projection by each layer, $F_i$ indicates the accumulative projection by the first $i$ layers and $O_i$ is the intermediate output of $i$-th layer.
-
-Given the diagnosed level $i$, we train an _explicit density model_ (like VAEs (_explicit intractable density model_) / language models (_tractable density model_)) to learn the probabilistic inverse function $P^{-i}(X|F_i(X))$ of the first $i$ layer for the injected model, such that for the domain $\mathbf{D}$ where the original model is obtained:
-$$\argmax_\theta \mathbb{E}_{x\sim\mathbf{D}}[\log P_\theta^{-i}(X|F_i(X))]$$
-
-Specially, $P_\phi^{0}(X|F_0(X)) = P_\phi^{0}(X)$ is also trained to obtain the unconditional probability density/mass measure for the input domain.
-
-Ideally, if some input is well understand, the model should be able to generate a representation that compress and preserve its information in the maximum level. Thus, the learned probabilistic model should be significantly more likely to recover the input from the intermediate output $F_i(X)$. In other words, if such probabilistic reconstruction fails, then either the tranformation compressed too much information in the input, or the transformation produces a representation that shifted far way from the input domain.
-
-Thus, by combining $P_\theta^{-i}(X|F_i(X))$ and $P_\phi^{0}(X)$, we can obtain the information tranformed rate factor (ITR) $\eta$ for the input random variables $X=[x_0, x_1, ..., x_D]$. We can caculate $\eta^{-i}(X) = \log P_\theta^{-i}(X|F_i(X)) - \log P_\phi^{0}(X)$. The baseline $P_\phi^{0}(X)$ is serving as the baseline to distinguish the concept of being _incorrect_ or _rare_.
+where $$f_i$$ indicates the projection by each layer, $$F_i$$ indicates the accumulative projection by the first $$i$$ layers and $$O_i$$ is the intermediate output of $$i$$-th layer.
 
 
-The ITR factor $\eta$ can be used in three levels:
-1. Use $\eta^{-i}(X)$ as a metric to accept/reject in-domain/out-of-domain inputs.
+Given the diagnosed level $$i$$, we train an _explicit density model_ (like VAEs / language models) to learn the probabilistic inverse function $$P^{-i}(X\vert F_i(X))$$  of the first $$i$$ layer for the injected model, such that for the domain $$\mathbf{D}$$ where the original model is obtained:
 
-2. For cases where the inverse function is obtained from a factorizable tractable density model, $\eta$ then could also be factorized as $\eta^{-i}(X) = [\eta^{-i}(x_0), \eta^{-i}(x_1), ..., \eta^{-i}(x_D)]$. This will help us to locate part of our input that cased the most confusion.
+$$\text{argmax}_\theta \mathbb{E}_{X\sim \mathbf{D}}[\log P_\theta^{-i}(X\vert F_i(X))]$$
 
-3. For cases where the inverse function can only give likelihood estimation but the domain is on Riemann manifold _i.e._ gradients are available, backpropogating $\eta^{-i}(X)$ to $X$ could be helpful for auto-denoising the adversarial inputs and defend the adversarial attacks.
+Specially, $$P_\phi^{0}(X\vert F_0(X)) = P_\phi^{0}(X)$$ is also trained to obtain the unconditional probability density/mass measure for the input domain.
+
+Ideally, if some input is well understand, the model should be able to generate a representation that compress and preserve its information in the maximum level. Thus, the learned probabilistic model should be significantly more likely to recover the input from the intermediate output $$F_i(X)$$. In other words, if such probabilistic reconstruction fails, then either the tranformation compressed too much information in the input, or the transformation produces a representation that shifted far way from the input domain.
+
+Thus, by combining $$P_\theta^{-i}(X\vert F_i(X))$$ and $$P_\phi^{0}(X)$$, we can obtain the information tranformed rate factor (ITR) $$\eta$$ for the input random variables $$X=[x_0, x_1, ..., x_D]$$. We can caculate $$\eta^{-i}(X) = \log P_\theta^{-i}(X\vert F_i(X)) - \log P_\phi^{0}(X)$$. The baseline $$P_\phi^{0}(X)$$ is serving as the baseline to distinguish the concept of being _incorrect_ or _rare_.
+
+
+The ITR factor $$\eta$$ can be used in three levels:
+1. Use $$\eta^{-i}(X)$$ as a metric to accept/reject in-domain/out-of-domain inputs.
+
+2. For cases where the inverse function is obtained from a factorizable tractable density model, $$\eta$$ then could also be factorized as $$\eta^{-i}(X) = [\eta^{-i}(x_0), \eta^{-i}(x_1), ..., \eta^{-i}(x_D)]$$. This will help us to locate part of our input that cased the most confusion.
+
+3. For cases where the inverse function can only give likelihood estimation but the domain is on Riemann manifold _i.e._ gradients are available, backpropogating $$\eta^{-i}(X)$$ to $$X$$ could be helpful for auto-denoising the adversarial inputs and defend the adversarial attacks.
 
 ## Experimental Setup
 ### Irregular input rejection in image manipulators

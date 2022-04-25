@@ -7,7 +7,7 @@ date: 2022-04-24
 ---
 
 
-> Character design is a challenging process: artists need to design a generally new 
+> Character design is a challenging process: artists need to create a new set of characters tailored to the specific game/animation requirements while still following the general anatonomy and perspective rules. The quesiton  
 
 <!--more-->
 {: class="table-of-content"}
@@ -43,7 +43,7 @@ Unlike the traditional GAN where the generator takes an random latent input $z$,
 1. Collect and clean up pokemon data (add in data of eighth generation yet). Add in line art, part segmentation mask and pokemon metadata labels. 
 2. Train StyleGAN and StyleGAN2 on cleaned Pokemon data. Add the line art/segemntation/pokemon metadata prediction discriminator branches to it.
 3. Compare the latent space changes before and after adding the above branches. See if disentanglement along these dimensions happen. 
-4. Possible Extension: see if we can allow human input to control line art and drawing as separate steps. 
+4. Possible Extension: see if we can allow human input to control line art and coloring as separate steps. 
 
 
 ## Dataset

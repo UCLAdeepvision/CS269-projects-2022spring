@@ -70,8 +70,8 @@ Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf)) is a popul
 *Fig 4. Score CAM's structure. From Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf))*
 ### LCTR transformer
 
-### TS CAM transformer
-
+### TS-CAM transformer
+Vision transformer has become an important architecture in the field of computer vision. However, producing saliency maps from ViT architectures is not as straightforward as with CNN architectures, since the attention map among difference patches does not directly encode semantic information, which resides in the class token. TS-CAM is one of the first methods that addresses this problem and shows SOTA performance on weakly supervised object localization tasks. It consists of two modules: a semantic reallocation module that seeks to transfer class semantics from the class token to the patch tokens, which requires training of additional CNN layers, and an attention module that extracts global relationship between image patches from attention maps in each transformer block. We may apply this approach to accomodate ViT image encoders pretrained in CLIP. 
 
 
 

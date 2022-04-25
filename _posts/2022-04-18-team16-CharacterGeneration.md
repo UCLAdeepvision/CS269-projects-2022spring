@@ -38,7 +38,8 @@ Unlike the traditional GAN where the generator takes an random latent input $z$,
 
 Another type of input for StyleGAN generator is the noise image injected into each layer of the network (module B in StyleGAN). These noise are introduced to generate stochastic scale-specific details (i.e. hair and freckels) into the image generation.
 
-### Direction Discovery
+### Latent Space Analysis
+In the lecture module, we've seen the work SeFa from Shen and Zhou, which is the PCA of 
 
 
 

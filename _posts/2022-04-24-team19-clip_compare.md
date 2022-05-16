@@ -41,16 +41,33 @@ The experiment is run on the following model, there are 3 type of model
 Type 1: language supervised model
 - CLIP model( VIT-32 ) [1]
 
+![clip](team19/clip.png)
+
 Type 2: model trained on open scource dataset (ImageNet)
 - Vision Transformer: VIT-32 (base and large version), VIT-16 (base and large version) [2]
-- New CNN: convnext_small, convnext_base, convnext_large [3]
-- Traditional CNN: resnext50_32x4d, resnet18, efficientnet_b4,efficientnet_b6 [4]
+- New CNN: convnext_small, convnext_base [3]
+- Traditional CNN: efficientnet_b4,efficientnet_b6 [4]
 
 Type 3: Model with self-supervised pretraining
 - Beit [5]
 - ViTMAE [6]
 - DINO [7]
 - Data2vec [8]
+
+### summary of tested model
+
+
+|    | model               |   year | Key technology                                    | Fine tune on imagenet                     | Good for representation learning    | pretrain dataset                           | dataset reference                                                                                                                                                                                                                                                                                 |
+|---:|:--------------------|-------:|:--------------------------------------------------|:------------------------------------------|:------------------------------------|:-------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|  0 | CLIP                |   2021 | Contrastive learning, vision-language supervision |                                           | Y                                   | 400 million (image,text) pairs from openai |                                                                                                                                                                                                                                                                                                   |
+|  1 | Data2vec            |   2022 | teacher-student Mask                              | 86.6 (L) 84.2(B)                          |                                     | ImageNet 1k                                | Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li Fei-Fei. ImageNet: A large-scale hierarchical image database. In CVPR, 2009.                                                                                                                                                        |
+|  2 | DINO                |   2021 | teacher student                                   | 82.8 (B)                                  | Y                                   | ImageNet                                   | Olga Russakovsky, Jia Deng, Hao Su, Jonathan Krause, Sanjeev Satheesh, Sean Ma, Zhiheng Huang, Andrej Karpathy, Aditya Khosla, Michael Bernstein, Alexander C Berg, and Li Fei-Fei. Imagenet large scale visual recognition challenge. IJCV, 2015.                                                |
+|  3 | Beit                |   2021 | dVAE mask                                         | 83.4 (B) 86.3(L)                          |                                     | training set of ImageNet 1k (1.2 M)        | Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li Fei-Fei. ImageNet: A large-scale hierarchical image database. In CVPR, 2009.                                                                                                                                                        |
+|  4 | MAE                 |   2021 | Mask                                              | 83.6 (B) 85.9 (L)                         |                                     | ImageNet-1K                                | Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li Fei-Fei. ImageNet: A large-scale hierarchical image database. In CVPR, 2009.                                                                                                                                                        |
+|  5 | vit_b_16 & vit_b_32 |   2021 | VIT, pretrain                                     | 84.15 (16 B JFT300M) 80.73 (32 B JFT300M) |                                     | JFT300M                                    | Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, et al. An image is worth 16x16 words: Transformers for image recognition at scale. preprint arXiv:2010.11929, 2020. |
+|  6 | convnext            |   2022 | CNN modification                                  | 85.1 (B) 85.5 (L)                         |                                     | ImageNet-22K.                              |                                                                                                                                                                                                                                                                                                   |
+|  7 | EfficientNet        |   2020 | NAS                                               | 80.1 (B6) 84.0 (B6)                       |                                     |                                            |                                                                                                                                                                                                                                                                                                   |
+
 
 #### Dataset
 
@@ -60,11 +77,17 @@ Dataset similar to CLIP pretraining data
 - Flowers102: 102 category dataset, consisting of 102 flower categories. The flowers chosen to be flower commonly occuring in the United Kingdom. Each class consists of between 40 and 258 images.
 - FGVCAircraft: The dataset contains 10,200 images of aircraft, with 100 images for each of 102 different aircraft model variants, most of which are airplanes. The (main) aircraft in each image is annotated with a tight bounding box and a hierarchical airplane model label.
 
-Dataset different from CLIP pretraining data
-- Dataset from torchxrayvision: TorchXRayVision is an open source software library for working with chest X-ray datasets and deep learning models.
-- Dataset from torchgeo: TorchGeo is a PyTorch domain library, similar to torchvision, that provides datasets, transforms, samplers, and pre-trained models specific to geospatial data.
 
-More dataset will be added in comming weeks.....
+
+Dataset different from CLIP pretraining data
+- PatternNet(torch geo): 
+- UCMerced(torch geo): 
+- ISIC
+
+Dataset for datadrift:
+- rxrx1dataset (wilds)
+- fmowdataset (wilds)
+- iwildcamdataset (wilds)
 
 ### Experiment: 
 
@@ -77,7 +100,6 @@ Clustering
 ### Evaluation
 
 Classification task:
- - PR-AUC: Area under precision and recall curve.
  - Accuracy: Percentage of correction prediction
 
 Clustering task: 

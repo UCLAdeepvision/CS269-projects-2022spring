@@ -74,7 +74,11 @@ Type 3: Model with self-supervised pretraining
 There are two type of dataset we will test:
 
 Dataset similar to CLIP pretraining data
-- Flowers102: 102 category dataset, consisting of 102 flower categories. The flowers chosen to be flower commonly occuring in the United Kingdom. Each class consists of between 40 and 258 images.
+- Flowers102: 102 category dataset, consisting of 102 flower categories. The flowers chosen to be flower commonly occuring in the United Kingdom. Some examples are shown below. 
+
+
+![clip](team19/clip.png)
+
 - FGVCAircraft: The dataset contains 10,200 images of aircraft, with 100 images for each of 102 different aircraft model variants, most of which are airplanes. The (main) aircraft in each image is annotated with a tight bounding box and a hierarchical airplane model label.
 
 

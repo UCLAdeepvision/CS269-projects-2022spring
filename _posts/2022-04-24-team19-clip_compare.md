@@ -69,7 +69,7 @@ Type 3: Model with self-supervised pretraining
 |  7 | EfficientNet        |   2020 | NAS                                               | 80.1 (B6) 84.0 (B6)                       |                                     |                                            |                                                                                                                                                                                                                                                                                                   |
 
 
-#### Dataset
+#### Dataset for general classification
 
 There are two type of dataset we will test:
 
@@ -77,21 +77,40 @@ Dataset similar to CLIP pretraining data
 - Flowers102: 102 category dataset, consisting of 102 flower categories. The flowers chosen to be flower commonly occuring in the United Kingdom. Some examples are shown below. 
 
 
-![clip](team19/clip.png)
+<img src="team19/Dataset_Flowers102.png" width="400"/>
 
-- FGVCAircraft: The dataset contains 10,200 images of aircraft, with 100 images for each of 102 different aircraft model variants, most of which are airplanes. The (main) aircraft in each image is annotated with a tight bounding box and a hierarchical airplane model label.
+- FGVCAircraft: The dataset contains 10,200 images of aircraft, with 100 images for each of 102 different aircraft model variants, most of which are airplanes. 
 
+<img src="team19/Dataset_FGVCAircraft.png" width="400"/>
 
 
 Dataset different from CLIP pretraining data
-- PatternNet(torch geo): 
-- UCMerced(torch geo): 
-- ISIC
+- PatternNet(torch geo): Dataset from torchgeo package [9] The PatternNet dataset is a dataset for remote sensing scene classification and image retrieval. It have 38 scene classes, 800 images per class. 
 
-Dataset for datadrift:
-- rxrx1dataset (wilds)
-- fmowdataset (wilds)
-- iwildcamdataset (wilds)
+
+<img src="team19/PatternNet_Dataset.png" width="400"/>
+
+- UCMerced(torch geo): Dataset from torchgeo package [9]. The UC Merced dataset is a land use classification dataset of 2.1k 256x256 1ft resolution RGB images of urban locations around the U.S. extracted from the USGS National Map Urban Area Imagery collection with 21 land use classes (100 images per class).
+
+<img src="team19/UCMerced_Dataset.png" width="400"/>
+
+- ISIC [10]: Data from SIIM-ISIC Melanoma Classification 2020. This competition aim to predicting a binary target for each image, 0 denotes benign, and 1 indicates malignant.
+
+<img src="team19/ISIC.png" width="400"/>
+
+
+#### Dataset for data drift
+
+<!-- - rxrx1dataset (wilds) -->
+- iwildcamdataset (wilds): Dataset from wilds [11] for animal classification. The input x is a photo from a camera trap, the label y is one of 182 animal species, and the domain d specifies the identity of the camera trap. The training, validation and in-distribution data contain the images from different camera, but out-of-distribution test data are not capture by the camera used in in-distribution camera.
+
+<img src="team19/iwildcam_dataset.jpg" width="400"/>
+
+
+- fmowdataset (wilds): Dataset from wilds [11] for satellite image classification. As satellite data constantly changes due to human activity and environmental processes, these models must be robust to distribution shifts over time. The input x is an RGB satellite image, the label y is one of 62 building or land use. The in-distribution data comprises data from before 2013, while the out-of-distribution test set comprises data from 2016 and after.
+
+<img src="team19/fmow_dataset.jpg" width="400"/>
+
 
 ### Experiment: 
 
@@ -144,6 +163,13 @@ Clustering task:
 [7] Mathilde, Hugo et al "Emerging Properties in Self-Supervised Vision Transformers"
 
 [8] Alexei, Wei-Ning et al  "data2vec: A General Framework for Self-supervised Learning in Speech, Vision and Language"
+
+[9] Adam J., Caleb et al "TorchGeo: deep learning with geospatial data" https://arxiv.org/abs/2111.08872
+
+[10] SIIM-ISIC Melanoma Classification https://www.kaggle.com/competitions/siim-isic-melanoma-classification/overview/siim-ai-conference
+
+[11] WILDS: A Benchmark of in-the-Wild Distribution Shifts. Pang Wei Koh*, Shiori Sagawa*, Henrik Marklund, Sang Michael Xie, Marvin Zhang, Akshay Balsubramani, Weihua Hu, Michihiro Yasunaga, Richard Lanas Phillips, Irena Gao, Tony Lee, Etienne David, Ian Stavness, Wei Guo, Berton A. Earnshaw, Imran S. Haque, Sara Beery, Jure Leskovec, Anshul Kundaje, Emma Pierson, Sergey Levine, Chelsea Finn, and Percy Liang. ICML 2021.
+
 
 ## Appendix
 

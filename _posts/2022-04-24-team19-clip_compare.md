@@ -14,14 +14,14 @@ date: 2022-04-22
 * TOC
 {:toc}
 
-## Motivition 
+# Motivition 
 
 Imagine you are a machine learning engineer. One day, you want to add some new features for a classification task. For example you may need to do some fine grained classification on chopsticks like identify whether it is a Sushi chopstick, disposable chopstick or hot pot chopstick, but you do have any data. Then, one simple way to solve this problem is to do some data collection on your own, because your boss think find some new people to label it is too complex and time consuming. So, you followed the advice of your boss and then collect some chopstick data and train it. But things can happen over and over again, maybe today is chopsticks, tomorrow is soups and then your inference pipeline become more and more difficult to maintain. 
 
 But could we just maintain some easily accessible data like image with language supervision and then train a model like clip instead of maintain lots of specialized model and data? For example, CLIP representation is very powerful and able to outperform many existing model with only CLIP image feature and linear classifier. Could we just maintain CLIP model and its training data and do simple ML classification instead of train deep model each time? 
 
 
-## What we hope to demonstrate
+# What we hope to demonstrate
 Recently, there is a trend in industry to train large-scale self-supervised models. Such models utilize huge amount of unlabeled data to learn the intrinsic features, and in this way get more general and robust prediction result. CLIP is such a model consisting of an image encoder and a text encoder. In the forward stage, it calculates the loss based on the difference between the image/text feature vector pair with an image/text-description pair as input, and optimizes the two encoders' parameters simultaneously. Typical usage of the CLIP model includes using the image encoder as pretrained model to finetune, and formulizing the prediction task as text queries, together with the image feeding into CLIP to get a score vector. 
 
 We believe CLIP have more usage than what's shown in the original paper, as it has great feature extraction ability.
@@ -32,9 +32,9 @@ Second, we'll use CLIP image encoder to extract feature vectors for a specific t
 
 Third, we'll also further explore the generality of CLIP. Whether its good features is sensitive to the specific data domain (whether similar data exists in original unlabeled training data or not)
 
-## Method 
+# Related work 
 
-### Tested model: 
+## Tested model: 
 
 The experiment is run on the following model, there are 3 type of model
 
@@ -54,7 +54,7 @@ Type 3: Model with self-supervised pretraining
 - DINO [7]
 - Data2vec [8]
 
-### summary of tested model
+## Summary of tested model
 
 
 |    | model               |   year | Key technology                                    | Fine tune on imagenet                     | Good for representation learning    | pretrain dataset                           | dataset reference                                                                                                                                                                                                                                                                                 |
@@ -69,7 +69,7 @@ Type 3: Model with self-supervised pretraining
 |  7 | EfficientNet        |   2020 | NAS                                               | 80.1 (B6) 84.0 (B6)                       |                                     |                                            |                                                                                                                                                                                                                                                                                                   |
 
 
-#### Dataset for general classification
+## Dataset for general classification
 
 There are two type of dataset we will test:
 
@@ -99,7 +99,7 @@ Dataset different from CLIP pretraining data
 <img src="team19/ISIC.png" width="400"/>
 
 
-#### Dataset for data drift
+## Dataset for data drift
 
 <!-- - rxrx1dataset (wilds) -->
 - iwildcamdataset (wilds): Dataset from wilds [11] for animal classification. The input x is a photo from a camera trap, the label y is one of 182 animal species, and the domain d specifies the identity of the camera trap. The training, validation and in-distribution data contain the images from different camera, but out-of-distribution test data are not capture by the camera used in in-distribution camera.
@@ -112,11 +112,20 @@ Dataset different from CLIP pretraining data
 <img src="team19/fmow_dataset.jpg" width="400"/>
 
 
-### Experiment: 
+# Experiment: 
 
-Classification:
- - For each dataset, sample different amount data for training and value it on test set
- - For each dataset, sample different amount data and add noise to label for training and value it on test set
+### Classification experiment on general dataset
+
+
+Classification with feature and simple ML algorithm:
+ - For each dataset, extract feature from last layer of the network and perform KNN and logistic regression. 
+
+Fine tuning on each dataset:
+ - For each dataset, fine tune each network on each dataset.
+
+
+
+
 Clustering
  - Use the input before classification layer as feature, do dimension reduction with Umap and do clustering with Kmeans++. 
 

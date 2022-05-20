@@ -376,6 +376,40 @@ Apart from the result of convnext and fine tuning result with more than 100 samp
 
 ### Result for classification experiment on Data Drift dataset
 
+The result of classification experiment with KNN and logistic regression on Data Drift dataset is shown below. The different between in-distribution result and out-of-distribution result is shown in last 4 column.
+
+### IWildCamDataset
+| model         |   knn_10_id |   knn_10_ood |   lr_10_id |   lr_10_ood |   knn_100_id |   knn_100_ood |   lr_100_id |   lr_100_ood |   knn_acc_diff_10 |   knn_acc_diff_100 |   lr_acc_diff_10 |   lr_acc_diff_100 |
+|:--------------|------------:|-------------:|-----------:|------------:|-------------:|--------------:|------------:|-------------:|------------------:|-------------------:|-----------------:|------------------:|
+| DINO          |   0.132205  |    0.186979  |  0.143488  |   0.177724  |    0.244665  |     0.186651  |   0.214619  |    0.279171  |       -0.0547735  |         0.0580138  |      -0.0342364  |       -0.0645523  |
+| convnext_base |   0.14128   |    0.22458   |  0.112583  |   0.188685  |    0.221609  |     0.23776   |   0.200883  |    0.22916   |       -0.0832996  |        -0.0161513  |      -0.0761018  |       -0.0282773  |
+| convnext_tiny |   0.140545  |    0.219369  |  0.116017  |   0.158631  |    0.243439  |     0.225304  |   0.195242  |    0.203594  |       -0.078824   |         0.0181344  |      -0.0426148  |       -0.00835261 |
+| vit_b_16      |   0.114668  |    0.0812087 |  0.110375  |   0.0957444 |    0.191072  |     0.151901  |   0.182487  |    0.16639   |        0.033459   |         0.0391708  |       0.0146308  |        0.016097   |
+| vit_b_32      |   0.0954133 |    0.0899722 |  0.0804513 |   0.0831483 |    0.142261  |     0.133626  |   0.151705  |    0.142273  |        0.0054411  |         0.00863524 |      -0.00269701 |        0.00943178 |
+| CLIP          |   0.0927152 |    0.105326  |  0.0864606 |   0.0596153 |    0.190213  |     0.175224  |   0.166299  |    0.137482  |       -0.0126107  |         0.0149896  |       0.0268453  |        0.0288166  |
+| Beit          |   0.0334805 |    0.0180645 |  0.0309051 |   0.020308  |    0.0630365 |     0.0236966 |   0.0558008 |    0.0342362 |        0.015416   |         0.03934    |       0.0105971  |        0.0215647  |
+| ViTMAE        |   0.0348295 |    0.0256129 |  0.0294334 |   0.0241406 |    0.0469708 |     0.0193265 |   0.0479519 |    0.0318992 |        0.00921667 |         0.0276443  |       0.00529282 |        0.0160527  |
+| data2vec      |   0.0383861 |    0.0132037 |  0.0279617 |   0.0185319 |    0.0470935 |     0.0133907 |   0.0448859 |    0.0231591 |        0.0251824  |         0.0337028  |       0.0094298  |        0.0217269  |
+
+### FMoWDataset
+| model         |   knn_10_id |   knn_10_ood |   lr_10_id |   lr_10_ood |   knn_100_id |   knn_100_ood |   lr_100_id |   lr_100_ood |   knn_acc_diff_10 |   knn_acc_diff_100 |   lr_acc_diff_10 |   lr_acc_diff_100 |
+|:--------------|------------:|-------------:|-----------:|------------:|-------------:|--------------:|------------:|-------------:|------------------:|-------------------:|-----------------:|------------------:|
+| CLIP          |   0.194403  |    0.188981  |  0.12404   |   0.132034  |    0.314646  |     0.305862  |   0.254083  |    0.242401  |       0.00542139  |         0.00878429 |     -0.00799375  |       0.0116822   |
+| DINO          |   0.172773  |    0.16926   |  0.105412  |   0.0972951 |    0.310674  |     0.29763   |   0.217357  |    0.195223  |       0.00351302  |         0.0130438  |      0.00811675  |       0.0221333   |
+| convnext_tiny |   0.152732  |    0.139361  |  0.0839587 |   0.0714221 |    0.261676  |     0.24905   |   0.16624   |    0.141442  |       0.0133711   |         0.0126255  |      0.0125366   |       0.0247979   |
+| vit_b_16      |   0.129337  |    0.124525  |  0.0798093 |   0.0657228 |    0.22645   |     0.219649  |   0.157853  |    0.133617  |       0.00481192  |         0.00680108 |      0.0140865   |       0.0242361   |
+| vit_b_32      |   0.110885  |    0.111905  |  0.0703628 |   0.0673512 |    0.206498  |     0.200878  |   0.14823   |    0.124661  |      -0.0010197   |         0.00562024 |      0.00301166  |       0.0235691   |
+| convnext_base |   0.133575  |    0.130089  |  0.0626821 |   0.0531482 |    0.249846  |     0.239913  |   0.130926  |    0.111227  |       0.00348599  |         0.00993235 |      0.00953391  |       0.0196994   |
+| Beit          |   0.0664783 |    0.058757  |  0.0300168 |   0.0294916 |    0.12766   |     0.111543  |   0.0583561 |    0.0508413 |       0.00772132  |         0.0161162  |      0.000525187 |       0.00751482  |
+| ViTMAE        |   0.0379624 |    0.0377691 |  0.0227774 |   0.0241994 |    0.0684206 |     0.0621494 |   0.0320473 |    0.0328388 |       0.000193257 |         0.00627114 |     -0.00142195  |      -0.000791471 |
+| data2vec      |   0.0404344 |    0.0425638 |  0.0188929 |   0.0215759 |    0.0548248 |     0.0519721 |   0.0342544 |    0.0306224 |      -0.00212942  |         0.00285262 |     -0.00268299  |       0.00363204  |
+
+The overall performance is not so high for compared those general datasets, which means the dataset here is more difficult.
+
+From the two table, even though DINO still perform good in both dataset, CLIP performance are not as good as the one in general dataset experiment for IWildCamDataset and it is even worse than convnext and VIT model that are trained on ImageNet. Because the key different between IWildCamDataset and other dataset is the class label and samples are similar to ImageNet, those network are specifically trained on ImageNet with different kind of augmentation technique may get some advantage in representation. One evidence for this claim is that the performance different between in-distributiuon and out-of-distribution for DINO and convnext is not so signification some even have better out-of-distribution score. This is not the case for FMoWDataset. Thus, if the model is trained with enough augmentation technique, it would generialize better.
+
+For FMoWDataset dataset, CLIP achieve the best performance in terms of both accuracy and sensitivity to distribution drift and the DINO representation is the second.This means CLIP and DINO representation maybe not only mostly better than in terms of performance but also sensitivity to distribution drift, but because the overall model performance is not so high, using KNN and logistic regression for this task may not be a good choice. 
+Finally, those masked self-supervised model still perform not good that may means self-supervised model may not able to directly output good representation.
 
 
 
@@ -407,9 +441,9 @@ For ISIC dataset, mask based self-supervised model like Data2vec which perform n
 <!-- IWildCamDatase -->
 
 
-# Discussion and Conclusion
+# Future work and Conclusion
 
-# Future work
+# 
 
 
 <!-- ### Evaluation

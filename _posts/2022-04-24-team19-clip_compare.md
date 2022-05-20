@@ -250,12 +250,9 @@ The result for training representation on KNN and logistic regression is shown i
 | 12 | efficientnet_b2 0.022 | efficientnet_b2 0.081 | efficientnet_b6 0.525 | efficientnet_b2 0.028 | efficientnet_b2 0.066 | efficientnet_b2 0.020  |
 
 
-
-
-
 From the results above, in most cases in terms of ML algorithms performance, logistic regression with 100 samples > logistic regression with 10 samples > knn with 100 samples > knn with 10 samples, but if each samples in dataset is not too similar like DTD, UCMerced and PatternNet, sometimes logistic regression with 10 samples and knn with 100 samples can have same or better performance for best model. In industry, knn-like information retrieval is much cheaper and fast than logistic regression, so if our samples are not too similar and we have enough samples, KNN maybe a better option. 
 
-As for model representation, DINO is superisingly the best model in most cases and then CLIP or VIT trained on imagenet. And in most cases, efficient net and mask based self supervised model perform poorly. Thus, from this point of view, DINO is more promising, because it use less data for pretraining but the result is still good.  
+As for model representation, DINO is superisingly the best model in most cases and then CLIP or VIT trained on imagenet.  Thus, from this point of view, DINO is more promising, because it use less data for pretraining but the result is still good. But in most cases, the model with masked self-supervised pretraining is no good and it only have relatively better result in ISIC dataset. The samples in ISIC dataset are more similar compared to other datasets, so these models may have advantage for this kind of dataset, but in this project due to limited time we leave this question for future exploration. 
 
 
 The result for fine tuning and comparation with simple ML + feature training is shown below table, the models are ordered by the best performance among correspond dataset.
@@ -443,7 +440,10 @@ For ISIC dataset, mask based self-supervised model like Data2vec which perform n
 
 # Future work and Conclusion
 
-# 
+From  result of using KNN and logistic regression + model representation, even though CLIP have very good result in many tasks, DINO is also a kind of self-supervised pretraining method need to be noticed. In most cases, masked self-supervised pretraining method perform poorly, this could because this kind of method cannot directly generate high level representation or our directly pooling over last layer is not a good way to get its representation. Also, if we have enough data and consider inference speed and cost, KNN might be a good choice. In terms of data drift, if our model is trained on a dataset that is similar to target dataset with a lot of augmentation, its representation may not so sensitive to distribution drift. But if it is a new dataset, representation from CLIP and DINO may still give good performance. However, one problem for the data drift experiement is the dataset we tested is only two, so the interpretation might not enough. 
+
+Model representation performance in clustering experiment is quite similar to KNN and logistic regression experiment task. CLIP and DINO perform good in most cases, and the model pretrained on imageNet (VIT, convnext) perform good on IWildCamDataset dataset. One particular thing for clustering is that those masked self-supervised perform good on ISIC dataset and it have relative better performance in KNN and logistic regression. This might shows the represenation of masked self-supervised pretraining method may have advantage in certain tasks which could be a question for future experiment.
+
 
 
 <!-- ### Evaluation

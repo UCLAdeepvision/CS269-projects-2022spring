@@ -171,7 +171,7 @@ The GPU used for fine tuning is NVIDIA GeForce RTX 3070 laptop GPU. The batch si
 # Results
 
 
-## Result for classification experiment on general dataset
+## *Result for classification experiment on general dataset*
 
 The result for training representation on KNN and logistic regression is shown in the following tables. The row is ordered by accuracy of logistic regression at 100. 
 
@@ -371,7 +371,7 @@ Apart from the result of convnext and fine tuning result with more than 100 samp
 
 
 
-### Result for classification experiment on Data Drift dataset
+## *Result for classification experiment on Data Drift dataset*
 
 The result of classification experiment with KNN and logistic regression on Data Drift dataset is shown below. The different between in-distribution result and out-of-distribution result is shown in last 4 column.
 
@@ -408,9 +408,98 @@ From the two table, even though DINO still perform good in both dataset, CLIP pe
 For FMoWDataset dataset, CLIP achieve the best performance in terms of both accuracy and sensitivity to distribution drift and the DINO representation is the second.This means CLIP and DINO representation maybe not only mostly better than in terms of performance but also sensitivity to distribution drift, but because the overall model performance is not so high, using KNN and logistic regression for this task may not be a good choice. 
 Finally, those masked self-supervised model still perform not good that may means self-supervised model may not able to directly output good representation.
 
+For fine tuning the result is shown as below, because in this case, the result table is too large, it is splited into 3. 
 
 
-### Result for clustering experiment 
+
+
+### FMoWDataset
+
+| model         |     10 id |    10 ood |    100 id |   100 ood |   1000 id |   1000 ood |   knn_10_id |   knn_10_ood |   lr_10_id |   lr_10_ood |   knn_100_id |   knn_100_ood |   lr_100_id |   lr_100_ood |
+|:--------------|----------:|----------:|----------:|----------:|----------:|-----------:|------------:|-------------:|-----------:|------------:|-------------:|--------------:|------------:|-------------:|
+| convnext_base | 0.189459  | 0.166998  | 0.397016  | 0.360955  |  0.578706 |   0.519676 |   0.133575  |    0.130089  |  0.0626821 |   0.0531482 |    0.249846  |     0.239913  |   0.130926  |    0.111227  |
+| convnext_tiny | 0.158471  | 0.147503  | 0.373179  | 0.339515  |  0.556899 |   0.507463 |   0.152732  |    0.139361  |  0.0839587 |   0.0714221 |    0.261676  |     0.24905   |   0.16624   |    0.141442  |
+| vit_b_16      | 0.116801  | 0.103809  | 0.329478  | 0.301656  |  0.52962  |   0.464809 |   0.129337  |    0.124525  |  0.0798093 |   0.0657228 |    0.22645   |     0.219649  |   0.157853  |    0.133617  |
+| DINO          | 0.09367   | 0.0889723 | 0.337424  | 0.307355  |  0.514876 |   0.461779 |   0.172773  |    0.16926   |  0.105412  |   0.0972951 |    0.310674  |     0.29763   |   0.217357  |    0.195223  |
+| CLIP          | 0.0983491 | 0.089877  | 0.388099  | 0.365524  |  0.482211 |   0.438348 |   0.194403  |    0.188981  |  0.12404   |   0.132034  |    0.314646  |     0.305862  |   0.254083  |    0.242401  |
+| Beit          | 0.0605633 | 0.0559978 | 0.186281  | 0.1499    |  0.48892  |   0.424236 |   0.0664783 |    0.058757  |  0.0300168 |   0.0294916 |    0.12766   |     0.111543  |   0.0583561 |    0.0508413 |
+| vit_b_32      | 0.133751  | 0.11471   | 0.286395  | 0.257328  |  0.449016 |   0.402162 |   0.110885  |    0.111905  |  0.0703628 |   0.0673512 |    0.206498  |     0.200878  |   0.14823   |    0.124661  |
+| ViTMAE        | 0.104529  | 0.0837253 | 0.249051  | 0.204948  |  0.449722 |   0.377013 |   0.0379624 |    0.0377691 |  0.0227774 |   0.0241994 |    0.0684206 |     0.0621494 |   0.0320473 |    0.0328388 |
+| data2vec      | 0.0410524 | 0.0382667 | 0.0863424 | 0.0692509 |  0.147435 |   0.119142 |   0.0404344 |    0.0425638 |  0.0188929 |   0.0215759 |    0.0548248 |     0.0519721 |   0.0342544 |    0.0306224 |
+
+| model         |   Best OOD performance | performance order                                                   |
+|:--------------|-----------------------:|:--------------------------------------------------------------------|
+| convnext_base |               0.519676 | 1000_ood>100_ood>knn_100_ood>10_ood>knn_10_ood>lr_100_ood>lr_10_ood |
+| convnext_tiny |               0.507463 | 1000_ood>100_ood>knn_100_ood>10_ood>lr_100_ood>knn_10_ood>lr_10_ood |
+| vit_b_16      |               0.464809 | 1000_ood>100_ood>knn_100_ood>lr_100_ood>knn_10_ood>10_ood>lr_10_ood |
+| DINO          |               0.461779 | 1000_ood>100_ood>knn_100_ood>lr_100_ood>knn_10_ood>lr_10_ood>10_ood |
+| CLIP          |               0.438348 | 1000_ood>100_ood>knn_100_ood>lr_100_ood>knn_10_ood>lr_10_ood>10_ood |
+| Beit          |               0.424236 | 1000_ood>100_ood>knn_100_ood>knn_10_ood>10_ood>lr_100_ood>lr_10_ood |
+| vit_b_32      |               0.402162 | 1000_ood>100_ood>knn_100_ood>lr_100_ood>10_ood>knn_10_ood>lr_10_ood |
+| ViTMAE        |               0.377013 | 1000_ood>100_ood>10_ood>knn_100_ood>knn_10_ood>lr_100_ood>lr_10_ood |
+| data2vec      |               0.119142 | 1000_ood>100_ood>knn_100_ood>knn_10_ood>10_ood>lr_100_ood>lr_10_ood |
+
+| model         |    10 diff |   100 diff |   1000 diff |   knn_acc_diff_10 |   knn_acc_diff_100 |   lr_acc_diff_10 |   lr_acc_diff_100 |
+|:--------------|-----------:|-----------:|------------:|------------------:|-------------------:|-----------------:|------------------:|
+| convnext_base | 0.0224604  |  0.0360607 |   0.0590296 |       0.00348599  |         0.00993235 |      0.00953391  |       0.0196994   |
+| convnext_tiny | 0.0109677  |  0.033664  |   0.0494361 |       0.0133711   |         0.0126255  |      0.0125366   |       0.0247979   |
+| vit_b_16      | 0.012992   |  0.0278227 |   0.0648104 |       0.00481192  |         0.00680108 |      0.0140865   |       0.0242361   |
+| DINO          | 0.00469768 |  0.0300691 |   0.0530974 |       0.00351302  |         0.0130438  |      0.00811675  |       0.0221333   |
+| CLIP          | 0.00847211 |  0.0225754 |   0.0438625 |       0.00542139  |         0.00878429 |     -0.00799375  |       0.0116822   |
+| Beit          | 0.00456543 |  0.0363801 |   0.0646847 |       0.00772132  |         0.0161162  |      0.000525187 |       0.00751482  |
+| vit_b_32      | 0.0190416  |  0.0290677 |   0.0468535 |      -0.0010197   |         0.00562024 |      0.00301166  |       0.0235691   |
+| ViTMAE        | 0.0208037  |  0.0441025 |   0.0727091 |       0.000193257 |         0.00627114 |     -0.00142195  |      -0.000791471 |
+| data2vec      | 0.00278566 |  0.0170914 |   0.0282929 |      -0.00212942  |         0.00285262 |     -0.00268299  |       0.00363204  |
+
+
+### IWildCamDataset
+
+| model         |     10 id |    10 ood |   100 id |   100 ood |   1000 id |   1000 ood |   knn_10_id |   knn_10_ood |   lr_10_id |   lr_10_ood |   knn_100_id |   knn_100_ood |   lr_100_id |   lr_100_ood |
+|:--------------|----------:|----------:|---------:|----------:|----------:|-----------:|------------:|-------------:|-----------:|------------:|-------------:|--------------:|------------:|-------------:|
+| convnext_base | 0.221977  | 0.242831  | 0.57015  |  0.611157 |  0.660412 |   0.693861 |   0.14128   |    0.22458   |  0.112583  |   0.188685  |    0.221609  |     0.23776   |   0.200883  |    0.22916   |
+| convnext_tiny | 0.262448  | 0.290435  | 0.52833  |  0.537122 |  0.653912 |   0.666425 |   0.140545  |    0.219369  |  0.116017  |   0.158631  |    0.243439  |     0.225304  |   0.195242  |    0.203594  |
+| vit_b_16      | 0.160657  | 0.117244  | 0.514349 |  0.530462 |  0.654403 |   0.622514 |   0.114668  |    0.0812087 |  0.110375  |   0.0957444 |    0.191072  |     0.151901  |   0.182487  |    0.16639   |
+| DINO          | 0.165072  | 0.170877  | 0.418813 |  0.366713 |  0.626073 |   0.549812 |   0.132205  |    0.186979  |  0.143488  |   0.177724  |    0.244665  |     0.186651  |   0.214619  |    0.279171  |
+| vit_b_32      | 0.161761  | 0.0841065 | 0.424822 |  0.443084 |  0.586829 |   0.528499 |   0.0954133 |    0.0899722 |  0.0804513 |   0.0831483 |    0.142261  |     0.133626  |   0.151705  |    0.142273  |
+| CLIP          | 0.174148  | 0.12068   | 0.425803 |  0.484658 |  0.572602 |   0.518824 |   0.0927152 |    0.105326  |  0.0864606 |   0.0596153 |    0.190213  |     0.175224  |   0.166299  |    0.137482  |
+| Beit          | 0.108168  | 0.0603865 | 0.281212 |  0.270384 |  0.536914 |   0.456498 |   0.0334805 |    0.0180645 |  0.0309051 |   0.020308  |    0.0630365 |     0.0236966 |   0.0558008 |    0.0342362 |
+| ViTMAE        | 0.150356  | 0.138487  | 0.33456  |  0.291229 |  0.498038 |   0.409736 |   0.0348295 |    0.0256129 |  0.0294334 |   0.0241406 |    0.0469708 |     0.0193265 |   0.0479519 |    0.0318992 |
+| data2vec      | 0.0430464 | 0.0372041 | 0.157346 |  0.112711 |  0.366569 |   0.223622 |   0.0383861 |    0.0132037 |  0.0279617 |   0.0185319 |    0.0470935 |     0.0133907 |   0.0448859 |    0.0231591 |
+
+| model         |   Best OOD performance | performance order                                                   |
+|:--------------|-----------------------:|:--------------------------------------------------------------------|
+| convnext_base |               0.693861 | 1000_ood>100_ood>10_ood>knn_100_ood>lr_100_ood>knn_10_ood>lr_10_ood |
+| convnext_tiny |               0.666425 | 1000_ood>100_ood>10_ood>knn_100_ood>knn_10_ood>lr_100_ood>lr_10_ood |
+| vit_b_16      |               0.622514 | 1000_ood>100_ood>lr_100_ood>knn_100_ood>10_ood>lr_10_ood>knn_10_ood |
+| DINO          |               0.549812 | 1000_ood>100_ood>lr_100_ood>knn_10_ood>knn_100_ood>lr_10_ood>10_ood |
+| vit_b_32      |               0.528499 | 1000_ood>100_ood>lr_100_ood>knn_100_ood>knn_10_ood>10_ood>lr_10_ood |
+| CLIP          |               0.518824 | 1000_ood>100_ood>knn_100_ood>lr_100_ood>10_ood>knn_10_ood>lr_10_ood |
+| Beit          |               0.456498 | 1000_ood>100_ood>10_ood>lr_100_ood>knn_100_ood>lr_10_ood>knn_10_ood |
+| ViTMAE        |               0.409736 | 1000_ood>100_ood>10_ood>lr_100_ood>knn_10_ood>lr_10_ood>knn_100_ood |
+| data2vec      |               0.223622 | 1000_ood>100_ood>10_ood>lr_100_ood>lr_10_ood>knn_100_ood>knn_10_ood |
+
+| model         |     10 diff |    100 diff |   1000 diff |   knn_acc_diff_10 |   knn_acc_diff_100 |   lr_acc_diff_10 |   lr_acc_diff_100 |
+|:--------------|------------:|------------:|------------:|------------------:|-------------------:|-----------------:|------------------:|
+| convnext_base | -0.0208545  | -0.0410069  |  -0.0334488 |       -0.0832996  |        -0.0161513  |      -0.0761018  |       -0.0282773  |
+| convnext_tiny | -0.027987   | -0.00879264 |  -0.012513  |       -0.078824   |         0.0181344  |      -0.0426148  |       -0.00835261 |
+| vit_b_16      |  0.0434131  | -0.0161132  |   0.0318887 |        0.033459   |         0.0391708  |       0.0146308  |        0.016097   |
+| DINO          | -0.0058047  |  0.0521002  |   0.0762612 |       -0.0547735  |         0.0580138  |      -0.0342364  |       -0.0645523  |
+| vit_b_32      |  0.0776546  | -0.0182616  |   0.0583295 |        0.0054411  |         0.00863524 |      -0.00269701 |        0.00943178 |
+| CLIP          |  0.0534681  | -0.0588547  |   0.0537784 |       -0.0126107  |         0.0149896  |       0.0268453  |        0.0288166  |
+| Beit          |  0.0477812  |  0.0108277  |   0.0804166 |        0.015416   |         0.03934    |       0.0105971  |        0.0215647  |
+| ViTMAE        |  0.0118686  |  0.0433303  |   0.0883021 |        0.00921667 |         0.0276443  |       0.00529282 |        0.0160527  |
+| data2vec      |  0.00584227 |  0.0446355  |   0.142947  |        0.0251824  |         0.0337028  |       0.0094298  |        0.0217269  |
+
+
+From the result, similar to fine tuning in previous experiments, the result might not too sensitive to pretraining method, even if the test data is out of training distribution. 
+
+From peformance table of each dataset,fine tuning with 100 with 100 samples is always better using simple ML algorithm with 100 samples, but if we use CLIP or DINO features with very little examples for each classes (e.g. 10 samples),  fine tuning may not be a good choice. 
+
+From the table that compare the different between in-distribution and out-of-distribution, there is not a significant difference between in-distribution and out-of-distribution in FMoWDataset. Even though the performance drop for CLIP is slightly lower compared to convnext, its performance is not so good. For IWildCamDataset, those pretrain on imageNet with different augmentation method, clearly have less performance drop and some of even have better out-of-distribution drift than in-distribution drift. 
+
+In our experiments, we haven't apply any augmentation method during training. However, from the results of distribution drift, there is a clear sign that data augmentation play a big role to handle distribution drift. In future experiment, the effect of data augmentation during training might be a interesting topic to explore. 
+
+## *Result for clustering experiment*
 
 The result of clustering experiment is shown below. For each column, each model is arranged in the order of model performance and the number in right of model name is adjusted rand score.
 
@@ -441,6 +530,8 @@ For ISIC dataset, mask based self-supervised model like Data2vec which perform n
 # Future work and Conclusion
 
 From  result of using KNN and logistic regression + model representation, even though CLIP have very good result in many tasks, DINO is also a kind of self-supervised pretraining method need to be noticed. In most cases, masked self-supervised pretraining method perform poorly, this could because this kind of method cannot directly generate high level representation or our directly pooling over last layer is not a good way to get its representation. Also, if we have enough data and consider inference speed and cost, KNN might be a good choice. In terms of data drift, if our model is trained on a dataset that is similar to target dataset with a lot of augmentation, its representation may not so sensitive to distribution drift. But if it is a new dataset, representation from CLIP and DINO may still give good performance. However, one problem for the data drift experiement is the dataset we tested is only two, so the interpretation might not enough. 
+
+For fine tuning experiment, we show that in tested dataset with limited trainint samples, pretraining method may not have huge impact on final performance for those samples that are not too similar to each other. For some dataset, if our data is less than 100 samples, simple ml algorithms with DINO or CLIP feature may achieve better performance than fine tuning. For data drift experiment, those model pretrained with lots of augmentation method have better performance and if the dataset label is similar to downstream tasks, the model even insensitive to data drift more. However, if the dataset is not similar to downstream tasks, there is not a clear sign that show which model is better. Additionally, in our fine tuning, we haven't add any data augmentation, the effect of this might be a interesting future work. 
 
 Model representation performance in clustering experiment is quite similar to KNN and logistic regression experiment task. CLIP and DINO perform good in most cases, and the model pretrained on imageNet (VIT, convnext) perform good on IWildCamDataset dataset. One particular thing for clustering is that those masked self-supervised perform good on ISIC dataset and it have relative better performance in KNN and logistic regression. This might shows the represenation of masked self-supervised pretraining method may have advantage in certain tasks which could be a question for future experiment.
 

@@ -21,7 +21,7 @@ Imagine you are a machine learning engineer. One day, you want to add some new f
 But could we just maintain some easily accessible data like image with language supervision and then train a model like clip instead of maintain lots of specialized model and data? For example, CLIP representation is very powerful and able to outperform many existing model with only CLIP image feature and linear classifier. Could we just maintain CLIP model and its training data and do simple ML classification instead of train deep model each time? 
 
 
-# What we hope to demonstrate
+# <a id="goal"></a> What we hope to demonstrate
 Recently, there is a trend in industry to train large-scale self-supervised models. Such models utilize huge amount of unlabeled data to learn the intrinsic features, and in this way get more general and robust prediction result. CLIP is such a model consisting of an image encoder and a text encoder. In the forward stage, it calculates the loss based on the difference between the image/text feature vector pair with an image/text-description pair as input, and optimizes the two encoders' parameters simultaneously. Typical usage of the CLIP model includes using the image encoder as pretrained model to finetune, and formulizing the prediction task as text queries, together with the image feeding into CLIP to get a score vector. 
 
 We believe CLIP have more usage than what's shown in the original paper, as it has great feature extraction ability.
@@ -39,21 +39,46 @@ Third, we'll also further explore the generality of CLIP. Whether its good featu
 The experiment is run on the following model, there are 3 type of model
 
 Type 1: language supervised model
-- CLIP model( VIT-32 ) [1]
-
-![clip](team19/clip.png)
+- CLIP model( VIT-32 ) [1]  
+![clip](team19/clip.png)  
+We have introduced [CLIP](#goal) model in the motivation section.
 
 Type 2: model trained on open scource dataset (ImageNet)
-- Vision Transformer: VIT-32 (base and large version), VIT-16 (base and large version) [2]
-- New CNN: convnext_small, convnext_base [3]
-- Traditional CNN: efficientnet_b4,efficientnet_b6 [4]
+- Vision Transformer: VIT-32 (base and large version), VIT-16 (base and large version) [2]  
+![ViT](team19/ViT.png)  
+Vision Transformer is the first attemption to use transformer architecture on CV tasks and achieves SoTA performance. It divides the image horizontally and vertically into several patchies (for example, dividing a 224\*224 image into \#(14\*14) pacthes of size 16\*16) and then linear transforms every patch and adds them with respective positional embeddings. (Here a special token embedding position 0 and having special meaning 'cls' is used to capture the overall relation of patches) The resulting 196 vectors are quantitively small enough to be used as input tokens to feed the standard transformer encoder architecture. After several encoder layers, the output at position 0, which captures the overall relation, is connected with header network to generate the result.  
+Experiments show that with the help of masive number of supervised training data, ViT can beat state-of-the-art convolution-based models, and its performance scales well with the number of parameters and the amount of training data.  
+For ViT-16 and ViT-32, the number difference indicates the number of dividents on each dimension. E.g. for ViT-16, images are divided into \#16\*16 pacthes.
+
+- New CNN: convnext_small, convnext_base [3]  
+![ConvNextBlock](team19/ConvNextBlock.png)  
+Since the invention of vision transformer, researchers find many ways to replace the core attention mechanism with simplier modules while still attaining comparable performance, and thus it's doubtable whether the success of ViT contributes to the attention mechanism or other delicate designs of the transformer architecture. In ConvNext, researchers modify ResNet architecture to adopt several modern designs in ViT. It uses a different stage compute ratio and different stem cell structure, and use grouped convolution to reduce the computation amount. ConvNext also follows ViT to use a inverted bottleneck layer, and larger kernel size.  
+Besides these macro changes, ConvNext also has some micro changes like replacing ReLU activation with GeLU activation and reducing the activation layer number. Overall, ConvNext uses pure convolutional architecture to reach the top performance once again.
+
+- Traditional CNN: efficientnet_b4,efficientnet_b6 [4]  
+![EfficientNet](team19/efficientNet.png)  
+EfficientNet is a class of convolutional networks found by NAS (neural architecture search). Researchers use MBConv as basic block and search the same exploration space as MnasNet to get most basic EfficientNet-B0. Then they do grid search on the space consisting of three scaling factors: network depth (number of layers), width (number of kernels per layer) and resolution (size of image/feature map). Finally for different accuracy/efficiency requirement, they multiply these factors with a single compound value to get the network configuration.
 
 Type 3: Model with self-supervised pretraining
-- Beit [5]
-- ViTMAE [6]
-- DINO [7]
-- Data2vec [8]
 
+- Beit [5]  
+![BEIT](team19/BEIT.png)  
+Beit is a self-supervised pretrained ViT model. It has two parts.  
+The first part is a dVAE (Discrete Variational Autoencoder). The dVAE is trained to compress the original image into a series of token (integer value) with each token representing a patch in the original image. Then tokens are mapped to a dictionary storing their latent vectors, and further used to restore the original image. After dVAE training, the dVAE part generating tokens produce good representations of image patches.  
+The second part is a ViT. In every training step, the original image is masked for several patches and then fed into the vision transformer to generate a series of value for the patches. At the same time, the original image without any mask is fed into dVAE to get the token repsentation per patch. The dVAE generated tokens are used as labels to train the vision transformer to learn the masked patch tokens. In this process, it learns the representation of images.
+
+- MAE [6]  
+![ViTMAE](team19/ViTMAE.png)  
+MAE (masked autoencoders) is another self-supervised learning approach for vision transformers. It masks patches of the original image and use the simply linear transformed representation of unmasked patches as well as their positional embeddings as input tokens to feed into the vision transformer, and feed the output into another network to rebuild the original image. It differs from the most primitive self-supervised learning method proposed in ViT paper in two ways. First, the authors observe that image data has much more redundant information than the word sequence, and thus a low proportion of patch masking is not sufficient to learn. For example, an image masked one patch for every two patches can be easily restored by linear interpolation with little loss of semantic information. Consequently, in MAE most patches are masked and only unmasked patches participant into the computation. Second, images contain many details and a MLP network (original head network of ViT) is not sufficient to regenerate it well, and thus MAE use another transformer instead.
+
+- DINO [7]  
+![DINO](team19/DINO.png)  
+DINO uses a process called self-distillation to learn. It consists of two transformer networks of the same architecture, a student network and a teacher network. The teacher network is a momentum teacher, which means its parameters are exponential-weighted moving average of parameters of the student network. Every training step, the original image passes two different data augmentation transformation, and then the two outputs are respectively fed into student and teacher network (In teacher network it additionally goes through centering and sharpening steps). Then the two results pass softmax layer to generate two distribution vectors. The training uses cross-entropy-loss with teacher network's output as the label to optimize student network's parameters, so as to encourage student network to have same output as the teacher network, in other words to make the output invariant to the image deformation, which indicates the transformer learnt the high level representation of images.  
+Without the centering and sharpening steps in teacher network's output, the learning process can collapse to either a flat distribution or a spike distribution, neither making the transformer learn useful parameters. To deal with this issue, the centering step minus every output with its mean value so that prevents any one feature from dominating and forming a spike in the output. Similarly, the sharpening step prevents flat output by exaggerating small differences between high and low values.
+
+- Data2vec [8]  
+![data2vec](team19/data2vec.jpg)  
+Data2vec also uses a student ViT network to imitate the output of the teacher network (still exponential-weighted moving average of student network in history). Contrast with DINO, it doesn't apply different augmentation transformation to original image, instead it feeds in masked image into student network and unmasked image into teacher network, encouraging the student network to have the same output as the teacher network. Data2vec combines the idea of self-distillation and mask model. 
 ## Summary of tested model
 
 

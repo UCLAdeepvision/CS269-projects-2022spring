@@ -2,7 +2,7 @@
 layout: post
 comments: true
 title: Explore wider usage of CLIP 
-author: Yuyue Wang, Yufeng Li 
+author: Yufeng Li, Yuyue Wang
 date: 2022-04-22
 ---
 

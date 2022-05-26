@@ -204,79 +204,113 @@ The GPU used for fine tuning is NVIDIA GeForce RTX 3070 laptop GPU. The batch si
 
 The result for training representation on KNN and logistic regression is shown in the following tables. The row is ordered by accuracy of logistic regression at 100. 
 
-### knn_10
-|    | Dataset_Flowers102    | UCMerced_Dataset      | ISIC                  | Dataset_DTD           | PatternNet_Dataset    | Dataset_FGVCAircraft   |
-|---:|:----------------------|:----------------------|:----------------------|:----------------------|:----------------------|:-----------------------|
-|  0 | CLIP 0.803            | DINO 0.781            | DINO 0.650            | DINO 0.523            | CLIP 0.864            | DINO 0.202             |
-|  1 | DINO 0.826            | vit_l_32 0.646        | vit_b_32 0.598        | CLIP 0.493            | DINO 0.863            | vit_l_16 0.122         |
-|  2 | vit_b_16 0.568        | vit_b_32 0.675        | ViTMAE 0.720          | convnext_base 0.355   | vit_l_16 0.729        | vit_b_16 0.133         |
-|  3 | vit_l_16 0.513        | vit_l_16 0.587        | vit_l_16 0.570        | vit_b_32 0.411        | convnext_tiny 0.787   | convnext_tiny 0.111    |
-|  4 | vit_l_32 0.486        | CLIP 0.787            | convnext_base 0.534   | vit_b_16 0.387        | vit_b_16 0.800        | vit_l_32 0.131         |
-|  5 | convnext_base 0.447   | convnext_base 0.651   | vit_b_16 0.605        | convnext_tiny 0.350   | vit_l_32 0.794        | CLIP 0.235             |
-|  6 | convnext_tiny 0.526   | convnext_tiny 0.613   | convnext_tiny 0.571   | vit_l_16 0.323        | vit_b_32 0.786        | vit_b_32 0.124         |
-|  7 | vit_b_32 0.532        | vit_b_16 0.714        | vit_l_32 0.553        | vit_l_32 0.310        | convnext_base 0.709   | convnext_base 0.078    |
-|  8 | ViTMAE 0.179          | ViTMAE 0.348          | data2vec 0.691        | ViTMAE 0.117          | ViTMAE 0.474          | ViTMAE 0.024           |
-|  9 | Beit 0.140            | Beit 0.383            | Beit 0.683            | Beit 0.087            | Beit 0.478            | Beit 0.020             |
-| 10 | data2vec 0.078        | data2vec 0.198        | efficientnet_b2 0.499 | data2vec 0.044        | data2vec 0.246        | data2vec 0.014         |
-| 11 | efficientnet_b6 0.013 | efficientnet_b6 0.053 | CLIP 0.582            | efficientnet_b6 0.030 | efficientnet_b6 0.029 | efficientnet_b6 0.011  |
-| 12 | efficientnet_b2 0.013 | efficientnet_b2 0.062 | efficientnet_b6 0.5   | efficientnet_b2 0.019 | efficientnet_b2 0.029 | efficientnet_b2 0.008  |
+### Dataset_FGVCAircraft
+| model           |     knn_10 |    knn_100 |     lr_10 |    lr_100 |
+|:----------------|-----------:|-----------:|----------:|----------:|
+| DINO            | 0.202958   | 0.28777    | 0.38373   | 0.516787  |
+| vit_l_16        | 0.122432   | 0.220624   | 0.312654  | 0.461631  |
+| vit_b_16        | 0.133936   | 0.207434   | 0.314708  | 0.447242  |
+| convnext_tiny   | 0.11175    | 0.148681   | 0.280608  | 0.43765   |
+| vit_l_32        | 0.131471   | 0.20024    | 0.309778  | 0.434053  |
+| CLIP            | 0.235826   | 0.31295    | 0.345933  | 0.420863  |
+| vit_b_32        | 0.124897   | 0.178657   | 0.275267  | 0.377698  |
+| convnext_base   | 0.0784717  | 0.106715   | 0.222268  | 0.364508  |
+| ViTMAE          | 0.0246508  | 0.0383693  | 0.0969597 | 0.14988   |
+| Beit            | 0.0209532  | 0.0311751  | 0.0439606 | 0.0611511 |
+| data2vec        | 0.0147905  | 0.0335731  | 0.0299918 | 0.0371703 |
+| efficientnet_b6 | 0.0110929  | 0.00959233 | 0.0168447 | 0.029976  |
+| efficientnet_b2 | 0.00862777 | 0.0179856  | 0.0115037 | 0.0203837 |
 
 
-
-### knn_100
-|    | Dataset_Flowers102    | UCMerced_Dataset      | ISIC                  | Dataset_DTD           | PatternNet_Dataset    | Dataset_FGVCAircraft   |
-|---:|:----------------------|:----------------------|:----------------------|:----------------------|:----------------------|:-----------------------|
-|  0 | CLIP 0.830            | DINO 0.904            | DINO 0.538            | DINO 0.661            | CLIP 0.942            | DINO 0.287             |
-|  1 | DINO 0.761            | vit_l_32 0.831        | vit_b_32 0.591        | CLIP 0.633            | DINO 0.947            | vit_l_16 0.220         |
-|  2 | vit_b_16 0.584        | vit_b_32 0.852        | ViTMAE 0.723          | convnext_base 0.520   | vit_l_16 0.866        | vit_b_16 0.207         |
-|  3 | vit_l_16 0.562        | vit_l_16 0.791        | vit_l_16 0.590        | vit_b_32 0.550        | convnext_tiny 0.889   | convnext_tiny 0.148    |
-|  4 | vit_l_32 0.513        | CLIP 0.896            | convnext_base 0.509   | vit_b_16 0.550        | vit_b_16 0.888        | vit_l_32 0.200         |
-|  5 | convnext_base 0.408   | convnext_base 0.813   | vit_b_16 0.551        | convnext_tiny 0.529   | vit_l_32 0.881        | CLIP 0.312             |
-|  6 | convnext_tiny 0.509   | convnext_tiny 0.769   | convnext_tiny 0.512   | vit_l_16 0.522        | vit_b_32 0.878        | vit_b_32 0.178         |
-|  7 | vit_b_32 0.503        | vit_b_16 0.834        | vit_l_32 0.535        | vit_l_32 0.484        | convnext_base 0.854   | convnext_base 0.106    |
-|  8 | ViTMAE 0.153          | ViTMAE 0.594          | data2vec 0.701        | ViTMAE 0.219          | ViTMAE 0.671          | ViTMAE 0.038           |
-|  9 | Beit 0.137            | Beit 0.624            | Beit 0.623            | Beit 0.160            | Beit 0.649            | Beit 0.031             |
-| 10 | data2vec 0.098        | data2vec 0.310        | efficientnet_b2 0.502 | data2vec 0.066        | data2vec 0.394        | data2vec 0.033         |
-| 11 | efficientnet_b6 0.013 | efficientnet_b6 0.051 | CLIP 0.637            | efficientnet_b6 0.023 | efficientnet_b6 0.037 | efficientnet_b6 0.009  |
-| 12 | efficientnet_b2 0.022 | efficientnet_b2 0.075 | efficientnet_b6 0.5   | efficientnet_b2 0.035 | efficientnet_b2 0.031 | efficientnet_b2 0.017  |
-
+### ISIC
+| model           |   knn_10 |   knn_100 |    lr_10 |   lr_100 |
+|:----------------|---------:|----------:|---------:|---------:|
+| DINO            | 0.650528 |  0.538732 | 0.715669 | 0.71919  |
+| vit_b_32        | 0.598592 |  0.591549 | 0.623239 | 0.676056 |
+| ViTMAE          | 0.720951 |  0.723592 | 0.701585 | 0.670775 |
+| vit_l_16        | 0.570423 |  0.590669 | 0.632042 | 0.65757  |
+| convnext_base   | 0.534331 |  0.509683 | 0.665493 | 0.654049 |
+| vit_b_16        | 0.605634 |  0.551937 | 0.636444 | 0.638204 |
+| convnext_tiny   | 0.571303 |  0.512324 | 0.62412  | 0.627641 |
+| vit_l_32        | 0.553697 |  0.535211 | 0.6875   | 0.615317 |
+| data2vec        | 0.691021 |  0.701585 | 0.65493  | 0.612676 |
+| Beit            | 0.683099 |  0.623239 | 0.735035 | 0.575704 |
+| efficientnet_b2 | 0.49912  |  0.502641 | 0.518486 | 0.536092 |
+| CLIP            | 0.582746 |  0.637324 | 0.662852 | 0.52993  |
+| efficientnet_b6 | 0.5      |  0.5      | 0.506162 | 0.525528 |
 
 
-### lr_10
-|    | Dataset_Flowers102    | UCMerced_Dataset      | ISIC                  | Dataset_DTD           | PatternNet_Dataset    | Dataset_FGVCAircraft   |
-|---:|:----------------------|:----------------------|:----------------------|:----------------------|:----------------------|:-----------------------|
-|  0 | CLIP 0.905            | DINO 0.885            | DINO 0.715            | DINO 0.602            | CLIP 0.944            | DINO 0.383             |
-|  1 | DINO 0.937            | vit_l_32 0.837        | vit_b_32 0.623        | CLIP 0.600            | DINO 0.955            | vit_l_16 0.312         |
-|  2 | vit_b_16 0.856        | vit_b_32 0.843        | ViTMAE 0.701          | convnext_base 0.573   | vit_l_16 0.923        | vit_b_16 0.314         |
-|  3 | vit_l_16 0.869        | vit_l_16 0.851        | vit_l_16 0.632        | vit_b_32 0.555        | convnext_tiny 0.914   | convnext_tiny 0.280    |
-|  4 | vit_l_32 0.810        | CLIP 0.878            | convnext_base 0.665   | vit_b_16 0.548        | vit_b_16 0.910        | vit_l_32 0.309         |
-|  5 | convnext_base 0.830   | convnext_base 0.821   | vit_b_16 0.636        | convnext_tiny 0.586   | vit_l_32 0.901        | CLIP 0.345             |
-|  6 | convnext_tiny 0.830   | convnext_tiny 0.818   | convnext_tiny 0.624   | vit_l_16 0.544        | vit_b_32 0.887        | vit_b_32 0.275         |
-|  7 | vit_b_32 0.810        | vit_b_16 0.807        | vit_l_32 0.687        | vit_l_32 0.548        | convnext_base 0.897   | convnext_base 0.222    |
-|  8 | ViTMAE 0.542          | ViTMAE 0.607          | data2vec 0.654        | ViTMAE 0.406          | ViTMAE 0.817          | ViTMAE 0.096           |
-|  9 | Beit 0.320            | Beit 0.531            | Beit 0.735            | Beit 0.137            | Beit 0.683            | Beit 0.043             |
-| 10 | data2vec 0.183        | data2vec 0.283        | efficientnet_b2 0.518 | data2vec 0.075        | data2vec 0.393        | data2vec 0.029         |
-| 11 | efficientnet_b6 0.013 | efficientnet_b6 0.080 | CLIP 0.662            | efficientnet_b6 0.025 | efficientnet_b6 0.050 | efficientnet_b6 0.016  |
-| 12 | efficientnet_b2 0.035 | efficientnet_b2 0.055 | efficientnet_b6 0.506 | efficientnet_b2 0.023 | efficientnet_b2 0.042 | efficientnet_b2 0.011  |
+### Dataset_DTD
+| model           |    knn_10 |   knn_100 |     lr_10 |    lr_100 |
+|:----------------|----------:|----------:|----------:|----------:|
+| DINO            | 0.523533  | 0.661939  | 0.602192  | 0.742317  |
+| CLIP            | 0.493875  | 0.63357   | 0.600903  | 0.737589  |
+| convnext_base   | 0.355899  | 0.520095  | 0.573179  | 0.718676  |
+| vit_b_32        | 0.411348  | 0.550827  | 0.555126  | 0.690307  |
+| vit_b_16        | 0.387492  | 0.550827  | 0.548034  | 0.685579  |
+| convnext_tiny   | 0.350097  | 0.529551  | 0.586718  | 0.683215  |
+| vit_l_16        | 0.323017  | 0.522459  | 0.544165  | 0.680851  |
+| vit_l_32        | 0.310123  | 0.484634  | 0.548034  | 0.652482  |
+| ViTMAE          | 0.117988  | 0.219858  | 0.406834  | 0.63357   |
+| Beit            | 0.0870406 | 0.160757  | 0.137975  | 0.267139  |
+| data2vec        | 0.0444874 | 0.0661939 | 0.0754352 | 0.113475  |
+| efficientnet_b6 | 0.030303  | 0.0236407 | 0.0257898 | 0.0330969 |
+| efficientnet_b2 | 0.0199871 | 0.035461  | 0.0238556 | 0.0283688 |
 
 
+### Dataset_Flowers102
+| model           |    knn_10 |     lr_10 |
+|:----------------|----------:|----------:|
+| CLIP            | 0.803922  | 0.905229  |
+| DINO            | 0.826797  | 0.937908  |
+| vit_b_16        | 0.568627  | 0.856209  |
+| vit_l_16        | 0.513072  | 0.869281  |
+| convnext_base   | 0.447712  | 0.830065  |
+| vit_l_32        | 0.486928  | 0.810458  |
+| convnext_tiny   | 0.526144  | 0.830065  |
+| vit_b_32        | 0.53268   | 0.810458  |
+| ViTMAE          | 0.179739  | 0.542484  |
+| Beit            | 0.140523  | 0.320261  |
+| data2vec        | 0.0784314 | 0.183007  |
+| efficientnet_b6 | 0.0130719 | 0.0130719 |
+| efficientnet_b2 | 0.0130719 | 0.0359477 |
 
-### lr_100
-|    | Dataset_Flowers102    | UCMerced_Dataset      | ISIC                  | Dataset_DTD           | PatternNet_Dataset    | Dataset_FGVCAircraft   |
-|---:|:----------------------|:----------------------|:----------------------|:----------------------|:----------------------|:-----------------------|
-|  0 | CLIP 0.921            | DINO 0.970            | DINO 0.719            | DINO 0.742            | CLIP 0.979            | DINO 0.516             |
-|  1 | DINO 0.921            | vit_l_32 0.948        | vit_b_32 0.676        | CLIP 0.737            | DINO 0.978            | vit_l_16 0.461         |
-|  2 | vit_b_16 0.852        | vit_b_32 0.944        | ViTMAE 0.670          | convnext_base 0.718   | vit_l_16 0.972        | vit_b_16 0.447         |
-|  3 | vit_l_16 0.849        | vit_l_16 0.942        | vit_l_16 0.657        | vit_b_32 0.690        | convnext_tiny 0.968   | convnext_tiny 0.437    |
-|  4 | vit_l_32 0.839        | CLIP 0.934            | convnext_base 0.654   | vit_b_16 0.685        | vit_b_16 0.964        | vit_l_32 0.434         |
-|  5 | convnext_base 0.839   | convnext_base 0.934   | vit_b_16 0.638        | convnext_tiny 0.683   | vit_l_32 0.964        | CLIP 0.420             |
-|  6 | convnext_tiny 0.826   | convnext_tiny 0.932   | convnext_tiny 0.627   | vit_l_16 0.680        | vit_b_32 0.961        | vit_b_32 0.377         |
-|  7 | vit_b_32 0.797        | vit_b_16 0.932        | vit_l_32 0.615        | vit_l_32 0.652        | convnext_base 0.961   | convnext_base 0.364    |
-|  8 | ViTMAE 0.558          | ViTMAE 0.888          | data2vec 0.612        | ViTMAE 0.633          | ViTMAE 0.925          | ViTMAE 0.149           |
-|  9 | Beit 0.307            | Beit 0.787            | Beit 0.575            | Beit 0.267            | Beit 0.829            | Beit 0.061             |
-| 10 | data2vec 0.140        | data2vec 0.429        | efficientnet_b2 0.536 | data2vec 0.113        | data2vec 0.477        | data2vec 0.037         |
-| 11 | efficientnet_b6 0.026 | efficientnet_b6 0.149 | CLIP 0.529            | efficientnet_b6 0.033 | efficientnet_b6 0.085 | efficientnet_b6 0.029  |
-| 12 | efficientnet_b2 0.022 | efficientnet_b2 0.081 | efficientnet_b6 0.525 | efficientnet_b2 0.028 | efficientnet_b2 0.066 | efficientnet_b2 0.020  |
+
+### UCMerced_Dataset
+| model           |    knn_10 |   knn_100 |     lr_10 |    lr_100 |
+|:----------------|----------:|----------:|----------:|----------:|
+| DINO            | 0.781475  | 0.904573  | 0.885791  | 0.970179  |
+| vit_l_32        | 0.646583  | 0.831014  | 0.83723   | 0.94831   |
+| vit_b_32        | 0.67536   | 0.852883  | 0.843525  | 0.944334  |
+| vit_l_16        | 0.58723   | 0.791252  | 0.851619  | 0.942346  |
+| CLIP            | 0.78777   | 0.89662   | 0.878597  | 0.934394  |
+| convnext_base   | 0.651978  | 0.813121  | 0.821043  | 0.934394  |
+| convnext_tiny   | 0.613309  | 0.769384  | 0.818345  | 0.932406  |
+| vit_b_16        | 0.714928  | 0.83499   | 0.807554  | 0.932406  |
+| ViTMAE          | 0.348022  | 0.594433  | 0.607014  | 0.888668  |
+| Beit            | 0.383094  | 0.624254  | 0.531475  | 0.787276  |
+| data2vec        | 0.198741  | 0.310139  | 0.283273  | 0.429423  |
+| efficientnet_b6 | 0.0530576 | 0.0516899 | 0.0809353 | 0.149105  |
+| efficientnet_b2 | 0.0620504 | 0.0755467 | 0.0557554 | 0.0815109 |
+
+
+### PatternNet_Dataset
+| model           |    knn_10 |   knn_100 |     lr_10 |    lr_100 |
+|:----------------|----------:|----------:|----------:|----------:|
+| CLIP            | 0.864434  | 0.942952  | 0.944148  | 0.979638  |
+| DINO            | 0.863704  | 0.947846  | 0.955066  | 0.97844   |
+| vit_l_16        | 0.729499  | 0.866705  | 0.923207  | 0.972143  |
+| convnext_tiny   | 0.787542  | 0.889839  | 0.914612  | 0.968174  |
+| vit_b_16        | 0.800451  | 0.888265  | 0.910596  | 0.964409  |
+| vit_l_32        | 0.794046  | 0.881216  | 0.901736  | 0.964272  |
+| vit_b_32        | 0.786049  | 0.878957  | 0.887997  | 0.9615    |
+| convnext_base   | 0.709587  | 0.854591  | 0.897355  | 0.961466  |
+| ViTMAE          | 0.474629  | 0.67164   | 0.817044  | 0.925533  |
+| Beit            | 0.478777  | 0.649841  | 0.683238  | 0.829985  |
+| data2vec        | 0.246175  | 0.394374  | 0.393987  | 0.477978  |
+| efficientnet_b6 | 0.0297348 | 0.0370966 | 0.050078  | 0.0851442 |
+| efficientnet_b2 | 0.029934  | 0.0318264 | 0.0427106 | 0.0660142 |
+
 
 
 From the results above, in most cases in terms of ML algorithms performance, logistic regression with 100 samples > logistic regression with 10 samples > knn with 100 samples > knn with 10 samples, but if each samples in dataset is not too similar like DTD, UCMerced and PatternNet, sometimes logistic regression with 10 samples and knn with 100 samples can have same or better performance for best model. In industry, knn-like information retrieval is much cheaper and fast than logistic regression, so if our samples are not too similar and we have enough samples, KNN maybe a better option. 

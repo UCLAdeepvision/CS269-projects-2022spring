@@ -81,12 +81,11 @@ In the lecture module, we've seen [SeFa](https://genforce.github.io/sefa/) from 
 |Images with label        | 10K+        | [kaggle link](https://www.kaggle.com/datasets/thedagger/pokemon-generation-one) |
 
 
-
-## Current Progress
 ### Data Preprocessing
 We are working on combining the images from different datasets. We unify the size and the format of Pokemon images from different datasets. We also include the newest generation Pokemon images that do not exist in any current dataset.
 
 
+## Current Progress
 
 ### Sketch
 We have successfully run HED to extract line art from the Pokemon image.
@@ -108,19 +107,10 @@ We have succesfully trained StyleGAN on pokemon sprites (256x256 images) and get
 </div>
 
 
+### Latent Space Analysis
 
 
-## Plan
 
-|               | Tasks       |
-| :---          |    :----:   | 
-| Week 3        | Project Proposal Presentation |
-| Week 4        | Decide Topic and Project Proporsal Report  |
-| Week 5        | Clean Data and Test Existing Models |
-| Week 6        | Train Models |
-| Week 7        | Fine-tune & Adjust Models  |
-| Week 8        | Analyze Model Latent Space |
-| Week 9-11     | Prepare Project Presentation and Finish Project Report |
 
 
 ## Reference

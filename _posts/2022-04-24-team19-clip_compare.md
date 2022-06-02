@@ -589,9 +589,13 @@ For ISIC dataset, mask based self-supervised model like Data2vec which perform n
 
 # Discussion on Possible issue and explanation
 
-In this project, we see DINO representation show a surprising result. It looks like DINO use less data in self-supervised way to get representation and surpass CILP that use a lot of data, but the reason why this can happen still remains unclear. According to paper of DINO, its learned representation is able to refect semantic of the image.
+In this project, we see DINO representation show a surprising result. It looks like DINO use less data in self-supervised way to get representation and surpass CILP that use a lot of data, but the reason why this can happen still remains unclear. According to paper of DINO, its learned representation is able to refect semantic of the image. 
 
-[!DINO](team19/dino.png)
+<img src="team19/dino.png" width="400"/>
+
+However, due to DINO performance and CILP perforance are similar in many dataset, directly visiualize attention map and assess it manually may not be a good way to make fair comparsion. Due to limited time and compute we have, we haven't think of any ways to explain why DINO have such a good performance even when pretraining is less and what would happen if we use CLIP method with some modification on only ImageNet (same as DINO), for example, we can apply different kind of augmenatation and in language supervision part we can combine both labels and augmentation into one sentance as language supervision sentence. Maybe CLIP can still achieve similar parformance or even better performance, but this kind of experiment need a lot of time and compute that we don't have. 
+
+
 
 Also for MAE, data2vec and BEIT, the implementation of them in this project follows huggingface version. In huggingface VIT implementation, the sequence length of output feature is same as input. To aggregate all feature of each token into one, we directly apply mean pooling on those feature vectors. According to original paper of MAT and BEIT, this should not largely affect final result. However, considering DINO and VIT and CILP model only use specific token like [cls] token for getting feature. Directly pooling may not be a good option. Due to limited time and compute we do not have time to test how aggragation of feature vectors affect final result. 
 

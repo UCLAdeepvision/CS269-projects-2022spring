@@ -587,7 +587,13 @@ The model that trained in supervised way in imageNet (VIT, convnext) perform goo
 
 For ISIC dataset, mask based self-supervised model like Data2vec which perform not good in the other dataset perform very good this time. Because in ISIC dataset, the difference between different classes are very small compared to other datasets, it might be possible that mased self-supervised model tend to maintain those tiny information. But ISIC is the only that kind of dataset we tested, it might possible that this is just an coincidence.
 
+# Discussion on Possible issue and explanation
 
+In this project, we see DINO representation show a surprising result. It looks like DINO use less data in self-supervised way to get representation and surpass CILP that use a lot of data, but the reason why this can happen still remains unclear. According to paper of DINO, its learned representation is able to refect semantic of the image.
+
+[!DINO](team19/dino.png)
+
+Also for MAE, data2vec and BEIT, the implementation of them in this project follows huggingface version. In huggingface VIT implementation, the sequence length of output feature is same as input. To aggregate all feature of each token into one, we directly apply mean pooling on those feature vectors. According to original paper of MAT and BEIT, this should not largely affect final result. However, considering DINO and VIT and CILP model only use specific token like [cls] token for getting feature. Directly pooling may not be a good option. Due to limited time and compute we do not have time to test how aggragation of feature vectors affect final result. 
 
 <!-- IWildCamDatase -->
 

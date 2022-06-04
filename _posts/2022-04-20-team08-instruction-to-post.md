@@ -13,35 +13,28 @@ date: 2022-04-23
 * TOC
 {:toc}
 
+## Introduction
 
-## Motivation
+Almost all machine Learning models have issues with generalization that stems from a phenomenon called distribution shift. This problem is due to the difference between the testing and training distributions which could both be subsequently different from the final real world data distribution. There are several well known approaches to improving model generaliztion including but not limted to, adding more data, balancing catgeories in the datasets, and data augmentation. Despite the improvements made by these approaches, one can easy find examples of real world data or through techniques like advesarial learning that can still fool the model. The issue could be due to not considering the causal effects on data generation [1].
 
-Almost all machine Learning models have issues with generalization that stems from a phenomenon called distribution shift. This problem is due to the difference between the testing and training distributions which could both be subsequently different from the final real world data distribution. There are several well known approaches to improving model generaliztion including but not limted to, adding more data, balancing catgeories in the datasets, and data augmentation. Despite the improvements made by these approaches, one can easy find examples of real world data or through techniques like advesarial learning that can still fool the model. The issue could be due to not considering the causal effects on data generation[1].
+We want to combine casual mechanism into our project. The goal of this project is to try and identify the mechansims that effect the distribution of human faces.The distribution of human faces contains a variety of unqiue features that can be driven by genetics (hair, eye color, shape, etc), by culture (Turban, Hijab, etc), personality (beards, glasses, masks, etc), etc. These features can be thought of as "augmentations" that are driven by causal mechansims which effect the distribution of inherent human features(features all humans share). Finding these causal mechanisms could lead to greater ability to generalize across human faces.
 
-In this paper, the authors propose an insight that could potentially lead to broad improvements in machine learning. It requries a shift in perspective and thinking about the causal effects that produce the distribution itself. In causal modeling, "the structure of each distribution is induced by physical mechanisms that give rise to dependences between observables." These mechanisms or experts have several unique properties of interest. First, they are independent and do not inform one another. Second, they are autonomous generative models effecting the distribution itself which grants them the ability transfer between problems. The goal of this project is to try and identify the mechansims that effect the distribution of human faces.
+## Related works
 
-The distribution of human faces contains a variety of unqiue features that can be driven by genetics (hair, eye color, shape, etc), by culture (Turban, Hijab, etc), personality (beards, glasses, masks, etc), etc. These features can be thought of as "augmentations" that are driven by causal mechansims which effect the distribution of inherent human features(features all humans share). Finding these causal mechanisms could lead to greater ability to generalize across human faces.
+[1] In this paper, the authors propose an insight that could potentially lead to broad improvements in machine learning. It requries a shift in perspective and thinking about the causal effects that produce the distribution itself. In causal modeling, "the structure of each distribution is induced by physical mechanisms that give rise to dependences between observables." These mechanisms or experts have several unique properties of interest. First, they are independent and do not inform one another. Second, they are autonomous generative models effecting the distribution itself which grants them the ability transfer between problems.
 
-## Project timeline
+[2] In this paper, the authors propose Recurrent Independent Mechanisms (RIMs), a new recurrent architecture in which multiple groups of recurrent cells operate with nearly independent transition dynamics. It uses an attention mechanism to train the RIMS effectively. And empirically, the authors found that if the learned mechanisms are too complex, it is easy for an individual mechanism to dominate. But if the learned mechanisms do not have enough capacity, then different RIMS have to work together. With Competitive Learning, multiple RIMS can be active, interact and share information.
 
-- Week 3 : Search for the human face datasets
-- Week 4-5: Re-implement the digits detection work (with MNIST dataset) on paper.
-- Week 6-9: propose and experiment with different architectures and datasets to reach our face detection task.
-  - try the dataset in the below section in the current architecture.
-  - propose our architecture to find the best independent mechanisms
-- Week 10: wrap up and prepare for the presentation and compose the report.
+## Methods
+To build our own model, we first reproduce the digits detection work (with MNIST dataset) on paper. 
+![IM]({{ '/assets/images/team08/IM.png' | relative_url }})
+{: style="width: 400px; max-width: 50%;"}
+*Fig 1. Indepedent mechanism model structure.*
 
-## General Project Methodology
 
-1. We will reproduce the digits detection work (with MNIST dataset) on paper.
-2. Our goal is to identify the causal mechanisms that impact the distribution of human face. The origin paper uses data augmentation to sample noise input data. We want to use physical characteristics (hair, color, eyes) as our noise input data to help us train these mechanisms.
-3. We will try the same architecture in paper with a different dataset. And see how it works. Keep finding datasets and try different architecture until our mechanisms reach the goal.
+## Experiments
 
-## Related Papers
-
-[1] Goyal A, Lamb A, Hoffmann J, et al. "Recurrent independent mechanisms" arXiv preprint arXiv:1909.10893, 2019.
-
-## Datasets
+### Datasets
 
 Below is the dataset, we would work on for training our mechanisms.
 
@@ -67,7 +60,7 @@ Below is the dataset, we would work on for training our mechanisms.
   - [Yale Face Database](http://vision.ucsd.edu/content/yale-face-database)
     - The Yale Face Database contains 165 grayscale images in GIF format of 15 individuals. There are 11 images per subject, one per different facial expression or configuration: center-light, w/glasses, happy, left-light, w/no glasses, normal, right-light, sad, sleepy, surprised, and wink.
 
-## What we hope to show
+### What we hope to show
 
 We want to find effective independent mechanisms or experts to help us generalize across human faces. With the casual mechanisms we implemented, we can use them to detect human faces more robustly.
 Also, we will test whether we can use these mechanisms in a different domain.
@@ -75,3 +68,5 @@ Also, we will test whether we can use these mechanisms in a different domain.
 ## Reference
 
 [1] Giambattista Parascandolo, Niki Kilbertus, Mateo Rojas-Carulla, Bernhard Schölkopf. "Learning Independent Causal Mechanisms" Proceedings of the 35th International Conference on Machine Learning, PMLR. 2018.
+
+[2] Goyal A, Lamb A, Hoffmann J, et al. "Recurrent independent mechanisms" arXiv preprint arXiv:1909.10893, 2019.

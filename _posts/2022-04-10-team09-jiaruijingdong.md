@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-title: Zero-shot weakly Supervised Localization using CLIP
+title: Zero-shot Object Localization With Image-Text Models and Saliency Methods
 author: Jingdong Gao, Jiarui Wang
 date: 2022-04-19
 ---
@@ -16,38 +16,34 @@ date: 2022-04-19
 
  
 
-## Introduction
+## Introduction and Motivation
 
-Deep neural networks have achieved notable success in the field of object recognition. However, the most accurate models require large number of annotations. For the object localization task that seeks to find the area of the object of interest in an given image, fully supervise methods need instance level labels such as bounding boxes and pivot points, which are highly costly. This leads to the emergence of weakly supervised object localization. With only image-level supervision, it can still achieve good localization accuracy. While traditional weakly supervised localization methods provides an alternative that saves annotation time, in the test time, they are limited to predict on the predetermined object classes observed during training. Therefore, to locate novel object categories, the model has to be finetuned on a new dataset. Zero-shot localization methods[7, 8] aim to address this issue and achieve comparative localization results for out of distribution labels.
+Deep neural networks have achieved notable success in the field of object recognition. However, the most accurate models require large number of annotations. For the object localization task that seeks to find the area of the object of interest in an given image, fully supervise methods need instance level labels such as bounding boxes and pivot points, which are highly costly. This leads to the emergence of weakly supervised object localization. With only image-level supervision, it can still achieve good localization accuracy. While traditional weakly supervised localization methods provide an alternative that saves annotation time, in the test time, they are limited to predict on the predetermined object classes observed during training. Therefore, to locate novel object categories, the model has to be finetuned on a new dataset. Zero-shot methods[7, 8] aim to address this issue and achieve comparative localization results for out of distribution labels without additional training. In this work, we propose a framework that combines pre-trained image-text models from web data without human annotation, and saliency methods, for the zero-shot object localization task.
 
 Recent works in computer vision have proposed image-text foundation models that subsume both vision and language pre-training. Methods such as CLIP, ALIGN, and COCA demonstrated success in generating powerful representations for a variety of downstream tasks, from traditional vision tasks such as image classification to multimodal tasks such as visual question answering and image captioning. In particular, these methods showed impressive zero-shot capabilities. CLIP and COCA was able to achieve 76.2\% and 86.3\% top-1 classification accuracy on Imagenet, respectively, without explicitly training on any images from the dataset. Motivated by these observations, in this work, we explore the effectiveness of image-text foundation model representations in zero-shot object localization. We propose a variant of Score-CAM that generates a saliency map for an image conditioning on a user-provided textual query, from intermediate features of pre-trained image-text foundation models. When the query asks for an object in the image, our method would return the corresponding localization result. We quantitively evaluate our method on the ImageNet validation set, and demonstrate comparative ground truth localization accuracy with state of the art of weakly supervised object localization methods. While our framework may be applied to image-text models in general, in this report we build our implementation on top of CLIP, since we do not have access to other pre-trained models at the time of this work. We examine internal features of both the CNN and ViT architecture for CLIP's image encoders, and evaluate the influence of different features on our localization objective, both qualitatively and quantitively. We also provide an streamLit interface that enable to users to experiment with different image and text combinations. The code is released on Github.
 
 
 
 ## Related Literature
-We plan to use CLIP ([Radford, et al. 2021](https://arxiv.org/pdf/2103.00020.pdf)) and ScoreCAM[3] as our main backbone. To tackle the weakly supervised localization problem, the pipeline combines zero-shot generalizability enabled by CLIP and saliency map approaches that handle the localization task. Addtionally, we may focus on saliency approaches originate from two directions: CNN based image encoders and vision transformer based encoders, since CLIP pretrained both. For CNN based encoders, we may will adapt Resnet50 and Resnet101.
-
 
 ### Image-Text Foundation Models
 
-A recent line of research in computer vision focuses on pre-training with image and text jointly to learn multimodal representations. One paradigm of works demonstrated success by training two encoders simultaneuously with contrastive loss. The dual-encoder models consist of an image and text encoder and embed images and texts in the same latent space. These models are typically trained with noisy webly data that are image and text pairs. Another line of work follows an encoder-decoder architecture. During pre-training, the encoder takes images as input, and the decoder is applied with a language modeling loss. As a further step, the most recent work combines both architectures and achieves the state of art results on a variety of vision and language tasks.
+A recent line of research in computer vision focuses on pre-training with image and text jointly to learn multimodal representations. One paradigm of works demonstrated success by training two encoders simultaneuously with contrastive loss. The dual-encoder model consists of an image and text encoder and embed images and texts in the same latent space. These models are typically trained with noisy webly data that are image and text pairs. Another line of work follows an encoder-decoder architecture. During pre-training, the encoder takes images as input, and the decoder is applied with a language modeling loss. As a further step, the most recent work combines both architectures and achieves the state of art results on a variety of vision and language tasks.
 
-In this work, we utilize CLIP ([Radford, et al. 2021](https://arxiv.org/pdf/2103.00020.pdf)), an image-text foundation model with a dual-encoder architecture. The encoders are trained in parallel with web collected images and corresponding captions. After pretraining, CLIP is supposed to have competitive performance on other non-predetermined image categories. The overall workflow is as following: CLIP learns an enumorous amount of images and their corresponding labels. And then, different classification tasks will be applied to CLIP models. For each test image, text description "a photo of category" will be provided in order to find the nearest answer. 
+In this work, we utilize CLIP ([Radford, et al. 2021](https://arxiv.org/pdf/2103.00020.pdf)), an image-text foundation model with a dual-encoder architecture. The encoders are trained in parallel with web collected images and corresponding captions. During training, CLIP aligns the outputs from the image and text encoder in the same latent space. 
 
-The detailed structure is shown in Fig.1. Model consists of an image encoder and and text encoders. Inputs are image, text pairs where texts are image captions. The model is trained with contrastive loss where matching pairs are positive examples and unmatched pairs are negative examples. And then, inner product of text embeddings and image embeddings will be calculated for training purpose.
+The detailed structure is shown in Fig.1. For each training step, a batch of n image and text pairs is sampled. The matching pairs are treated as positive examples, and unmatching are negative examples. Then the model computes the inner product of embeddings from the encoders for each pair and applies a contrastive loss.
 
-During a new classification test, given a set of labels and input image, CLIP uses the pretrained text encoder to embed the labels. Then compute the inner product between the text embeddings and the image embedding from the image encoder. Finally, the class that generates the highest similarity score will be the prediction answer. 
+In the test time, given a set of possible labels and an input image, CLIP places the each label within a prompt that can be in the form of "an image of a \[label\]." and uses the pretrained text encoder to embed the prompts. Then it computes the inner product between the text embeddings and the image embedding from the image encoder. Finally, the label whose prompt generates the highest similarity score will be the prediction answer. 
 
 ![CLIP]({{ '/assets/images/team03/final/3.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
 *Fig 1. CLIP's structure. From CLIP ([Radford, et al. 2021](https://arxiv.org/pdf/2103.00020.pdf))*
 
-CLIP pretrained image classification model with language supervision. Then by combining CLIP with class activation/attention map methods, we assume the activated area can be regarded as localization on novel datasets.
+### Saliency Methods
+Saliency methods such as CAM and Grad-CAM have shown to generate class dependent heapmaps that highlight areas containing objects of the given class in an input image from intermediate outputs of pre-trained image classification models, such as VGG and ResNet. The generated saliency maps can be directly used to perform localization tasks by drawing bounding boxes the most highlighted region.
 
-
-### Score-CAM
-
-Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf)) is a popular method to generate saliency maps for CNN based image classifiers. It often produces more accurate and stable results than gradient based methods from experimental results. According to Fig. 2, given an input image, score cam takes the activation maps from the last convolution layer, and uses these maps as masks over the the input image. The masked input images are processed by the CNN again to generate a weight for each activation map. The weights are normalized the weighted sum of the maps is used as the final output. 
+Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf)) is a another method to generate saliency maps for CNN based image classifiers. It often produces more accurate and stable results than gradient based methods from experimental results. According to Fig. 2, given an input image, score cam takes the activation maps from the last convolution layer, and uses these maps as masks over the the input image. The masked input images are processed by the CNN again to generate a weight for each activation map. The weights are normalized the weighted sum of the maps is used as the final output. 
 ![Score-CAM]({{ '/assets/images/team03/final/4.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
 *Fig 2. Score CAM's structure. From Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf))*
@@ -55,7 +51,7 @@ Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf)) is a popul
 More detaily, given an input image and a CNN based image processor f, ScoreCAM will use feature maps from convolutional layer of f as a mask and applied the mask over the input. With regard to the masked image, ScoreCAM uses the image processor to process the masked image and use the logit for class c as the feature map's contribution score to c. In the end, the weighted sum of the feature maps are calculated using the contribution scores. The result will be a saliency map for class c.
 
 
-Comparing to saliency methods that utilizes gradients, Score-CAM adapts to CLIP more naturally due to its simple implementation. We can naively adapt the method to CLIP by changing the definition of the score from the logit of the target class to the inner product between the masked input image embedding resulted from the CLIP image encoder and the text embedding generated by the text encoder. However, this naive adaptation can lead suboptimal result as shown in Figure 5 and Figure 6. Therefore, we would need come up with more sophisticated strategies by conducting and analyzing more experiments. 
+Comparing to saliency methods that utilizes gradients, Score-CAM often results in more stable saliency maps. Additionally, it adapts to CLIP naturally, by changing the definition of the score from the logit of the target class to the inner product between the masked input image embedding resulted from the CLIP image encoder and the text embedding generated by the text encoder. However, this naive adaptation can lead suboptimal result as shown in Figure 5 and Figure 6. Therefore, we would need come up with more sophisticated strategies by conducting and analyzing more experiments. 
 
 
 ### ViT

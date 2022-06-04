@@ -153,6 +153,8 @@ CLIP with Score-CAM is proved to be successful in zero shot object localization 
 Also, testing with the whole validation dataset will be helpful in understanding its overall comparision with other methods.
 
 
+## StreamLit Interface
+
 ## Conclusion
 CLIP with Score-CAM can perform object localization with promising accuracy, especially considering it is a zero-shot procedure. At the same time, it has the following uneligible restrictions. For instance, when there are m multiple ground truth bounding boxes, the pipeline is far from predict exactly m bounding boxes. Most cases it only predicts one whole box or two boxes. At the same time, finding suitable activation maps from ViT image encoder remains a problem. Direct extraction feature layers is brute force and has poor performance. 
 

@@ -115,7 +115,7 @@ The following figures show case the loss for the 3 experts for 3k iterations.
 ![Expert2Loss](./assets/images/team08/MNISTExpert2loss.jpeg)
 ![Expert3Loss](./assets/images/team08/MNISTExpert3loss.jpeg)
 
-The folloiwng figures show case the experts score against the discriminator.
+The folloiwng figures show case the experts score against the discriminator. Note that fooling the discriminator means a greater expert score.
 
 ![Expert1Score](./assets/images/team08/MNISTExpert1Score.jpeg)
 ![Expert2Score](./assets/images/team08/MNISTExpert2Score.jpeg)
@@ -158,24 +158,82 @@ This model, called **faces_classifier**, was a simple CNN trained with binary cr
 
 The figure below shows the loss function for this model. Although we did train this model, we ultimately did not using it given that the results for our experiements were not sufficient to employ it.
 
-![FacesLoss](./assert/images/team08/.png)
+![FacesLoss](./assert/images/team08/faces_classifer_loss.jpeg)
 
 ### Faces
 
-Once we had a classifier, we shifted our focus to model and train the experts to invert the transformations. The model needed several changes from the original MNIST model. First, we needed to make sure that the model can work with RGB datasets. In order to do this, we changed the design of our experts which is detialed below.
+Once we had a classifier, we shifted our focus to model and train the experts to invert the transformations. The model needed several changes from the original MNIST model. First, we needed to make sure that the model can work with RGB datasets. In order to do this, we changed the design of our experts. The details can be found in the table below.
+
+| Expert Layers |
+| ----------- |
+| 3x3, 32, BN, Relu |
+| 3x3, 32, BN, Relu |
+| 3x3, 32, BN, Relu |
+| 3x3, 32, BN, Relu |
+| 3x3, 3, Relu |
+
+The primary difference was that we modifled the activation function to be Relu rather than ELU. Additionally, the outputs of the experts contained 3 channels for RGB. This changes also required us to make more modifications to our loss functions and the input dataset. We normalized the pixel values in the datasets to between [0,1] and resized the images to match the shape of the MNIST dataset (28x28). This was done for increasing training speed and stability. Second, we used the mean squared error loss as the loss fucntion for training the experts. Finally, note that for this model we only need 2 experts becuase there are 2 "transformed" distributions. After making these changes, we trained the model for approximately 10k iterations.
+
+The following images showcase the loss for the 2 experts for 10k iterations.
+
+![FacesExpert1Loss](./assets/images/team08/FacesExpert1Loss.jpeg)
+![FacesExpert2Loss](./assets/images/team08/FacesExpert2Loss.jpeg)
+
+The following images showcase the expert score against the discriminator. Note that fooling the discriminator means a greater expert score.
+
+![FacesExpert1Score](./assets/images/team08/FacesExpert1Score.jpeg)
+![FacesExpert2Score](./assets/images/team08/FacesExpert2Score.jpeg)
+
+
+Based on the figures above, we can see that the model has failed to learn the transformations. This is evident from both the divergence of the loss function as well as the converge to zero of each of the experts score. The loss functions indicate that the experts are not able to produce a meaningful inversion of the transformed inputs they receive. The scores indicate that the outputs from the experts do not fool the discriminator. This becomes more clear from the image below.
+
+![Faces](./assets/images/team08/Faces.png)
+
+In the figure above, the first column contains the data from the canoncial distribution, the second from the transformed distribution. The remaining two are images output from each of the experts. As expected from the scores and loss values, neither of these experts produce results that are meaningful. When considering the datasets in detail, these results are not surprising. Both of these datasets have a considerable amount of variation like facial orientations, image lighting, etc that make it very difficult for the experts to converge. Additionally, the architecture of the experts and the mean squared error loss function may not be suffiencet for complex datasets like this. We made several attempts to tune the training process to try to get meaningful results but were ultimately unsuccessful.
+
 
 ### VAEExpert
 
-Finally, due to the liminations posed by experts that are simple CNNs, we attempt to see if employing variational autoencoders in or model could yeild better results. Variational autoencoders (VAE) are neural networks that are tuned to learn latent space representations of input data. By choose a sufficiently small latent space, the idea was to optimize the VAE to learn to find representations that focus on the facial features but ignore non-essential information like orientation. We used VAEs as experts in our model and the initialization phase invovled training the VAEExperts themselves.
+Finally, due to the liminations posed by experts that are simple CNNs, we attempt to see if employing variational autoencoders in or model could yeild better results. Variational autoencoders (VAE) are neural networks that are tuned to learn latent space representations of input data. By choose a sufficiently small latent space, the idea was to optimize the VAE to find representations that focus on the facial features but ignore non-essential information like orientation. We used VAEs as experts in our model and the initialization phase invovled training the VAE experts themselves to learn the latent space for the transformed distributions. Then using the descriminator, we attempt to train the experts to specialize.
 
-### Analysis
+Training VAEs is tricky and difficult to get right. The loss function for these experts was a combination of the reconstruction error(mean-squared error) and a weighted KLDivergence. This training required tedious hyper parameter tuning to get the experts to initiialize appropriately. The model for the VAE experts is given below. 
 
-Given that we were able to replicate the model in paper [1], based on our experiments we know that the problem was not due to the implementation of the code. Instead the results indicate that 
+| Encoder |
+| ----------- |
+| 3x3, 32, BN, Relu |
+| 3x3, 64, BN, Relu |
+| 3x3, 64, BN, Relu |
+| 256 |
+
+| Decoder |
+| ----------- |
+| 6x6, 64, BN, Relu|
+| 6x6, 64, BN, Relu|
+| 6x6, 32, BN, Relu|
+| 6x6, 3, BN, Relu|
+
+Once we intialized the experts, we applied the algorithm in paper [1] to fine to the model to special. The resulting loss and scores for the experts are given in the following figures.
+
+The following figues showcase the loss for the 2 VAE experts. Note that training for this model was cut short due to convergence.
+
+![VAEExpert1Loss](./assets/images/team08/VAEExpert1Loss.jpeg)
+![VAEExpert2Loss](./assets/images/team08/VAEExpert2Loss.jpeg)
+
+The folloiwng figures showcase the score for the 2 VAE experts. Note that training for this model was cut short due to convergence.
+
+![VAEExpert1Score](./assets/images/team08/VAEExpert1Score.jpeg)
+![VAEExpert2Score](./assets/images/team08/VAEExpert2Score.jpeg)
+
+From the above sets of figures, we can see that the loss function for the experts converges as expected. However, the score for each of the loss functions also converges. This indicates that although the experts are able to produce an image that is representative of the transformed distribution, it still is unable to fool the discriminator. This result becomes more clear when we look at the output from the experts which is given in the figure below.
+
+![VAEFaces](./assets/images/team08/VAEFaces.png)
+
+In above, the first column is the canonical distirbutions, the second is the transformed distribution, and the last two are outputs from the experts. In this case, it's clear that the VAE experts are producing an image that is clearly human. However, this image has the opposite issue: it does not capture enough variation and seems to produce the same output. This observation explains why the loss converges but so do the scores against the discriminator. The VAE loss function is convering but the experts are unable to specialize enough to fool the discriminator. We believe that this problem may be fixable through hyper parameter turning and using more expressive models like BetaVAE.
 
 
 ### Conclusion
 
-We set out to see if we can employ the indepedent causal mechanism principal to its maximum effect by trying to apply the ICM model [1] to a more sophisticated dataset like human faces. We took several steps to try to garner some results but were ultimately limited by the datasets. The issue is due to the complexity of the dataset rather than an issue with the model itself. There exists considerable amount of variation in the images within the canonical/transformed distributions themselves making the experts in the ICM model difficult to train. We believe that a dataset specifically designed to apply the ICM model may yield better results and could present a possible direction of future study.
+We set out to see if we can employ the indepedent causal mechanism principal to its maximum effect by trying to apply the ICM model [1] to a more sophisticated dataset like human faces. We took several steps to try to garner some results but were ultimately limited by the datasets. The issue is due to the complexity of the dataset rather than an issue with the model itself. There exists considerable amount of variation within the canonical/transformed distributions themselves(age, sex, orientation) making the experts in the ICM model difficult to train. We believe that a dataset specifically designed to apply the ICM model may yield better results and could present a possible direction of future study.
 
 ### What we hope to show
 

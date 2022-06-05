@@ -111,20 +111,20 @@ The resulting loss and scores for the experts are given in the images below.
 
 The following figures show case the loss for the 3 experts for 3k iterations.
 
-![Expert1Loss](./assets/images/team08/MNISTExpert1loss.jpeg)
-![Expert2Loss](./assets/images/team08/MNISTExpert2loss.jpeg)
-![Expert3Loss](./assets/images/team08/MNISTExpert3loss.jpeg)
+![Expert1Loss]({{ './assets/images/team08/MNISTExpert1loss.jpeg'| relative_url}})
+![Expert2Loss]({{'./assets/images/team08/MNISTExpert2loss.jpeg' | relative_url}})
+![Expert3Loss]({{'./assets/images/team08/MNISTExpert3loss.jpeg' | relative_url}})
 
 The folloiwng figures show case the experts score against the discriminator. Note that fooling the discriminator means a greater expert score.
 
-![Expert1Score](./assets/images/team08/MNISTExpert1Score.jpeg)
-![Expert2Score](./assets/images/team08/MNISTExpert2Score.jpeg)
-![Expert3Score](./assets/images/team08/MNISTExpert3Score.jpeg)
+![Expert1Score]({{'./assets/images/team08/MNISTExpert1Score.jpeg' | relative_url}})
+![Expert2Score]({{'./assets/images/team08/MNISTExpert2Score.jpeg' | relative_url}})
+![Expert3Score]({{'./assets/images/team08/MNISTExpert3Score.jpeg' | relative_url}})
 
 
 Based on the two different sets of figures above, we can verify that the model is able to effective trian to find the mechanisms that drive the transformations. This is because the loss fucntion for all three experts appear to become smaller while their scores against the discriminators rises till convergence. This result is consistent with those we see in paper [1] and therefore gives us confidence that the code and model works as expected. Finally the folloiwng figure further reinforces this fact.
 
-![MNIST6](./assert/images/team08/MNISTOUT.png)
+![MNIST6]({{'./assets/images/team08/MNIST6.png' | relative_url}})
 
 In the image above, we have five different samples for the number 6. The first column is the MNIST image, second column contians the transformed image (right, down, inversion), third column is the expert which specialized on inversion, fourth column is the expert that specialized on down translation and finally fifith column is the expert that specialized on right translation.
 
@@ -158,7 +158,7 @@ This model, called **faces_classifier**, was a simple CNN trained with binary cr
 
 The figure below shows the loss function for this model. Although we did train this model, we ultimately did not using it given that the results for our experiements were not sufficient to employ it.
 
-![FacesLoss](./assert/images/team08/faces_classifer_loss.jpeg)
+![FacesLoss]({{'./assets/images/team08/faces_classifier_loss.jpeg' | relative_url}})
 
 ### Faces
 
@@ -176,18 +176,18 @@ The primary difference was that we modifled the activation function to be Relu r
 
 The following images showcase the loss for the 2 experts for 10k iterations.
 
-![FacesExpert1Loss](./assets/images/team08/FacesExpert1Loss.jpeg)
-![FacesExpert2Loss](./assets/images/team08/FacesExpert2Loss.jpeg)
+![FacesExpert1Loss]({{'./assets/images/team08/FacesExpert1Loss.jpeg' | relative_url}})
+![FacesExpert2Loss]({{'./assets/images/team08/FacesExpert2Loss.jpeg' | relative_url}})
 
 The following images showcase the expert score against the discriminator. Note that fooling the discriminator means a greater expert score.
 
-![FacesExpert1Score](./assets/images/team08/FacesExpert1Score.jpeg)
-![FacesExpert2Score](./assets/images/team08/FacesExpert2Score.jpeg)
+![FacesExpert1Score]({{'./assets/images/team08/FacesExpert1Score.jpeg' | relative_url}})
+![FacesExpert2Score]({{'./assets/images/team08/FacesExpert2Score.jpeg' | relative_url}})
 
 
 Based on the figures above, we can see that the model has failed to learn the transformations. This is evident from both the divergence of the loss function as well as the converge to zero of each of the experts score. The loss functions indicate that the experts are not able to produce a meaningful inversion of the transformed inputs they receive. The scores indicate that the outputs from the experts do not fool the discriminator. This becomes more clear from the image below.
 
-![Faces](./assets/images/team08/Faces.png)
+![Faces]({{'./assets/images/team08/Faces.png' | relative_url}})
 
 In the figure above, the first column contains the data from the canoncial distribution, the second from the transformed distribution. The remaining two are images output from each of the experts. As expected from the scores and loss values, neither of these experts produce results that are meaningful. When considering the datasets in detail, these results are not surprising. Both of these datasets have a considerable amount of variation like facial orientations, image lighting, etc that make it very difficult for the experts to converge. Additionally, the architecture of the experts and the mean squared error loss function may not be suffiencet for complex datasets like this. We made several attempts to tune the training process to try to get meaningful results but were ultimately unsuccessful.
 
@@ -216,17 +216,17 @@ Once we intialized the experts, we applied the algorithm in paper [1] to fine to
 
 The following figues showcase the loss for the 2 VAE experts. Note that training for this model was cut short due to convergence.
 
-![VAEExpert1Loss](./assets/images/team08/VAEExpert1Loss.jpeg)
-![VAEExpert2Loss](./assets/images/team08/VAEExpert2Loss.jpeg)
+![VAEExpert1Loss]({{'./assets/images/team08/VAEExpert1Loss.jpeg' | relative_url}})
+![VAEExpert2Loss]({{'./assets/images/team08/VAEExpert2Loss.jpeg' | relative_url}})
 
 The folloiwng figures showcase the score for the 2 VAE experts. Note that training for this model was cut short due to convergence.
 
-![VAEExpert1Score](./assets/images/team08/VAEExpert1Score.jpeg)
-![VAEExpert2Score](./assets/images/team08/VAEExpert2Score.jpeg)
+![VAEExpert1Score]({{'./assets/images/team08/VAEExpert1Score.jpeg' | relative_url}})
+![VAEExpert2Score]({{'./assets/images/team08/VAEExpert2Score.jpeg' | relative_url}})
 
 From the above sets of figures, we can see that the loss function for the experts converges as expected. However, the score for each of the loss functions also converges. This indicates that although the experts are able to produce an image that is representative of the transformed distribution, it still is unable to fool the discriminator. This result becomes more clear when we look at the output from the experts which is given in the figure below.
 
-![VAEFaces](./assets/images/team08/VAEFaces.png)
+![VAEFaces]({{'./assets/images/team08/VAEFaces.png' | relative_url}})
 
 In above, the first column is the canonical distirbutions, the second is the transformed distribution, and the last two are outputs from the experts. In this case, it's clear that the VAE experts are producing an image that is clearly human. However, this image has the opposite issue: it does not capture enough variation and seems to produce the same output. This observation explains why the loss converges but so do the scores against the discriminator. The VAE loss function is convering but the experts are unable to specialize enough to fool the discriminator. We believe that this problem may be fixable through hyper parameter turning and using more expressive models like BetaVAE.
 

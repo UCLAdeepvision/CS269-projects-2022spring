@@ -60,13 +60,133 @@ Below is the dataset, we would work on for training our mechanisms.
   - [Yale Face Database](http://vision.ucsd.edu/content/yale-face-database)
     - The Yale Face Database contains 165 grayscale images in GIF format of 15 individuals. There are 11 images per subject, one per different facial expression or configuration: center-light, w/glasses, happy, left-light, w/no glasses, normal, right-light, sad, sleepy, surprised, and wink.
 
+### Code
+
+In order to build and train the model, we borrowed some boiler plate code from the licm[3] repository. It contained an implementation of the model described in the paper [1]. However, several modifications needed to be made in order to make the model work for us. The changes are listed below.
+
+- **Condensed the code**: We reduced the code such that the model and data are defined and trained in a single file. The goal was to keep it simple and easy to integrate with Google Colab. 
+- **Adapted Data loaders**: We defiend custom data loader classes to work for our specific datasets.
+- **Changed the Models**: The model implemented in _licms_ was desgined to work for a different dataset than ours and needed to be adapted.
+- **Changed the training algorithm**: Although the initial code was working, we found ways to improve its efficiency by powering logical operations using torch rather python code.
+
+The changes were made based on the dataset we were working on. Our different experiements and the subsequent results for each is given below.
+
+
+### MNIST
+
+#### Model/Data
+
+Initially, the goal was to replciate the results seen in paper [1] by training on MNIST. this would allow us to confirm that both our code was working and that the results in the paper were sound. In order to do this, we updated the code to use the expert and descriminator architectures describe in the paper. The details are given below.
+
+| Expert Layers |
+| ----------- |
+| 3x3, 32, BN, ELU |
+| 3x3, 32, BN, ELU |
+| 3x3, 32, BN, ELU |
+| 3x3, 32, BN, ELU |
+| 3x3, 1, sigmoid |
+
+| Descriminator Layers |
+| ----------- |
+| 3x3, 16, ELU |
+| 3x3, 16, ELU |
+| 3x3, 16, ELU |
+| 2x2, Avg Pooling |
+| 3x3, 32, ELU |
+| 3x3, 32, ELU |
+| 2x2, Avg Pooling |
+| 3x3, 64, ELU |
+| 3x3, 64, ELU |
+| 2x2, Avg Pooling |
+| 1024, FC, ELU |
+| 1, FC, Sigmoid |
+
+There were several issues we faced when trying to train this model. The main problem was due to training time requried to pretrain the experts on the transformed data. Each expert needed to first process the entire MNIST dataset before attempting to specialize with the help of the descriminator. This process is detialed more clearly in paper [1]. Due to our computational limintations, we decided to experiement on only three different transformations on the data: right translation, down translation, inversion. Additionally, we further simplified the problem by working on a single image class rather than the entire MNIST dataset. This reduced the MNIST dataset size from 60k to around 10k and significantly reduced the training time required for our model. We felt that these changes do not significantly alter the results we saw after training. This data preprocessing was done using torch's builtin image transformation operations.
+
+Finally, the experts and discriminator in this case were trained using binary cross entropy loss and Adam optimizer for 3000 iterations.
+
+#### Results
+
+The resulting loss and scores for the experts are given in the images below.
+
+The following figures show case the loss for the 3 experts for 3k iterations.
+
+![Expert1Loss](./assets/images/team08/MNISTExpert1loss.jpeg)
+![Expert2Loss](./assets/images/team08/MNISTExpert2loss.jpeg)
+![Expert3Loss](./assets/images/team08/MNISTExpert3loss.jpeg)
+
+The folloiwng figures show case the experts score against the discriminator.
+
+![Expert1Score](./assets/images/team08/MNISTExpert1Score.jpeg)
+![Expert2Score](./assets/images/team08/MNISTExpert2Score.jpeg)
+![Expert3Score](./assets/images/team08/MNISTExpert3Score.jpeg)
+
+
+Based on the two different sets of figures above, we can verify that the model is able to effective trian to find the mechanisms that drive the transformations. This is because the loss fucntion for all three experts appear to become smaller while their scores against the discriminators rises till convergence. This result is consistent with those we see in paper [1] and therefore gives us confidence that the code and model works as expected. Finally the folloiwng figure further reinforces this fact.
+
+![MNIST6](./assert/images/team08/MNISTOUT.png)
+
+In the image above, we have five different samples for the number 6. The first column is the MNIST image, second column contians the transformed image (right, down, inversion), third column is the expert which specialized on inversion, fourth column is the expert that specialized on down translation and finally fifith column is the expert that specialized on right translation.
+
+
+### Problem Setup
+
+Next, we tackled the problem that we originally set out to test. In order to do this, we first needed to reimagine the definition of a transformations detailed in the original paper. Unlike MNIST model, the transformation in our faces dataset were intrinsic physical characteristics shared among people of the same race. This allows us to emulate mechanisms that transform an existing probabiltiy distributions which can subsequently learned. We arbitrarily chose "asian" as the canonical probability distribution that is "transformed" by mechanisms to produce transfored distributions representing "white" and "black". Going forward, we will refer to these distirbutions as canoncail and transformed. In this way, we set up the problem such that an expert can learn to invert the transformation back to the canonical distribution. In the following sections we detail our efforts to trian the model for this purpose.
+
+
+### Faces Classifier
+
+First, we needed an effective way to measure the performance of our experts after they have spspecalized to invert the transformations. For this purpose, we decided to train a neural network classifier that is able to distinguish between the canoncail and transformed distributions.Once trained, the objective of the experts would be to invert the transformations such that they are able to trick this model to misclassify expert outputs as having originated from the canoncical distribution. This approach would allow us to measure the trained experts. 
+
+This model, called **faces_classifier**, was a simple CNN trained with binary cross entropy loss where data from the canoncial distribution was taken to be the positive label while transformed data was negative. We trained this model for 50 epochs at which point the loss function for the model converged. 
+
+| faces_classifier Layers |
+| ----------- |
+| 3x3, 16, ELU |
+| 3x3, 16, ELU |
+| 3x3, 32, ELU |
+| 2x2, Avg Pooling |
+| 3x3, 32, ELU |
+| 3x3, 32, ELU |
+| 2x2, Avg Pooling |
+| 3x3, 64, ELU |
+| 3x3, 64, ELU |
+| 2x2, Avg Pooling |
+| 576, FC, ELU |
+| 25, FC, ELU
+| 1, FC, Sigmoid |
+
+The figure below shows the loss function for this model. Although we did train this model, we ultimately did not using it given that the results for our experiements were not sufficient to employ it.
+
+![FacesLoss](./assert/images/team08/.png)
+
+### Faces
+
+Once we had a classifier, we shifted our focus to model and train the experts to invert the transformations. The model needed several changes from the original MNIST model. First, we needed to make sure that the model can work with RGB datasets. In order to do this, we changed the design of our experts which is detialed below.
+
+### VAEExpert
+
+Finally, due to the liminations posed by experts that are simple CNNs, we attempt to see if employing variational autoencoders in or model could yeild better results. Variational autoencoders (VAE) are neural networks that are tuned to learn latent space representations of input data. By choose a sufficiently small latent space, the idea was to optimize the VAE to learn to find representations that focus on the facial features but ignore non-essential information like orientation. We used VAEs as experts in our model and the initialization phase invovled training the VAEExperts themselves.
+
+### Analysis
+
+Given that we were able to replicate the model in paper [1], based on our experiments we know that the problem was not due to the implementation of the code. Instead the results indicate that 
+
+
+### Conclusion
+
+We set out to see if we can employ the indepedent causal mechanism principal to its maximum effect by trying to apply the ICM model [1] to a more sophisticated dataset like human faces. We took several steps to try to garner some results but were ultimately limited by the datasets. The issue is due to the complexity of the dataset rather than an issue with the model itself. There exists considerable amount of variation in the images within the canonical/transformed distributions themselves making the experts in the ICM model difficult to train. We believe that a dataset specifically designed to apply the ICM model may yield better results and could present a possible direction of future study.
+
 ### What we hope to show
 
 We want to find effective independent mechanisms or experts to help us generalize across human faces. With the casual mechanisms we implemented, we can use them to detect human faces more robustly.
 Also, we will test whether we can use these mechanisms in a different domain.
+
 
 ## Reference
 
 [1] Giambattista Parascandolo, Niki Kilbertus, Mateo Rojas-Carulla, Bernhard Schölkopf. "Learning Independent Causal Mechanisms" Proceedings of the 35th International Conference on Machine Learning, PMLR. 2018.
 
 [2] Goyal A, Lamb A, Hoffmann J, et al. "Recurrent independent mechanisms" arXiv preprint arXiv:1909.10893, 2019.
+
+[3] Evtimova K, licms, 2018, Github Repository, https://github.com/kevtimova/licms

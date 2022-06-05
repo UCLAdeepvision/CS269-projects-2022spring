@@ -6,7 +6,7 @@ author: Vishnu Devarakonda, Ting-Po Huang
 date: 2022-04-23
 ---
 
-> In order to generalize the machine learning models and solve the "Distribution Shift" problem, we want to propose a different solution with independent mechanisms.
+> In order to generalize the machine learning models and solve the "Distribution Shift" problem, we want to propose a different solution with independent mechanisms. We want to find effective independent mechanisms or experts to help us generalize across human faces. With the casual mechanisms we implemented, we can use them to detect human faces more robustly.
 
 <!--more-->
 {: class="table-of-content"}
@@ -25,44 +25,10 @@ We want to combine casual mechanism into our project. The goal of this project i
 
 [2] In this paper, the authors propose Recurrent Independent Mechanisms (RIMs), a new recurrent architecture in which multiple groups of recurrent cells operate with nearly independent transition dynamics. It uses an attention mechanism to train the RIMS effectively. And empirically, the authors found that if the learned mechanisms are too complex, it is easy for an individual mechanism to dominate. But if the learned mechanisms do not have enough capacity, then different RIMS have to work together. With Competitive Learning, multiple RIMS can be active, interact and share information.
 
-## Methods
-To build our own model, we first reproduce the digits detection work (with MNIST dataset) on paper. 
-![IM]({{ '/assets/images/team08/IM.png' | relative_url }})
-{: style="width: 400px; max-width: 50%;"}
-*Fig 1. Indepedent mechanism model structure.*
-
 
 ## Experiments
 
-### Datasets
-
-Below is the dataset, we would work on for training our mechanisms.
-
-- Face pictures with featuress driven by genetics and culture
-  - [Flickr-Faces-HQ Dataset (FFHQ)](https://github.com/NVlabs/ffhq-dataset)
-    - high-quality image dataset of human faces, originally created as a benchmark for generative adversarial networks (GAN),
-    - The dataset consists of 70,000 high-quality PNG images at 1024×1024 resolution and contains considerable variation in terms of age, ethnicity and image background. It also has good coverage of accessories such as eyeglasses, sunglasses, hats, etc.
-  - [Tufts Face Database](https://www.kaggle.com/datasets/kpvisionlab/tufts-face-database)
-    - the most comprehensive, large-scale (over 10,000 images, 74 females + 38 males, from more than 15 countries with an age range between 4 to 70 years old) face dataset that contains 7 image modalities: visible, near-infrared, thermal, computerized sketch, LYTRO, recorded video, and 3D images.
-  - [UTKFace](https://susanqq.github.io/UTKFace/)
-    - The dataset is a large-scale face dataset with long age span (range from 0 to 116 years old). The dataset consists of over 20,000 face images with annotations of age, gender, and ethnicity.
-  - [Large-scale CelebFaces Attributes (CelebA) Dataset](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html)
-    - CelebA is a large-scale face attributes dataset with more than 200K celebrity images, each with 40 attribute annotations.
-    - The images in this dataset cover large pose variations and background clutter. CelebA has large diversities, large quantities, and rich annotations, including 10,177 number of identities and 202,599 number of face images.
-- Faces picture with real augumentation
-  - [Real and Fake Face Detection](https://www.kaggle.com/datasets/ciplab/real-and-fake-face-detection)
-    - This dataset contains expert-generated high-quality photoshopped face images.The images are composite of different faces, separated by eyes, nose, mouth, or whole face.
-  - [Face Mask](https://www.kaggle.com/datasets/andrewmvd/face-mask-detection)
-    - This dataset contains 853 images belonging to the 3 classes, as well as their bounding boxes in the PASCAL VOC format.The classes are With mask, Without mask, and Mask worn incorrectly.
-  - [Labelled Faces in the Wild (LFW)](https://www.kaggle.com/datasets/jessicali9530/lfw-dataset)
-    - LFW is a database of face photographs designed for studying the problem of unconstrained face recognition. This database was created and maintained by researchers at the University of Massachusetts, Amherst.
-    - 13,233 images of 5,749 people were detected and centered by the Viola Jones face detector and collected from the web. 1,680 of the people pictured have two or more distinct photos in the dataset
-  - [Yale Face Database](http://vision.ucsd.edu/content/yale-face-database)
-    - The Yale Face Database contains 165 grayscale images in GIF format of 15 individuals. There are 11 images per subject, one per different facial expression or configuration: center-light, w/glasses, happy, left-light, w/no glasses, normal, right-light, sad, sleepy, surprised, and wink.
-
-### Code
-
-In order to build and train the model, we borrowed some boiler plate code from the licm[3] repository. It contained an implementation of the model described in the paper [1]. However, several modifications needed to be made in order to make the model work for us. The changes are listed below.
+In order to build and train the model, we borrowed some boiler plate code from the licms[3] repository. It contained an implementation of the model described in the paper [1]. However, several modifications needed to be made in order to make the model work for us. The changes are listed below.
 
 - **Condensed the code**: We reduced the code such that the model and data are defined and trained in a single file. The goal was to keep it simple and easy to integrate with Google Colab. 
 - **Adapted Data loaders**: We defiend custom data loader classes to work for our specific datasets.
@@ -78,29 +44,8 @@ The changes were made based on the dataset we were working on. Our different exp
 
 Initially, the goal was to replciate the results seen in paper [1] by training on MNIST. this would allow us to confirm that both our code was working and that the results in the paper were sound. In order to do this, we updated the code to use the expert and descriminator architectures describe in the paper. The details are given below.
 
-| Expert Layers |
-| ----------- |
-| 3x3, 32, BN, ELU |
-| 3x3, 32, BN, ELU |
-| 3x3, 32, BN, ELU |
-| 3x3, 32, BN, ELU |
-| 3x3, 1, sigmoid |
-
-| Descriminator Layers |
-| ----------- |
-| 3x3, 16, ELU |
-| 3x3, 16, ELU |
-| 3x3, 16, ELU |
-| 2x2, Avg Pooling |
-| 3x3, 32, ELU |
-| 3x3, 32, ELU |
-| 2x2, Avg Pooling |
-| 3x3, 64, ELU |
-| 3x3, 64, ELU |
-| 2x2, Avg Pooling |
-| 1024, FC, ELU |
-| 1, FC, Sigmoid |
-
+![MNIST_model]({{ './assets/images/team08/MNIST_model.png'| relative_url}})
+{: style="width: 500px; "}
 There were several issues we faced when trying to train this model. The main problem was due to training time requried to pretrain the experts on the transformed data. Each expert needed to first process the entire MNIST dataset before attempting to specialize with the help of the descriminator. This process is detialed more clearly in paper [1]. Due to our computational limintations, we decided to experiement on only three different transformations on the data: right translation, down translation, inversion. Additionally, we further simplified the problem by working on a single image class rather than the entire MNIST dataset. This reduced the MNIST dataset size from 60k to around 10k and significantly reduced the training time required for our model. We felt that these changes do not significantly alter the results we saw after training. This data preprocessing was done using torch's builtin image transformation operations.
 
 Finally, the experts and discriminator in this case were trained using binary cross entropy loss and Adam optimizer for 3000 iterations.
@@ -133,6 +78,18 @@ In the image above, we have five different samples for the number 6. The first c
 
 Next, we tackled the problem that we originally set out to test. In order to do this, we first needed to reimagine the definition of a transformations detailed in the original paper. Unlike MNIST model, the transformation in our faces dataset were intrinsic physical characteristics shared among people of the same race. This allows us to emulate mechanisms that transform an existing probabiltiy distributions which can subsequently learned. We arbitrarily chose "asian" as the canonical probability distribution that is "transformed" by mechanisms to produce transfored distributions representing "white" and "black". Going forward, we will refer to these distirbutions as canoncail and transformed. In this way, we set up the problem such that an expert can learn to invert the transformation back to the canonical distribution. In the following sections we detail our efforts to trian the model for this purpose.
 
+### Datasets
+
+Below is the datasets, we would work on them for training our mechanisms.
+
+- Face pictures with featuress driven by genetics and culture
+  - [UTKFace](https://susanqq.github.io/UTKFace/)
+    - ![UTKFace]({{'./assets/images/team08/UTKFace.png' | relative_url}}){: style="width: 400px; "}
+    - The dataset is a large-scale face dataset with long age span (range from 0 to 116 years old). The dataset consists of over 20,000 face images with annotations of age, gender, and ethnicity.
+  - [FaceARG](https://www.cs.ubbcluj.ro/~dadi/FaceARG-database.html)
+    - ![FaceARG]({{'./assets/images/team08/FaceARG.png' | relative_url}}){: style="width: 500px; "}
+    - The dataset contains 175,000 facial images from the Internet and used four independent human subjects to label the images with race information. It gathered the largest available face database (of more than 175000 images) annotated with race, age, gender and accessories information.
+
 
 ### Faces Classifier
 
@@ -140,21 +97,7 @@ First, we needed an effective way to measure the performance of our experts afte
 
 This model, called **faces_classifier**, was a simple CNN trained with binary cross entropy loss where data from the canoncial distribution was taken to be the positive label while transformed data was negative. We trained this model for 50 epochs at which point the loss function for the model converged. 
 
-| faces_classifier Layers |
-| ----------- |
-| 3x3, 16, ELU |
-| 3x3, 16, ELU |
-| 3x3, 32, ELU |
-| 2x2, Avg Pooling |
-| 3x3, 32, ELU |
-| 3x3, 32, ELU |
-| 2x2, Avg Pooling |
-| 3x3, 64, ELU |
-| 3x3, 64, ELU |
-| 2x2, Avg Pooling |
-| 576, FC, ELU |
-| 25, FC, ELU
-| 1, FC, Sigmoid |
+![FaceClassifier]({{ './assets/images/team08/FaceClassifier_model.png'| relative_url}}){: style="width: 250px; "}
 
 The figure below shows the loss function for this model. Although we did train this model, we ultimately did not using it given that the results for our experiements were not sufficient to employ it.
 
@@ -164,13 +107,7 @@ The figure below shows the loss function for this model. Although we did train t
 
 Once we had a classifier, we shifted our focus to model and train the experts to invert the transformations. The model needed several changes from the original MNIST model. First, we needed to make sure that the model can work with RGB datasets. In order to do this, we changed the design of our experts. The details can be found in the table below.
 
-| Expert Layers |
-| ----------- |
-| 3x3, 32, BN, Relu |
-| 3x3, 32, BN, Relu |
-| 3x3, 32, BN, Relu |
-| 3x3, 32, BN, Relu |
-| 3x3, 3, Relu |
+![FaceExpert]({{ './assets/images/team08/FaceExpert_model.png'| relative_url}}){: style="width: 250px; "}
 
 The primary difference was that we modifled the activation function to be Relu rather than ELU. Additionally, the outputs of the experts contained 3 channels for RGB. This changes also required us to make more modifications to our loss functions and the input dataset. We normalized the pixel values in the datasets to between [0,1] and resized the images to match the shape of the MNIST dataset (28x28). This was done for increasing training speed and stability. Second, we used the mean squared error loss as the loss fucntion for training the experts. Finally, note that for this model we only need 2 experts becuase there are 2 "transformed" distributions. After making these changes, we trained the model for approximately 10k iterations.
 
@@ -194,25 +131,14 @@ In the figure above, the first column contains the data from the canoncial distr
 
 ### VAEExpert
 
-Finally, due to the liminations posed by experts that are simple CNNs, we attempt to see if employing variational autoencoders in or model could yeild better results. Variational autoencoders (VAE) are neural networks that are tuned to learn latent space representations of input data. By choose a sufficiently small latent space, the idea was to optimize the VAE to find representations that focus on the facial features but ignore non-essential information like orientation. We used VAEs as experts in our model and the initialization phase invovled training the VAE experts themselves to learn the latent space for the transformed distributions. Then using the descriminator, we attempt to train the experts to specialize.
+Finally, due to the limitations posed by experts that are simple CNNs, we attempt to see if employing variational autoencoders in or model could yield better results. Variational autoencoders (VAE) are neural networks that are tuned to learn latent space representations of input data. By choose a sufficiently small latent space, the idea was to optimize the VAE to find representations that focus on the facial features but ignore non-essential information like orientation. We used VAEs as experts in our model and the initialization phase invovled training the VAE experts themselves to learn the latent space for the transformed distributions. Then using the descriminator, we attempt to train the experts to specialize.
 
 Training VAEs is tricky and difficult to get right. The loss function for these experts was a combination of the reconstruction error(mean-squared error) and a weighted KLDivergence. This training required tedious hyper parameter tuning to get the experts to initiialize appropriately. The model for the VAE experts is given below. 
 
-| Encoder |
-| ----------- |
-| 3x3, 32, BN, Relu |
-| 3x3, 64, BN, Relu |
-| 3x3, 64, BN, Relu |
-| 256 |
+![Faces]({{'./assets/images/team08/VAEExpert_model.png' | relative_url}})
+{: style="width: 500px; "}
 
-| Decoder |
-| ----------- |
-| 6x6, 64, BN, Relu|
-| 6x6, 64, BN, Relu|
-| 6x6, 32, BN, Relu|
-| 6x6, 3, BN, Relu|
-
-Once we intialized the experts, we applied the algorithm in paper [1] to fine to the model to special. The resulting loss and scores for the experts are given in the following figures.
+Once we intialized the experts, we applied the algorithm in paper [1] to finetune the model to special. The resulting loss and scores for the experts are given in the following figures.
 
 The following figues showcase the loss for the 2 VAE experts. Note that training for this model was cut short due to convergence.
 
@@ -228,18 +154,14 @@ From the above sets of figures, we can see that the loss function for the expert
 
 ![VAEFaces]({{'./assets/images/team08/VAEFaces.png' | relative_url}})
 
-In above, the first column is the canonical distirbutions, the second is the transformed distribution, and the last two are outputs from the experts. In this case, it's clear that the VAE experts are producing an image that is clearly human. However, this image has the opposite issue: it does not capture enough variation and seems to produce the same output. This observation explains why the loss converges but so do the scores against the discriminator. The VAE loss function is convering but the experts are unable to specialize enough to fool the discriminator. We believe that this problem may be fixable through hyper parameter turning and using more expressive models like BetaVAE.
+In above, the first column is the canonical distirbutions, the second is the transformed distribution, and the last two are outputs from the experts. In this case, it's clear that the VAE experts are producing an image that is clearly human. However, this image has the opposite issue: it does not capture enough variation and seems to produce the same output. This observation explains why the loss converges but so do the scores against the discriminator. The VAE loss function is convering but the experts are unable to specialize enough to fool the discriminator. We believe that this problem may be fixable through hyper parameter tuning and using more expressive models like BetaVAE.
 
 
-### Conclusion
+## Conclusion
 
 We set out to see if we can employ the indepedent causal mechanism principal to its maximum effect by trying to apply the ICM model [1] to a more sophisticated dataset like human faces. We took several steps to try to garner some results but were ultimately limited by the datasets. The issue is due to the complexity of the dataset rather than an issue with the model itself. There exists considerable amount of variation within the canonical/transformed distributions themselves(age, sex, orientation) making the experts in the ICM model difficult to train. We believe that a dataset specifically designed to apply the ICM model may yield better results and could present a possible direction of future study.
 
-### What we hope to show
-
-We want to find effective independent mechanisms or experts to help us generalize across human faces. With the casual mechanisms we implemented, we can use them to detect human faces more robustly.
-Also, we will test whether we can use these mechanisms in a different domain.
-
+We have uploaded our code in this [Github repo](https://github.com/DevarakondaV/CS269Project). Thanks!
 
 ## Reference
 

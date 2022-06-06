@@ -89,20 +89,26 @@ Fig 5 illustrates the feature maps acquired by each of the four methods. We obse
 
 ## Data and Evaluation Plan
 
-Due to computation limit, we use ImageNet 2012 validation dataset. The experiments focus on first 10000 images and 200 classes. 
+Due to computation limit, we use ImageNet 2012 validation dataset. The experiments focus on validation datasets' 50000 images and 1000 classes. 
 
 There are 4 evaluation metrics. $box_iou = \frac{area of intersection}{area of union}$. In imagenet, there are images contain several ground truth bounding boxes. We will calculate box_iou with regard to any pair of predicted target and ground truth target, then pick the largest one out to be the result. $box_iou_final = max([box_iou(gt_i, predict_j) i \in m, j \in n])$. If box_iou of the image is larger than 0.5, it is considered as true localization. For top 1 localization accuracy, box_iou needs to be larger than 0.5 and the predicted top 1 label should be the correct label. Top 5 localization accuracy means the box_iou needs to be larger than 0.5 and correct label should fall into top 5 labels.
 
 
 
 ## Experiment Analysis 
-As shown in Fig. 6, our pipeline reach 66.33% for ground truth localization accuracy. The data from first 7 columns comes from Eunji Kim[10]. Considering this method is zero shot localization, it beats first 4 methods using weakly supervised localization method. However, there are some situiations in our favor. First, our pipeline only tests over the first 10000 images in ImageNet because of computation limit. The overall accuracy may be lower if the test is performed over the whole dataset. Secondly, for ground truth localization accuracy, it is assumed that correct label is given. The same definition applies to other tested method of GT-know localization accuracy. However, this is not as similar as classical localization definition. Classical localization task predicts both classification and localization result. Thus, top 1 localization accuracy and top 5 localizatio accuracy are more suitable for classical localization task for comparision. If the user gives certain label input during test, ground truth localization accuracy will be suitable. 
+As shown in following table, our pipeline reach 66.60% for ground truth localization accuracy. The data from first 7 columns comes from Eunji Kim[10]. Considering this method is zero shot localization, it beats first 4 methods using weakly supervised localization method. However, there are some situiations in our favor. Firstly, for ground truth localization accuracy, it is assumed that correct label is given. The same definition applies to other tested method of GT-know localization accuracy. However, this is not as similar as classical localization definition. Classical localization task predicts both classification and localization result. Thus, top 1 localization accuracy and top 5 localizatio accuracy are more suitable for classical localization task for comparision. If the user gives certain label input during test, ground truth localization accuracy will be suitable.
 
-
-![Experiment comparision with previous work]({{ '/assets/images/team03/final/experiment-others.png' | relative_url }})
-{: style="width: 700px; max-width: 100%;"}
-*Fig 6. Experiment comparision with previous work.*
-
+| Method                | Backbone |  GT-known Loc | Top-5 Loc        | Top-1 Loc        |
+|-----------------------|----------|---------------|------------------|------------------|
+| ResNet50-CAM(cvpr 16) | ResNet50 | 51.86         | 49.47            | 38.99            |
+| ADL(cvpr 19)          | ResNet50 | 61.04         | -                | 48.23            |
+| FAM(iccv 21)          | ResNet50 | 64.56         | -                | 54.46            |
+| PSOL(iccv 21)         | ResNet50 | 65.44         | 63.08            | 53.98            |
+| I^2C(eccv 20)         | ResNet50 | 68.50         | 64.60            | 54.83            |
+| SPOL(ICCV 21)         | ResNet50 | 69.02         | 67.15            | 59.14            |
+| BGC (cvpr 22)         | ResNet50 | 69.89         | 65.75            | 53.76            |
+| Ours                  | ResNet50 | 66.60         | 39.50(cls 58.64) | 57.20(cls 85.26) |
+Table 6: Comparision with other classical work. Our pipeline's best performance can reach 66.60% ground truth localization.
 
 Specific cases are shown in Fig. 7 and Fig. 8. During these cases, user gives correct label input to check its localization ability. For successful cases, we can see the most activated area focuses on the interested object and captures features, such as head and body pretty well. However, there are also cases focusing on the non-ideal features. For instance in Fig 8's second column, the most activated area is somewhere on the wall. But the interested object is the dog.
 
@@ -117,14 +123,19 @@ Specific cases are shown in Fig. 7 and Fig. 8. During these cases, user gives co
 
 
 
-Fig 9 shows detailed experiment result using different backbone and CAM threshold. ResNet101 performs better than ResNet50 and ViT in terms of ground truth localization accuracy 68.57%. When it comes to both classification and localization, Resnet50 performs best. ViT is not ideal at all because the method extracting activation map, which is QKV with PCA, is brute force. The activation map fails to identify the entire entity as interested object. Therefore, the predicted bounding box is sparse and small, which causes the box_iou to be smaller than 0.5 and localization accuracy to be low.
+Table 9 shows detailed experiment result using different backbone and CAM threshold. ResNet101 performs better than ResNet50 and ViT in terms of ground truth localization accuracy 68.57%. When it comes to both classification and localization, Resnet50 performs best. ViT is not ideal at all because the method extracting activation map, which is QKV with PCA, is brute force. The activation map fails to identify the entire entity as interested object. Therefore, the predicted bounding box is sparse and small, which causes the box_iou to be smaller than 0.5 and localization accuracy to be low.
 
-![Experiment result]({{ '/assets/images/team03/final/experiment-self.png' | relative_url }})
-{: style="width: 700px; max-width: 100%;"}
-*Fig 9. Overall experiment result.*
-
-
-
+| Method                | Backbone |  GT-known Loc | Top-5 Loc        | Top-1 Loc        |
+|-----------------------|----------|---------------|------------------|------------------|
+| ResNet50-CAM(cvpr 16) | ResNet50 | 51.86         | 49.47            | 38.99            |
+| ADL(cvpr 19)          | ResNet50 | 61.04         | -                | 48.23            |
+| FAM(iccv 21)          | ResNet50 | 64.56         | -                | 54.46            |
+| PSOL(iccv 21)         | ResNet50 | 65.44         | 63.08            | 53.98            |
+| I^2C(eccv 20)         | ResNet50 | 68.50         | 64.60            | 54.83            |
+| SPOL(ICCV 21)         | ResNet50 | 69.02         | 67.15            | 59.14            |
+| BGC (cvpr 22)         | ResNet50 | 69.89         | 65.75            | 53.76            |
+| Ours                  | ResNet50 | 66.60         | 39.50(cls 58.64) | 57.20(cls 85.26) |
+Table 9: Overall experiment result.
 
 In Fig 9, we can see CAM threshold also has influence over the localization accuracy. Fig 10 gives more detailed explaination. Heatmap has different intensity in pixel representing the activation level of the area. The higher the intensity, the color will be more red than blue, and the pixel are regarded as more activated features. Threshold and common component method will be used to find the bouding box of interested obejct. When the threashold is higher, the bounding box will be sliced smaller and more likely to be seperated into multiple boxes if read areas are seperated by yellow areas. When there are multiple ground truth instances, such as multiple hens in the example image, higher threashold can help slice the most activated areas in heatmap. However, threashold is not the higher, the better. In the upper histogram in Fig 10, for both ResNet 50 and ResNet 101, we can see when threshold = 0.6, the accuracy with known ground truth is highest compared with case threshold 0.55 and 0.65. Thus, threshold can be a hyperparameter affecting the localization accuracy.
 

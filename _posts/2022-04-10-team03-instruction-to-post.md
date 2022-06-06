@@ -125,16 +125,17 @@ Specific cases are shown in Fig. 7 and Fig. 8. During these cases, user gives co
 
 Table 9 shows detailed experiment result using different backbone and CAM threshold. ResNet101 performs better than ResNet50 and ViT in terms of ground truth localization accuracy 68.57%. When it comes to both classification and localization, Resnet50 performs best. ViT is not ideal at all because the method extracting activation map, which is QKV with PCA, is brute force. The activation map fails to identify the entire entity as interested object. Therefore, the predicted bounding box is sparse and small, which causes the box_iou to be smaller than 0.5 and localization accuracy to be low.
 
-| Method                | Backbone |  GT-known Loc | Top-5 Loc        | Top-1 Loc        |
-|-----------------------|----------|---------------|------------------|------------------|
-| ResNet50-CAM(cvpr 16) | ResNet50 | 51.86         | 49.47            | 38.99            |
-| ADL(cvpr 19)          | ResNet50 | 61.04         | -                | 48.23            |
-| FAM(iccv 21)          | ResNet50 | 64.56         | -                | 54.46            |
-| PSOL(iccv 21)         | ResNet50 | 65.44         | 63.08            | 53.98            |
-| I^2C(eccv 20)         | ResNet50 | 68.50         | 64.60            | 54.83            |
-| SPOL(ICCV 21)         | ResNet50 | 69.02         | 67.15            | 59.14            |
-| BGC (cvpr 22)         | ResNet50 | 69.89         | 65.75            | 53.76            |
-| Ours                  | ResNet50 | 66.60         | 39.50(cls 58.64) | 57.20(cls 85.26) |
+| Method                         | CAM threshold | box_iou | GT-known Loc | Top-1 Loc | Top-5 Loc |
+|--------------------------------|---------------|---------|--------------|-----------|-----------|
+| ResNet50                       | 0.55          |  0.56   | 64.24%       | 37.65%    | 54.90%    |
+|                                | 0.60          |  0.57   | 66.93%       | 39.30%    | 57.20%    |
+|                                | 0.65          |  0.57   | 66.60%       | 39.20%    | 57.08%    |
+| ResNet101                      | 0.55          |  0.55   | 64.44%       | 38.94%    | 55.50%    |
+|                                | 0.60          |  0.55   | 65.40%       | 39.5%     | 56.31%    |
+|                                | 0.65          |  0.54   | 63.49%       | 38.39%    | 54.71%    |
+| VIT(ImageNet first 10k images) | 0.55          | 0.30    | 20.80%       | 14.63%    | 19.57%    |
+|                                | 0.60          | 0.25    | 15.08%       | 10.85%    | 14.18%    |
+|                                | 0.65          | 0.19    | 9.66%        | 6.82%     | 9.1%      |
 Table 9: Overall experiment result.
 
 In Fig 9, we can see CAM threshold also has influence over the localization accuracy. Fig 10 gives more detailed explaination. Heatmap has different intensity in pixel representing the activation level of the area. The higher the intensity, the color will be more red than blue, and the pixel are regarded as more activated features. Threshold and common component method will be used to find the bouding box of interested obejct. When the threashold is higher, the bounding box will be sliced smaller and more likely to be seperated into multiple boxes if read areas are seperated by yellow areas. When there are multiple ground truth instances, such as multiple hens in the example image, higher threashold can help slice the most activated areas in heatmap. However, threashold is not the higher, the better. In the upper histogram in Fig 10, for both ResNet 50 and ResNet 101, we can see when threshold = 0.6, the accuracy with known ground truth is highest compared with case threshold 0.55 and 0.65. Thus, threshold can be a hyperparameter affecting the localization accuracy.

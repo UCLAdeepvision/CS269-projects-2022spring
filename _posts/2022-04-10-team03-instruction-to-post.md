@@ -88,27 +88,21 @@ Fig 5 illustrates the feature maps acquired by each of the four methods. We obse
 
 
 ## Data and Evaluation Plan
- 
-We quantitively evaluate our zero-shot localization approach on the ImageNet 2012 validation dataset. The dataset consists of 50000 images and 1000 classes. Each image has a single class label for the main objects. Each class label may have multiple synonyms. Additionally, an image may contain multiple ground truth localization bounding boxes. 
 
-There are 4 evaluation metrics: box IOU, groud truth localization accuracy, top-1 localization accuracy, and top-5 localization accuracy. $box_iou = \frac{area of intersection}{area of union}$. For images that contain several ground truth bounding boxes, we calculate box_iou with regard to every pair of predicted target and ground truth target, and pick the largest one to be the box_iou result. $box_iou_final = max([box_iou(gt_i, predict_j) i \in m, j \in n])$. If the box_iou of an image is larger than 0.5, the predict is considered as correct for ground truth localization accuracy. For top 1 localization accuracy, box_iou needs to be larger than 0.5 and the predicted top 1 label should be the correct label. Top 5 localization accuracy means the box_iou needs to be larger than 0.5 and correct label should fall into top 5 predicted labels.
+We quantitively evaluate our zero-shot localization approach on the ImageNet 2012 validation dataset. The dataset consists of 50000 images and 1000 classes. Each image has a single class label for the main objects. Each class label may have multiple synonyms. Additionally, an image may contain multiple ground truth localization bounding boxes.
 
-When construting the prompt as the input to the text encoder given a label, we use the template "an image of a \{label\}.". In the case where there multiple synonyms for the given label, we embed each synonym into the template, and use the average of the embedding outputs from the text encoder. We note that prompt engineering is a seperate research domain, and the offical Github repository of the CLIP project provides a set of templates for the ImageNet dataset.
+There are 4 evaluation metrics: box IOU, groud truth localization accuracy, top-1 localization accuracy, and top-5 localization accuracy. Given an input label, our method may predict from zero to multiple bounding boxes. $box_iou = \frac{area of intersection}{area of union}$. For images that contain several ground truth bounding boxes, we calculate box_iou with regard to every pair of predicted target and ground truth target, and pick the largest one to be the box_iou result. $box_iou_final = max([box_iou(gt_i, predict_j) i \in m, j \in n])$. If the box_iou of an image is larger than 0.5, the predict is considered as correct for ground truth localization accuracy. For top 1 localization accuracy, box_iou needs to be larger than 0.5 and the predicted top 1 label should be the correct label. Top 5 localization accuracy means the box_iou needs to be larger than 0.5 and correct label should fall into top 5 predicted labels.
 
-## Experiment Analysis 
-As shown in following table, our pipeline reach 66.60% for ground truth localization accuracy. The data from first 7 columns comes from Eunji Kim[10]. Considering this method is zero shot localization, it beats first 4 methods using weakly supervised localization method. However, there are some situiations in our favor. Firstly, for ground truth localization accuracy, it is assumed that correct label is given. The same definition applies to other tested method of GT-know localization accuracy. However, this is not as similar as classical localization definition. Classical localization task predicts both classification and localization result. Thus, top 1 localization accuracy and top 5 localizatio accuracy are more suitable for classical localization task for comparision. If the user gives certain label input during test, ground truth localization accuracy will be suitable.
+When construting the textual prompt as the input to the text encoder given a label, we use the template "an image of a \{label\}." to create the sentence. In the case where there are multiple synonyms for the given label, we embed each synonym into the template, and use the average of the embedding outputs from the text encoder. We note that prompt engineering is a seperate research domain, and the offical Github repository of the CLIP project provides a set of templates for the ImageNet dataset.
 
-| Method                | Backbone |  GT-known Loc | Top-5 Loc        | Top-1 Loc        |
-|-----------------------|----------|---------------|------------------|------------------|
-| ResNet50-CAM(cvpr 16) | ResNet50 | 51.86         | 49.47            | 38.99            |
-| ADL(cvpr 19)          | ResNet50 | 61.04         | -                | 48.23            |
-| FAM(iccv 21)          | ResNet50 | 64.56         | -                | 54.46            |
-| PSOL(iccv 21)         | ResNet50 | 65.44         | 63.08            | 53.98            |
-| I^2C(eccv 20)         | ResNet50 | 68.50         | 64.60            | 54.83            |
-| SPOL(ICCV 21)         | ResNet50 | 69.02         | 67.15            | 59.14            |
-| BGC (cvpr 22)         | ResNet50 | 69.89         | 65.75            | 53.76            |
-| Ours                  | ResNet50 | 66.60         | 39.50(cls 58.64) | 57.20(cls 85.26) |
-Table 6: Comparision with other classical work. Our pipeline's best performance can reach 66.60% ground truth localization.
+## Experiment Results and Analysis 
+We first present our quantitive results on the ImageNet validation set with Resnet backbone. As shown in Fig. 6, our pipeline reach 66.33% for ground truth localization accuracy. Considering VL-Score is a zero shot localization method, it still achieves comparative ground truth accuracy to state of the art weakly supervised object localization methods, and outperforms some of them. High ground truth suggests that 1) the features maps in the last layer of CLIP's CNN image encoder captures the structure the main objects in an image; and 2) the cosine similarity between the feature masked image's embedding and the label's embedding serves as a good proxy for measuring the contribution of the feature map to the prediction of that label. However, this is not as similar as classical localization definition. Classical localization task predicts both classification and localization result. Thus, top 1 localization accuracy and top 5 localizatio accuracy are more suitable for classical localization task for comparision. If the user gives certain label input during test, ground truth localization accuracy will be suitable. 
+
+
+![Experiment comparision with previous work]({{ '/assets/images/team03/final/experiment-others.png' | relative_url }})
+{: style="width: 700px; max-width: 100%;"}
+*Fig 6. Experiment comparision with previous work.*
+
 
 Specific cases are shown in Fig. 7 and Fig. 8. During these cases, user gives correct label input to check its localization ability. For successful cases, we can see the most activated area focuses on the interested object and captures features, such as head and body pretty well. However, there are also cases focusing on the non-ideal features. For instance in Fig 8's second column, the most activated area is somewhere on the wall. But the interested object is the dog.
 
@@ -123,19 +117,14 @@ Specific cases are shown in Fig. 7 and Fig. 8. During these cases, user gives co
 
 
 
-Table 9 shows detailed experiment result using different backbone and CAM threshold. ResNet101 performs better than ResNet50 and ViT in terms of ground truth localization accuracy 68.57%. When it comes to both classification and localization, Resnet50 performs best. ViT is not ideal at all because the method extracting activation map, which is QKV with PCA, is brute force. The activation map fails to identify the entire entity as interested object. Therefore, the predicted bounding box is sparse and small, which causes the box_iou to be smaller than 0.5 and localization accuracy to be low.
+Fig 9 shows detailed experiment result using different backbone and CAM threshold. ResNet101 performs better than ResNet50 and ViT in terms of ground truth localization accuracy 68.57%. When it comes to both classification and localization, Resnet50 performs best. ViT is not ideal at all because the method extracting activation map, which is QKV with PCA, is brute force. The activation map fails to identify the entire entity as interested object. Therefore, the predicted bounding box is sparse and small, which causes the box_iou to be smaller than 0.5 and localization accuracy to be low.
 
-| Method                | Backbone |  GT-known Loc | Top-5 Loc        | Top-1 Loc        |
-|-----------------------|----------|---------------|------------------|------------------|
-| ResNet50-CAM(cvpr 16) | ResNet50 | 51.86         | 49.47            | 38.99            |
-| ADL(cvpr 19)          | ResNet50 | 61.04         | -                | 48.23            |
-| FAM(iccv 21)          | ResNet50 | 64.56         | -                | 54.46            |
-| PSOL(iccv 21)         | ResNet50 | 65.44         | 63.08            | 53.98            |
-| I^2C(eccv 20)         | ResNet50 | 68.50         | 64.60            | 54.83            |
-| SPOL(ICCV 21)         | ResNet50 | 69.02         | 67.15            | 59.14            |
-| BGC (cvpr 22)         | ResNet50 | 69.89         | 65.75            | 53.76            |
-| Ours                  | ResNet50 | 66.60         | 39.50(cls 58.64) | 57.20(cls 85.26) |
-Table 9: Overall experiment result.
+![Experiment result]({{ '/assets/images/team03/final/experiment-self.png' | relative_url }})
+{: style="width: 700px; max-width: 100%;"}
+*Fig 9. Overall experiment result.*
+
+
+
 
 In Fig 9, we can see CAM threshold also has influence over the localization accuracy. Fig 10 gives more detailed explaination. Heatmap has different intensity in pixel representing the activation level of the area. The higher the intensity, the color will be more red than blue, and the pixel are regarded as more activated features. Threshold and common component method will be used to find the bouding box of interested obejct. When the threashold is higher, the bounding box will be sliced smaller and more likely to be seperated into multiple boxes if read areas are seperated by yellow areas. When there are multiple ground truth instances, such as multiple hens in the example image, higher threashold can help slice the most activated areas in heatmap. However, threashold is not the higher, the better. In the upper histogram in Fig 10, for both ResNet 50 and ResNet 101, we can see when threshold = 0.6, the accuracy with known ground truth is highest compared with case threshold 0.55 and 0.65. Thus, threshold can be a hyperparameter affecting the localization accuracy.
 

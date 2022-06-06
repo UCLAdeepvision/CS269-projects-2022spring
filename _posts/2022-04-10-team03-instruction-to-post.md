@@ -106,9 +106,18 @@ We first present our quantitive results on the ImageNet validation set with Resn
 
 Specific cases are shown in Fig. 7 and Fig. 8. During these cases, user gives correct label input to check its localization ability. For successful cases, we can see the most activated area focuses on the interested object and captures features, such as head and body pretty well. However, there are also cases focusing on the non-ideal features. For instance in Fig 8's second column, the most activated area is somewhere on the wall. But the interested object is the dog.
 
-![Promising result]({{ '/assets/images/team03/final/good-performance.png' | relative_url }})
-{: style="width: 700px; max-width: 100%;"}
-*Fig 7. Good performance experiment result.*
+
+| Method                | Backbone |  GT-known Loc | Top-5 Loc        | Top-1 Loc        |
+|-----------------------|----------|---------------|------------------|------------------|
+| ResNet50-CAM(cvpr 16) | ResNet50 | 51.86         | 49.47            | 38.99            |
+| ADL(cvpr 19)          | ResNet50 | 61.04         | -                | 48.23            |
+| FAM(iccv 21)          | ResNet50 | 64.56         | -                | 54.46            |
+| PSOL(iccv 21)         | ResNet50 | 65.44         | 63.08            | 53.98            |
+| I^2C(eccv 20)         | ResNet50 | 68.50         | 64.60            | 54.83            |
+| SPOL(ICCV 21)         | ResNet50 | 69.02         | 67.15            | 59.14            |
+| BGC (cvpr 22)         | ResNet50 | 69.89         | 65.75            | 53.76            |
+| Ours                  | ResNet50 | 66.60         | 39.50(cls 58.64) | 57.20(cls 85.26) |
+Table 6: Comparision with other classical work. Our pipeline's best performance can reach 66.60% ground truth localization.
 
 
 ![Non-ideal result]({{ '/assets/images/team03/final/bad-performance.png' | relative_url }})

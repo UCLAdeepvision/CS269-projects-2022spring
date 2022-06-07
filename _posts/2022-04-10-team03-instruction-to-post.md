@@ -18,7 +18,7 @@ date: 2022-04-19
 
 Deep neural networks have achieved notable success in the field of object recognition. However, the most accurate models require large number of annotations. For the object localization task that seeks to find the area of the object of interest in an given image, fully supervise methods need instance level labels such as bounding boxes and pivot points, which are highly costly. This leads to the emergence of weakly supervised object localization. With only image-level supervision, it can still achieve good localization accuracy. While traditional weakly supervised localization methods provide an alternative that saves annotation time, in the test time, they are limited to predict on the predetermined object classes observed during training. Therefore, to locate novel object categories, the model has to be finetuned on a new dataset. Zero-shot methods[7, 8] aim to address this issue and achieve comparative localization results for out of distribution labels without additional training. In this work, we propose a framework that combines pre-trained image-text models from web data without human annotation, and saliency methods, for the zero-shot object localization task.
 
-Recent works in computer vision have proposed image-text foundation models that subsume both vision and language pre-training. Methods such as CLIP, ALIGN, and COCA demonstrated success in generating powerful representations for a variety of downstream tasks, from traditional vision tasks such as image classification to multimodal tasks such as visual question answering and image captioning. In particular, these methods showed impressive zero-shot capabilities. CLIP and COCA was able to achieve 76.2\% and 86.3\% top-1 classification accuracy on Imagenet, respectively, without explicitly training on any images from the dataset. Motivated by these observations, in this work, we explore the effectiveness of image-text foundation model representations in zero-shot object localization. We propose a variant of Score-CAM that considers both Vision and Language inputs (VL-Score). VL-Score generates a saliency map for an image conditioning on a user-provided textual query, from intermediate features of pre-trained image-text foundation models. When the query asks for an object in the image, our method would return the corresponding localization result. We quantitively evaluate our method on the ImageNet validation set, and demonstrate comparative ground truth localization accuracy with state of the art of weakly supervised object localization methods. While our framework may be applied to image-text models in general, in this report we build our implementation on top of CLIP, since we do not have access to other pre-trained models at the time of this work. We examine internal features of both the CNN and ViT architecture for CLIP's image encoders, and evaluate the influence of different features on our localization objective, both qualitatively and quantitively. We also provide an streamLit interface that enable to users to experiment with different image and text combinations. The code is released on Github.
+Recent works in computer vision have proposed image-text foundation models that subsume both vision and language pre-training. Methods such as CLIP [2], ALIGN [13], and COCA [12] demonstrated success in generating powerful representations for a variety of downstream tasks, from traditional vision tasks such as image classification to multimodal tasks such as visual question answering and image captioning. In particular, these methods showed impressive zero-shot capabilities. CLIP and COCA was able to achieve 76.2\% and 86.3\% top-1 classification accuracy on Imagenet, respectively, without explicitly training on any images from the dataset. Motivated by these observations, in this work, we explore the effectiveness of image-text foundation model representations in zero-shot object localization. We propose a variant of Score-CAM[3] that considers both Vision and Language inputs (VL-Score). VL-Score generates a saliency map for an image conditioning on a user-provided textual query, from intermediate features of pre-trained image-text foundation models. When the query asks for an object in the image, our method would return the corresponding localization result. We quantitively evaluate our method on the ImageNet validation set, and demonstrate comparative ground truth localization accuracy with state of the art of weakly supervised object localization methods. While our framework may be applied to image-text models in general, in this report we build our implementation on top of CLIP, since we do not have access to other pre-trained models at the time of this work. We examine internal features of both the CNN and ViT architecture for CLIP's image encoders, and evaluate the influence of different features on our localization objective, both qualitatively and quantitively. We also provide an streamLit interface that enable to users to experiment with different image and text combinations. The code is released on Github.
 
 ## Related Literature
 
@@ -107,12 +107,12 @@ On the other hand, the top-1 and top-5 localization accuracy are significantly l
 
 | Method                | Backbone |  GT-known Loc | Top-5 Loc        | Top-1 Loc        |
 |-----------------------|----------|---------------|------------------|------------------|
-| ResNet50-CAM(cvpr 16) | ResNet50 | 51.86         | 49.47            | 38.99            |
-| ADL(cvpr 19)          | ResNet50 | 61.04         | -                | 48.23            |
-| FAM(iccv 21)          | ResNet50 | 64.56         | -                | 54.46            |
-| PSOL(iccv 21)         | ResNet50 | 65.44         | 63.08            | 53.98            |
-| I^2C(eccv 20)         | ResNet50 | 68.50         | 64.60            | 54.83            |
-| SPOL(ICCV 21)         | ResNet50 | 69.02         | 67.15            | 59.14            |
+| ResNet50-CAM[14]	    | ResNet50 | 51.86         | 49.47            | 38.99            |
+| ADL[15]		        | ResNet50 | 61.04         | -                | 48.23            |
+| FAM[19]               | ResNet50 | 64.56         | -                | 54.46            |
+| PSOL[16]	            | ResNet50 | 65.44         | 63.08            | 53.98            |
+| I^2C[17]              | ResNet50 | 68.50         | 64.60            | 54.83            |
+| SPOL[18]              | ResNet50 | 69.02         | 67.15            | 59.14            |
 | BGC (cvpr 22)         | ResNet50 | 69.89         | 65.75            | 53.76            |
 | VL-Score (Ours)       | ResNet50 | 66.93%        | 57.20(cls 85.26) | 39.50(cls 58.64)|
 
@@ -213,4 +213,22 @@ In this work, we proposed a variant of Score-CAM that seeks to utilize internal 
 
 [11] Amir, Shir, et al. "Deep ViT Features as Dense Visual Descriptors." arXiv preprint arXiv:2112.05814 (2021).
 
+[12] Yu, Jiahui, et al. "Coca: Contrastive captioners are image-text foundation models." arXiv preprint arXiv:2205.01917 (2022).
+
+[13] Jia, Chao, et al. "Scaling up visual and vision-language representation learning with noisy text supervision." International Conference on Machine Learning. PMLR, 2021.
+
+[14] Zhou, Bolei, et al. "Learning deep features for discriminative localization." Proceedings of the IEEE conference on computer vision and pattern recognition. 2016.
+
+[15] Choe, Junsuk, and Hyunjung Shim. "Attention-based dropout layer for weakly supervised object localization." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2019.
+
+
+[16] Zhang, Chen-Lin, Yun-Hao Cao, and Jianxin Wu. "Rethinking the route towards weakly supervised object localization." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2020.
+
+[17] Zhang, Xiaolin, Yunchao Wei, and Yi Yang. "Inter-image communication for weakly supervised localization." European Conference on Computer Vision. Springer, Cham, 2020.
+
+[18] Wei, Jun, et al. "Shallow feature matters for weakly supervised object localization." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2021.
+
+[19] Meng, Meng, et al. "Foreground activation maps for weakly supervised object localization." Proceedings of the IEEE/CVF International Conference on Computer Vision. 2021.
+
 ---
+

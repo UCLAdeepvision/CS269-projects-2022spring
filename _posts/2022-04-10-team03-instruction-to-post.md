@@ -100,11 +100,9 @@ There are 4 evaluation metrics: box IOU, groud truth localization accuracy, top-
 When construting the textual prompt as the input to the text encoder given a label, we use the template "an image of a \{label\}." to create the sentence. In the case where there are multiple synonyms for the given label, we embed each synonym into the template, and use the average of the embedding outputs from the text encoder. We note that prompt engineering is a seperate research domain, and the offical Github repository of the CLIP project provides a set of templates for the ImageNet dataset.
 
 ## Experiment Results and Analysis 
-We first present our quantitive results on the ImageNet validation set with Resnet backbone. As shown in Table 1, our pipeline reach 66.60% for ground truth localization accuracy. Considering VL-Score is a zero shot localization method, it still achieves comparative ground truth accuracy to state of the art weakly supervised object localization methods, and outperforms some of them. High ground truth suggests that 1) the features maps in the last layer of CLIP's CNN image encoder captures the structure the main objects in an image; and 2) the cosine similarity between the feature masked image's embedding and the label's embedding serves as a good proxy for measuring the contribution of the feature map to the prediction of that label. However, this is not as similar as classical localization definition. Classical localization task predicts both classification and localization result. Thus, top 1 localization accuracy and top 5 localizatio accuracy are more suitable for classical localization task for comparision. If the user gives certain label input during test, ground truth localization accuracy will be suitable. 
+We first present our quantitive results on the ImageNet validation set with Resnet50 backbone. As shown in Table 1, our pipeline reach 66.60% for ground truth localization accuracy. Considering VL-Score is a zero shot localization method, it still achieves comparative ground truth accuracy to state of the art weakly supervised object localization methods, and outperforms some of them. High ground truth accuracy suggests that 1) the features maps in the last layer of CLIP's CNN image encoder captures the structure the main objects in an image; and 2) the cosine similarity between the feature masked image's embedding and the label's embedding serves as a good proxy for measuring the contribution of the feature map to the prediction of that label. 
 
-
-
-Specific cases are shown in Fig. 7 and Fig. 8. During these cases, user gives correct label input to check its localization ability. For successful cases, we can see the most activated area focuses on the interested object and captures features, such as head and body pretty well. However, there are also cases focusing on the non-ideal features. For instance in Fig 8's second column, the most activated area is somewhere on the wall. But the interested object is the dog.
+On the other hand, the top-1 and top-5 localization accuracy are significantly lower. While the top-5 accuracy still outperforms the vanilla CAM method, the top-1 accuracy is lower than CAM. This is due to the fact the zero-shot classification accuracy of the Resnet50 model on ImageNet is significantly than the WSOL models directly trained on ImageNet. The issue may be alleviated by using more accurate pre-trained image encoders from CLIP, such as Resnet101, Resnet50x4, Resnet50x16. Due to our computational resources, we only evaluated the Resnet101 architecture, which shows better top-1 and top-5 localization accuracy than Resnet50 in some settings, as shown in Table 2. Another common approach in localization models is to use two prediction heads: one for bounding box prediction, and the other for classification prediction. We may utilize Resnet50 for fast bounding box prediction and another pre-trained backend from CLIP for classificaion results. However, this is not as similar as classical localization definition. Classical localization task predicts both classification and localization result. It is noteworthy that despite Resnet50's low classification accuracy, the intermediate features are able to capture the shape of objects from novel categories. 
 
 
 | Method                | Backbone |  GT-known Loc | Top-5 Loc        | Top-1 Loc        |
@@ -116,11 +114,12 @@ Specific cases are shown in Fig. 7 and Fig. 8. During these cases, user gives co
 | I^2C(eccv 20)         | ResNet50 | 68.50         | 64.60            | 54.83            |
 | SPOL(ICCV 21)         | ResNet50 | 69.02         | 67.15            | 59.14            |
 | BGC (cvpr 22)         | ResNet50 | 69.89         | 65.75            | 53.76            |
-| Ours                  | ResNet50 | 66.60         | 39.50(cls 58.64) | 57.20(cls 85.26) |
+| VL-Score (Ours)       | ResNet50 | 66.93%        | 57.20(cls 85.26) | 39.50(cls 58.64)|
 
 
 Table 1: Comparision with other classical work. Our pipeline's best performance can reach 66.60% ground truth localization.
 
+Specific cases are shown in Fig. 7 and Fig. 8. During these cases, user gives correct label input to check its localization ability. For successful cases, we can see the most activated area focuses on the interested object and captures features, such as head and body pretty well. However, there are also cases focusing on the non-ideal features. For instance in Fig 8's second column, the most activated area is somewhere on the wall. But the interested object is the dog.
 
 ![Non-ideal result]({{ '/assets/images/team03/final/bad-performance.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
@@ -186,8 +185,6 @@ Figure 13 shows an illustration of how to use the interface. The user can select
 
 ## Conclusion
 CLIP with Score-CAM can perform object localization with promising accuracy, especially considering it is a zero-shot procedure. At the same time, it has the following uneligible restrictions. For instance, when there are m multiple ground truth bounding boxes, the pipeline is far from predict exactly m bounding boxes. Most cases it only predicts one whole box or two boxes. At the same time, finding suitable activation maps from ViT image encoder remains a problem. Direct extraction feature layers is brute force and has poor performance. 
-
-
 
 
 

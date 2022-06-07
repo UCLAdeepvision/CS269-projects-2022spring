@@ -88,7 +88,7 @@ Fig 7 illustrates the feature maps acquired by each of the four methods. We obse
 
 ![ViT activation map]({{ '/assets/images/team03/final/feature.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
-*Fig 7. Four methods are experimented.*
+*Fig 7. ViT four methods are experimented to check the feature map performance.*
 
 
 ## Data and Evaluation Plan
@@ -119,12 +119,16 @@ On the other hand, the top-1 and top-5 localization accuracy are significantly l
 
 Table 1: Comparision with other classical work. Our pipeline's best performance can reach 66.60% ground truth localization.
 
-Specific cases are shown in Fig. 7 and Fig. 8. During these cases, user gives correct label input to check its localization ability. For successful cases, we can see the most activated area focuses on the interested object and captures features, such as head and body pretty well. However, there are also cases focusing on the non-ideal features. For instance in Fig 8's second column, the most activated area is somewhere on the wall. But the interested object is the dog.
+Specific cases are shown in Fig. 9 and Fig. 8. During these cases, user gives correct label input to check its localization ability. For successful cases in Fig. 9, we can see the most activated area focuses on the interested object and captures features, such as head and body pretty well. However, there are also cases focusing on the non-ideal features. For instance in Fig 8's second column, the most activated area is somewhere on the wall. But the interested object is the dog.
 
-![Non-ideal result]({{ '/assets/images/team03/final/bad-performance.png' | relative_url }})
+![Non-ideal result]({{ '/assets/images/team03/final/good-performance.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
-*Fig 8. Non-ideal performance experiment result.*
+*Fig 8. Good performance experiment result.*
 
+
+![Ideal result]({{ '/assets/images/team03/final/bad-performance.png' | relative_url }})
+{: style="width: 700px; max-width: 100%;"}
+*Fig 9. Non-ideal performance experiment result.*
 
 In addtion to CNN-based architectures, we test VL-Score on ViT-based image encoders from CLIP. Table 2 shows detailed experiment result using different backbone and CAM threshold. While the performaces of Resnet50 and Resnet101 are comparable, the results from ViT are significantly lower. The main reason that accounts for this phenomenon is the features map we extracted fails to identify the substructures of the interested object. Each feature map often highlights large connected regions that include multiple objects of interest, or scattered small regions. This leads to two issues: 1) each feature map does not capture the semantic structure of a single object, and therefore cannot reflect the contribution of this feature map in predicting the object of interest accurately; 2) when the feature maps are aggregated, scattered small regions that does not belong to the interested object class are also highlighted, since they often cooccur with the object of interest.
 
@@ -142,7 +146,7 @@ In addtion to CNN-based architectures, we test VL-Score on ViT-based image encod
 
 Table 2: Overall experiment result. 
 
-We illustrate this phenomenon by comparing the generated saliency map for an example image where a man is holding a fish, with both the CNN-based image encoder (Fig 11.), and the ViT-based encoder (Fig 12.) from CLIP. For each setting, there are four textual signals, 'a picture of a man.', 'a picture of a face.', 'a picture of a man's face.', and 'a picture of a fish.'. Different text signals generate different contribution scores for each feature map, and the resulting saliency map changes accordingly. While the saliency map does not alway highlight the intended regions in Fig 11., only a few contiguous regions are highlighted. On the contrary, in addition to potential objects of interest, many scattered small regions are highlighted in the background. Across different text signal inputs, some regions are consistently highlighted, such as the hat, since it co-occurs with other object regions in the original feature maps. 
+We illustrate this phenomenon by comparing the generated saliency map for an example image where a man is holding a fish, with both the CNN-based image encoder (Fig 11.), and the ViT-based encoder (Fig 12.) from CLIP. For each setting, there are four textual signals, 'a picture of a man.', 'a picture of a face.', 'a picture of a man's face.', and 'a picture of a fish.'. Different text signals generate different contribution scores for each feature map, and the resulting saliency map changes accordingly. While the saliency map does not alway highlight the intended regions in Fig 12., only a few contiguous regions are highlighted. On the contrary, in addition to potential objects of interest, many scattered small regions are highlighted in the background. Across different text signal inputs, some regions are consistently highlighted, such as the hat, since it co-occurs with other object regions in the original feature maps. 
 
 ![Case study cnn]({{ '/assets/images/team03/final/cnn-casestudy.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
@@ -152,11 +156,16 @@ We illustrate this phenomenon by comparing the generated saliency map for an exa
 {: style="width: 700px; max-width: 100%;"}
 *Fig 12. Case study given different label input, with backbone ViT.*
 
-In Fig 9, we can see CAM threshold also has influence over the localization accuracy. Fig 10 gives more detailed explaination. Heatmap has different intensity in pixel representing the activation level of the area. The higher the intensity, the color will be more red than blue, and the pixel are regarded as more activated features. Threshold and common component method will be used to find the bouding box of interested obejct. When the threashold is higher, the bounding box will be sliced smaller and more likely to be seperated into multiple boxes if read areas are seperated by yellow areas. When there are multiple ground truth instances, such as multiple hens in the example image, higher threashold can help slice the most activated areas in heatmap. However, threashold is not the higher, the better. In the upper histogram in Fig 10, for both ResNet 50 and ResNet 101, we can see when threshold = 0.6, the accuracy with known ground truth is highest compared with case threshold 0.55 and 0.65. Thus, threshold can be a hyperparameter affecting the localization accuracy.
+
+In Fig 13 and 14, we can see CAM threshold also has influence over the localization accuracy. Heatmap has different intensity in pixel representing the activation level of the area. The higher the intensity, the color will be more red than blue, and the pixel are regarded as more activated features. Threshold and common component method will be used to find the bouding box of interested obejct. When the threashold is higher, the bounding box will be sliced smaller and more likely to be seperated into multiple boxes if read areas are seperated by yellow areas. When there are multiple ground truth instances, such as multiple hens in the example image, higher threashold can help slice the most activated areas in heatmap. However, threashold is not the higher, the better. In the upper histogram in Fig 13, for both ResNet 50 and ResNet 101, we can see when threshold = 0.6, the accuracy with known ground truth is highest compared with case threshold 0.55 and 0.65. Thus, threshold can be a hyperparameter affecting the localization accuracy.
 
 ![Box_IOU relationship with threshold]({{ '/assets/images/team03/final/acc.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
-*Fig 10. Box iou's relationship with CAM threshold.*
+*Fig 13. Box iou's relationship with CAM threshold.*
+
+![Visual effect of threshold]({{ '/assets/images/team03/final/activated_thre.png' | relative_url }})
+{: style="width: 700px; max-width: 100%;"}
+*Fig 14. Bounding box changes as threshold changes.*
 
 ## Future Work
 The goal of this work is to demonstrate the zero-shot capability of image-text models in the localization task with saliency methods. In this writing, we focused on CLIP as it was the only publicly accessible pretrained model. The natural question to ask is whether our proposed method would result in similar performance on other image text models. Additionally, we only tested several available architectures of CLIP due to computation limit, and results from other architectures may reveal new insights into our problem. Although we explored various approaches of extracting useful feature maps from the ViT image encoder, our method did not show compelling results. This issue may be further explored in the future.
@@ -164,13 +173,13 @@ The goal of this work is to demonstrate the zero-shot capability of image-text m
 ## StreamLit Interface
 To make our work more interactive, we provide a StreamLit Interface for users to upload their own image and experiment with different text descriptions to the localization and saliency results. Note that running with CPU can be extremely slow. Detailed instructions on how to setup this interface is provided in https://github.com/mxuan0/zeroshot-localization.git. 
 
-Figure 13 shows an illustration of how to use the interface. The user can select their intended model, layer, and bounding box thresholds. After uploading an image and enter a text description, the program can be run by clicking 'Find it!'.
+Figure 15 shows an illustration of how to use the interface. The user can select their intended model, layer, and bounding box thresholds. After uploading an image and enter a text description, the program can be run by clicking 'Find it!'.
 
 
 
 ![Interface]({{ '/assets/images/team03/final/interface.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
-*Fig 13. StreamLit Interface.*
+*Fig 15. StreamLit Interface.*
 
 ## Conclusion
 In this work, we proposed a variant of Score-CAM that seeks to utilize internal features of image-text models for the zero-shot object localization task. We evaluate our method on CLIP with multiple architectures of the image encoder. We show that VL-Score can perform zero-shot object localization with comparable ground truth localization accuracy to state of the art to WSOL methods on the ImageNet validation set. At the same time, our method has the following limitations. When there are m multiple ground truth bounding boxes, the pipeline is far from predict exactly m bounding boxes. In most cases it only predicts one whole box or two boxes. Additionally, finding suitable activation maps from ViT image encoder remains a problem. Directly extracting feature layers does not yield intended performance. 

@@ -102,7 +102,7 @@ When construting the textual prompt as the input to the text encoder given a lab
 ## Experiment Results and Analysis 
 We first present our quantitive results on the ImageNet validation set with Resnet50 backbone. As shown in Table 1, our pipeline reach 66.60% for ground truth localization accuracy. Considering VL-Score is a zero shot localization method, it still achieves comparative ground truth accuracy to state of the art weakly supervised object localization methods, and outperforms some of them. High ground truth accuracy suggests that 1) the features maps in the last layer of CLIP's CNN image encoder captures the structure the main objects in an image; and 2) the cosine similarity between the feature masked image's embedding and the label's embedding serves as a good proxy for measuring the contribution of the feature map to the prediction of that label. 
 
-On the other hand, the top-1 and top-5 localization accuracy are significantly lower. While the top-5 accuracy still outperforms the vanilla CAM method, the top-1 accuracy is lower than CAM. This is due to the fact the zero-shot classification accuracy of the Resnet50 model on ImageNet is significantly than the WSOL models directly trained on ImageNet. The issue may be alleviated by using more accurate pre-trained image encoders from CLIP, such as Resnet101, Resnet50x4, Resnet50x16. Due to our computational resources, we only evaluated the Resnet101 architecture, which shows better top-1 and top-5 localization accuracy than Resnet50 in some settings, as shown in Table 2. Another common approach in localization models is to use two prediction heads: one for bounding box prediction, and the other for classification prediction. We may utilize Resnet50 for fast bounding box prediction and another pre-trained backend from CLIP for classificaion results. However, this is not as similar as classical localization definition. Classical localization task predicts both classification and localization result. It is noteworthy that despite Resnet50's low classification accuracy, the intermediate features are able to capture the shape of objects from novel categories. 
+On the other hand, the top-1 and top-5 localization accuracy are significantly lower. While the top-5 accuracy still outperforms the vanilla CAM method, the top-1 accuracy is lower than CAM. This is due to the fact the zero-shot classification accuracy of the Resnet50 model on ImageNet is significantly than the WSOL models directly trained on ImageNet. The issue may be alleviated by using more accurate pre-trained image encoders from CLIP, such as Resnet101, Resnet50x4, and Resnet50x16. Due to limited computational resources, we only evaluated the Resnet101 architecture, which shows better top-1 and top-5 localization accuracy than Resnet50 in some settings, as shown in Table 2. Another common approach in localization models is to use two prediction heads: one for bounding box prediction, and the other for classification prediction. We may utilize Resnet50 for fast bounding box prediction and another pre-trained backend from CLIP for classificaion results. It is noteworthy that despite Resnet50's low classification accuracy, the intermediate features are able to capture the shape of objects from novel categories. 
 
 
 | Method                | Backbone |  GT-known Loc | Top-5 Loc        | Top-1 Loc        |
@@ -126,8 +126,7 @@ Specific cases are shown in Fig. 7 and Fig. 8. During these cases, user gives co
 *Fig 8. Non-ideal performance experiment result.*
 
 
-
-Table 2 shows detailed experiment result using different backbone and CAM threshold. ResNet101 performs better than ResNet50 and ViT in terms of ground truth localization accuracy 68.57%. When it comes to both classification and localization, Resnet50 performs best. ViT is not ideal at all because the method extracting activation map, which is QKV with PCA, is brute force. The activation map fails to identify the entire entity as interested object. Therefore, the predicted bounding box is sparse and small, which causes the box_iou to be smaller than 0.5 and localization accuracy to be low.
+In addtion to CNN-based architectures, we test VL-Score on ViT-based image encoders from CLIP. Table 2 shows detailed experiment result using different backbone and CAM threshold. While the performaces of Resnet50 and Resnet101 are comparable, the results from ViT are significantly lower. The main reason that accounts for this phenomenon is the features map we extracted fails to identify the substructures of the interested object. Each feature map often highlights large connected regions that include multiple objects of interest, or scattered small regions. This leads to two issues: 1) each feature map does not capture the semantic structure of a single object, and therefore cannot reflect the contribution of this feature map in predicting the object of interest accurately; 2) when the feature maps are aggregated, scattered small regions that does not belong to the interested object class are also highlighted, since they often cooccur with the object of interest.
 
 | Method                         | CAM threshold | box_iou | GT-known Loc | Top-1 Loc | Top-5 Loc |
 |--------------------------------|---------------|---------|--------------|-----------|-----------|
@@ -143,32 +142,24 @@ Table 2 shows detailed experiment result using different backbone and CAM thresh
 
 Table 2: Overall experiment result. 
 
+We illustrate this phenomenon by comparing the generated saliency map for an example image where a man is holding a fish, with both the CNN-based image encoder (Fig 11.), and the ViT-based encoder (Fig 12.) from CLIP. For each setting, there are four textual signals, 'a picture of a man.', 'a picture of a face.', 'a picture of a man's face.', and 'a picture of a fish.'. Different text signals generate different contribution scores for each feature map, and the resulting saliency map changes accordingly. While the saliency map does not alway highlight the intended regions in Fig 11., only a few contiguous regions are highlighted. On the contrary, in addition to potential objects of interest, many scattered small regions are highlighted in the background. Across different text signal inputs, some regions are consistently highlighted, such as the hat, since it co-occurs with other object regions in the original feature maps. 
+
+![Case study cnn]({{ '/assets/images/team03/final/cnn-casestudy.png' | relative_url }})
+{: style="width: 700px; max-width: 100%;"}
+*Fig 11. Case study given different label input, with backbone ResNet101.*
+
+![Case study ViT]({{ '/assets/images/team03/final/vit-casestudy.png' | relative_url }})
+{: style="width: 700px; max-width: 100%;"}
+*Fig 12. Case study given different label input, with backbone ViT.*
+
 In Fig 9, we can see CAM threshold also has influence over the localization accuracy. Fig 10 gives more detailed explaination. Heatmap has different intensity in pixel representing the activation level of the area. The higher the intensity, the color will be more red than blue, and the pixel are regarded as more activated features. Threshold and common component method will be used to find the bouding box of interested obejct. When the threashold is higher, the bounding box will be sliced smaller and more likely to be seperated into multiple boxes if read areas are seperated by yellow areas. When there are multiple ground truth instances, such as multiple hens in the example image, higher threashold can help slice the most activated areas in heatmap. However, threashold is not the higher, the better. In the upper histogram in Fig 10, for both ResNet 50 and ResNet 101, we can see when threshold = 0.6, the accuracy with known ground truth is highest compared with case threshold 0.55 and 0.65. Thus, threshold can be a hyperparameter affecting the localization accuracy.
 
 ![Box_IOU relationship with threshold]({{ '/assets/images/team03/final/acc.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
 *Fig 10. Box iou's relationship with CAM threshold.*
 
-Of course, users can try as many label inputs as they want. As shown in Fig 12, label 'man', 'face','man's face', and 'fish' are given seperately. Different label generates different contribution scores after text embedding. Then the weighted sum changes correspondingly. The sample image's ground truth is 'tench, Tinca tinca'. From language perspective, 'fish' is similar to 'tench'. Then the most activated part of 'fish' mostly matched to the fish.
-
-![Case study cnn]({{ '/assets/images/team03/final/cnn-casestudy.png' | relative_url }})
-{: style="width: 700px; max-width: 100%;"}
-*Fig 11. Case study given different label input, with backbone ResNet101.*
-
-
-Counter example will be ViT backbone as shown in Fig 12. Even with correct label "fish", it fails to capture related features as a whole.
-
-![Case study ViT]({{ '/assets/images/team03/final/vit-casestudy.png' | relative_url }})
-{: style="width: 700px; max-width: 100%;"}
-*Fig 12. Case study given different label input, with backbone ViT.*
-
-
-
 ## Future Work
-CLIP with Score-CAM is proved to be successful in zero shot object localization when using CNN image encoder. Visual explaination has other classical methods, including Grad CAM, Grad CAM++, etc. Replacing Score-CAM with other saliency method can be one future work.
-
-Also, testing with the whole validation dataset will be helpful in understanding its overall comparision with other methods.
-
+The goal of this work is to demonstrate the zero-shot capability of image-text models in the localization task with saliency methods. In this writing, we focused on CLIP as it was the only publicly accessible pretrained model. The natural question to ask is whether our proposed method would result in similar performance on other image text models. Additionally, we only tested several available architectures of CLIP due to computation limit, and results from other architectures may reveal new insights into our problem. Although we explored various approaches of extracting useful feature maps from the ViT image encoder, our method did not show compelling results. This issue may be further explored in the future.
 
 ## StreamLit Interface
 To make our work more interactive, we provide a StreamLit Interface for users to upload their own image and experiment with different text descriptions to the localization and saliency results. Note that running with CPU can be extremely slow. Detailed instructions on how to setup this interface is provided in https://github.com/mxuan0/zeroshot-localization.git. 
@@ -181,10 +172,8 @@ Figure 13 shows an illustration of how to use the interface. The user can select
 {: style="width: 700px; max-width: 100%;"}
 *Fig 13. StreamLit Interface.*
 
-
-
 ## Conclusion
-CLIP with Score-CAM can perform object localization with promising accuracy, especially considering it is a zero-shot procedure. At the same time, it has the following uneligible restrictions. For instance, when there are m multiple ground truth bounding boxes, the pipeline is far from predict exactly m bounding boxes. Most cases it only predicts one whole box or two boxes. At the same time, finding suitable activation maps from ViT image encoder remains a problem. Direct extraction feature layers is brute force and has poor performance. 
+In this work, we proposed a variant of Score-CAM that seeks to utilize internal features of image-text models for the zero-shot object localization task. We evaluate our method on CLIP with multiple architectures of the image encoder. We show that VL-Score can perform zero-shot object localization with comparable ground truth localization accuracy to state of the art to WSOL methods on the ImageNet validation set. At the same time, our method has the following limitations. When there are m multiple ground truth bounding boxes, the pipeline is far from predict exactly m bounding boxes. In most cases it only predicts one whole box or two boxes. Additionally, finding suitable activation maps from ViT image encoder remains a problem. Directly extracting feature layers does not yield intended performance. 
 
 
 

@@ -113,7 +113,7 @@ On the other hand, the top-1 and top-5 localization accuracy are significantly l
 | PSOL[16]	            | ResNet50 | 65.44         | 63.08            | 53.98            |
 | I^2C[17]              | ResNet50 | 68.50         | 64.60            | 54.83            |
 | SPOL[18]              | ResNet50 | 69.02         | 67.15            | 59.14            |
-| BGC (cvpr 22)         | ResNet50 | 69.89         | 65.75            | 53.76            |
+| BGC [20]              | ResNet50 | 69.89         | 65.75            | 53.76            |
 | VL-Score (Ours)       | ResNet50 | 66.93%        | 57.20(cls 85.26) | 39.50(cls 58.64)|
 
 
@@ -229,6 +229,8 @@ In this work, we proposed a variant of Score-CAM that seeks to utilize internal 
 [18] Wei, Jun, et al. "Shallow feature matters for weakly supervised object localization." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2021.
 
 [19] Meng, Meng, et al. "Foreground activation maps for weakly supervised object localization." Proceedings of the IEEE/CVF International Conference on Computer Vision. 2021.
+
+[20] Kim, Kim, et al. "Bridging the Gap between Classification and Localization for Weakly Supervised Object Localization." *Conference on Computer Vision and Pattern Recognition*. 2022.
 
 ---
 

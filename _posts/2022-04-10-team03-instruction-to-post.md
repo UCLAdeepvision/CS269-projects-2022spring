@@ -119,7 +119,7 @@ On the other hand, the top-1 and top-5 localization accuracy are significantly l
 
 Table 1: Comparision with other classical work. Our pipeline's best performance can reach 66.60% ground truth localization.
 
-Specific cases are shown in Fig. 9 and Fig. 8. During these cases, user gives correct label input to check its localization ability. For successful cases in Fig. 9, we can see the most activated area focuses on the interested object and captures features, such as head and body pretty well. However, there are also cases focusing on the non-ideal features. For instance in Fig 8's second column, the most activated area is somewhere on the wall. But the interested object is the dog.
+Specific cases are shown in Fig. 8 and Fig. 9. During these cases, user gives correct label input to check its localization ability. For successful cases in Fig. 8, we can see the most activated area focuses on the interested object and captures features, such as head and body pretty well. However, there are also cases focusing on the non-ideal features. For instance in Fig 9's second column, the most activated area is somewhere on the wall. But the interested object is the dog.
 
 ![Non-ideal result]({{ '/assets/images/team03/final/good-performance.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}

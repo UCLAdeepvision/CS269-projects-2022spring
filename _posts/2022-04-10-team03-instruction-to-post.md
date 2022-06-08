@@ -24,20 +24,20 @@ Recent works in computer vision have proposed image-text foundation models that 
 
 ### Image-Text Foundation Models
 
-A recent line of research in computer vision focuses on pre-training with image and text jointly to learn multimodal representations. One paradigm of works demonstrated success by training two encoders simultaneuously with contrastive loss. The dual-encoder model consists of an image and text encoder and embed images and texts in the same latent space. These models are typically trained with noisy webly data that are image and text pairs. Another line of work follows an encoder-decoder architecture. During pre-training, the encoder takes images as input, and the decoder is applied with a language modeling loss. As a further step, the most recent work combines both architectures and achieves the state of art results on a variety of vision and language tasks.
+A recent line of research in computer vision focuses on pre-training with image and text jointly to learn multimodal representations. One paradigm of works [2][13],demonstrated success by training two encoders simultaneuously with contrastive loss. The dual-encoder model consists of an image and text encoder and embed images and texts in the same latent space. These models are typically trained with noisy webly data that are image and text pairs. Another line of work follows an encoder-decoder architecture. During pre-training, the encoder takes images as input, and the decoder is applied with a language modeling loss. As a further step, the most recent work [12] combines both architectures and achieves the state of art results on a variety of vision and language tasks.
 
 In this work, we utilize CLIP ([Radford, et al. 2021](https://arxiv.org/pdf/2103.00020.pdf)), an image-text foundation model with a dual-encoder architecture. The encoders are trained in parallel with web collected images and corresponding captions. During training, CLIP aligns the outputs from the image and text encoder in the same latent space. 
 
 The detailed structure is shown in Fig.1. For each training step, a batch of n image and text pairs is sampled. The matching pairs are treated as positive examples, and unmatching are negative examples. Then the model computes the inner product of embeddings from the encoders for each pair and applies a contrastive loss.
 
-In the test time, given a set of possible labels and an input image, CLIP places the each label within a prompt that can be in the form of "an image of a \[label\]." and uses the pretrained text encoder to embed the prompts. Then it computes the inner product between the text embeddings and the image embedding from the image encoder. Finally, the label whose prompt generates the highest similarity score will be the prediction answer. 
+In the test time, given a set of possible labels and an input image, CLIP places each label within a prompt that can be in the form of "an image of a \[label\]." and uses the pretrained text encoder to embed the prompts. Then it computes the inner product between the text embeddings and the image embedding from the image encoder. Finally, the label whose prompt generates the highest similarity score will be the prediction answer. 
 
 ![CLIP]({{ '/assets/images/team03/final/3.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
 *Fig 1. CLIP's structure. From CLIP ([Radford, et al. 2021](https://arxiv.org/pdf/2103.00020.pdf))*
 
 ### Saliency Methods
-Saliency methods such as CAM and Grad-CAM have shown to generate class dependent heapmaps that highlight areas containing objects of the given class in an input image from intermediate outputs of pre-trained image classification models, such as VGG and ResNet. The generated saliency maps can be directly used to perform localization tasks by drawing bounding boxes the most highlighted region.
+Saliency methods such as CAM [4] and Grad-CAM [5] have shown to generate class dependent heapmaps that highlight areas containing objects of the given class in an input image from intermediate outputs of pre-trained image classification models, such as VGG and ResNet. The generated saliency maps can be directly used to perform localization tasks by drawing bounding boxes around the most highlighted region.
 
 Score-CAM ([Wang, et al. 2020](https://arxiv.org/pdf/1910.01279.pdf)) is a another method to generate saliency maps for CNN based image classifiers. It often produces more accurate and stable results than gradient based methods from experimental results. According to Fig. 2, given an input image, score cam takes the activation maps from the last convolution layer, and uses these maps as masks over the the input image. The masked input images are processed by the CNN again to generate a weight for each activation map. The weights are normalized the weighted sum of the maps is used as the final output. 
 ![Score-CAM]({{ '/assets/images/team03/final/4.png' | relative_url }})
@@ -114,12 +114,12 @@ On the other hand, the top-1 and top-5 localization accuracy are significantly l
 | I^2C[17]              | ResNet50 | 68.50         | 64.60            | 54.83            |
 | SPOL[18]              | ResNet50 | 69.02         | 67.15            | 59.14            |
 | BGC [20]              | ResNet50 | 69.89         | 65.75            | 53.76            |
-| VL-Score (Ours)       | ResNet50 | 66.93%        | 57.20(cls 85.26) | 39.50(cls 58.64)|
+| VL-Score (Ours)       | ResNet50 | 66.93        | 57.20(cls 85.26) | 39.50(cls 58.64)|
 
 
 Table 1: Comparision with other classical work. Our pipeline's best performance can reach 66.60% ground truth localization.
 
-Specific cases are shown in Fig. 8 and Fig. 9. During these cases, user gives correct label input to check its localization ability. For successful cases in Fig. 8, we can see the most activated area focuses on the interested object and captures features, such as head and body pretty well. However, there are also cases focusing on the non-ideal features. For instance in Fig 9's second column, the most activated area is somewhere on the wall. But the interested object is the dog.
+Specific case analysis is shown in Fig. 8 and Fig. 9. In these cases, we examine VL-Score's localization ability by feeding the ground truth ImageNet label to the model. For successful cases in Fig. 8, we can see the most activated area focuses on the interested object and captures features, such as head and body pretty well. However, there are also cases focusing on the non-ideal features. For instance in Fig 9's second column, the most activated area is somewhere on the wall. But the interested object is the dog.
 
 ![Non-ideal result]({{ '/assets/images/team03/final/good-performance.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
@@ -157,7 +157,7 @@ We illustrate this phenomenon by comparing the generated saliency map for an exa
 *Fig 12. Case study given different label input, with backbone ViT.*
 
 
-In Fig 13 and 14, we can see CAM threshold also has influence over the localization accuracy. Heatmap has different intensity in pixel representing the activation level of the area. The higher the intensity, the color will be more red than blue, and the pixel are regarded as more activated features. Threshold and common component method will be used to find the bouding box of interested obejct. When the threashold is higher, the bounding box will be sliced smaller and more likely to be seperated into multiple boxes if read areas are seperated by yellow areas. When there are multiple ground truth instances, such as multiple hens in the example image, higher threashold can help slice the most activated areas in heatmap. However, threashold is not the higher, the better. In the upper histogram in Fig 13, for both ResNet 50 and ResNet 101, we can see when threshold = 0.6, the accuracy with known ground truth is highest compared with case threshold 0.55 and 0.65. Thus, threshold can be a hyperparameter affecting the localization accuracy.
+In Fig 13 and 14, we can see the threshold for filtering out background pixels also has influence over the localization accuracy. Heatmap has different intensity in pixel representing the activation level of the area. Pixels with higher intensity are regarded as more activated feature area. When the threshold is higher, more pixels will be filtered and therefore the bounding boxes will be smaller and more likely to be seperated into multiple boxes. When there are multiple ground truth instances, such as multiple hens in the example image, higher threashold can help slice the most activated areas in heatmap. However, threshold is not the higher, the better. In the upper histogram in Fig 13, for both ResNet 50 and ResNet 101, we can see when threshold = 0.6, the accuracy with known ground truth is highest compared with case threshold 0.55 and 0.65. Thus, threshold can be a hyperparameter affecting the localization accuracy.
 
 ![Box_IOU relationship with threshold]({{ '/assets/images/team03/final/acc.png' | relative_url }})
 {: style="width: 700px; max-width: 100%;"}
@@ -182,7 +182,7 @@ Figure 15 shows an illustration of how to use the interface. The user can select
 *Fig 15. StreamLit Interface.*
 
 ## Conclusion
-In this work, we proposed a variant of Score-CAM that seeks to utilize internal features of image-text models for the zero-shot object localization task. We evaluate our method on CLIP with multiple architectures of the image encoder. We show that VL-Score can perform zero-shot object localization with comparable ground truth localization accuracy to state of the art to WSOL methods on the ImageNet validation set. At the same time, our method has the following limitations. When there are m multiple ground truth bounding boxes, the pipeline is far from predict exactly m bounding boxes. In most cases it only predicts one whole box or two boxes. Additionally, finding suitable activation maps from ViT image encoder remains a problem. Directly extracting feature layers does not yield intended performance. 
+In this work, we propose a variant of Score-CAM that seeks to utilize internal features of image-text models for the zero-shot object localization task. We evaluate our method on CLIP with multiple architectures of the image encoder. We show that VL-Score can perform zero-shot object localization with comparable ground truth localization accuracy to state of the art to WSOL methods on the ImageNet validation set. At the same time, our method has the following limitations. When there are m multiple ground truth bounding boxes, the pipeline is far from predict exactly m bounding boxes. In most cases it only predicts one whole box or two boxes. Additionally, finding suitable activation maps from ViT image encoder remains a problem. Directly extracting features from intermediate layers does not yield intended performance. 
 
 
 

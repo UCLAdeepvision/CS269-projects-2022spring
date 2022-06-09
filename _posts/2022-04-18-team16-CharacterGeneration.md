@@ -3,7 +3,7 @@ layout: post
 comments: true
 title: Pokemon GAN
 author: Yu-Hsuan Liu and Jiayue Sun
-date: 2022-04-24
+date: 2022-06-10
 ---
 
 

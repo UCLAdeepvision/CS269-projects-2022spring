@@ -33,7 +33,7 @@ MetaDrive largely facilitates the generalization of  RL in autonomous driving. O
 
 ## Motivation
 
-Human interaction will help the performance of reinforcement learning and autonomous driving from many aspects: On the one hand, human could provide necessary guidance to RL agents during driving. On the other hand, human involvement could augment the complexity and diversity of driving scenarios, so that it could better test the generalization ability of RL agents. Including human in the loop also makes the scenarios closer to the situations in real-world applications, where human collaborate with AI in driving tasks.
+Human interaction will help the performance of reinforcement learning and autonomous driving from many aspects: On the one hand, human could provide necessary guidance to RL agents during driving. On the other hand, human involvement could augment the complexity and diversity of driving scenarios, so that it could further facilitate the generalization ability of RL agents. Including human in the loop also makes the scenarios closer to the situations in real-world applications, where human collaborate with AI in driving tasks.
 
 ## Implementations
 
@@ -71,7 +71,7 @@ We compared RL performance with or without human interactions in single agent an
 
 ![MetaDrive]({{ '/assets/images/13/table_1.png' | relative_url }}){: style="width: 750px; max-width: 80%;"}
 
-<center>Table 1. Average Reward and Cost With or Without Human Interactions for the two scenarios</center><center>("*" indicates a nearly significant difference, while "**" represents a significant difference)</center>
+<center>Table 1. Average Reward and Cost With or Without Human Interactions for the Two Scenarios</center><center>("*" indicates a nearly significant difference, while "**" represents a significant difference)</center>
 
 
 
@@ -85,7 +85,7 @@ On the basis of above comparison, we further plotted RL performance as a functio
 
 ![res1]({{ '/assets/images/13/figure3.png' | relative_url }}){: style="width: 750px; max-width: 80%;"} 
 
-<center>Fig 4. The Cumulative Reward Varied with the Number of Added vehicles</center>
+<center>Fig 4. The Cumulative Reward Varied with the Number of Added Vehicles</center>
 
 ![res2]({{ '/assets/images/13/figure4.png' | relative_url }}){: style="width: 750px; max-width: 80%;"}
 

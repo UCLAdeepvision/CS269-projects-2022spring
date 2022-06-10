@@ -16,6 +16,12 @@ date: 2022-04-23
 ## Motivation
 With the rise of online shopping and e-retail platforms, Virtual Try-On of clothing garments is a key feature to enhance the experience of the online shoppers. Many intensive studies are done to solve this problem. Some initial methods focussed on image to image translation models without spatial aligment. Later some studies addressed the spatial alignment by performing garment warping using local appearance flow. One of latest studies also proposed a global appearance flow using StyleGANs for better spatial adjustment. So overall, a lot of work has been done in the are of image based Virtual Try-On and results have suprassed the minimum satisfiable requirements. While there are still room for improvement in image based Virtual Try-On methods, generating videos with Virtual Try-On is also very relevant in e-commerce and should be addressed hand in hand with image based approaches. Most existing video-based virtual try-on methods usually require clothing templates and they can only generate blurred and low-resolution results. Very few methods exist which uses relatively new versions of GAN to solve the video-based virtual try-on problem. Hence in this project, we would like to address this problem by taking a closer look of existing approaches and solving the problems with them.
 
+## Related Work
+
+Recently there has been lot of work on Virtual Tryon. Initial models try to just overlap the cloth to the person without much spacial alignment. Later methods incorporated garment warping techinic using local flow estimation of cloth and that has improved the virtual tryon output. Recently, the "**Style Flow**" ([[1]](#references)) method focuses on finding a global appearance flow of cloth based on person pose and use that for Virtual Tryon. This method handles difficult body poses, occlusions and misalignments between person and garment better. We have used this model as our baseline to start from and then we explored various approaches to further improve the Virtual Tryon.
+
+**ShineOn** ([[2]](#references)) is a model that performs virtual video tryon. The model uses a UNET based architecture at the core that does the cloth warping on the image of the person. The UNET based model is connected with a flow based architecture that helps the model gain better flow in the videos compared to simply appending the frames one after the other. There were few issues with the model where the neck part of the image was disappearing when the images were zoomed in while trying to generate the output. In our work we try to extract few interesting aspects of the ShineOn model like including flow for frame generation.
+
 ## Methodology
 
 ### Inference on existing models
@@ -110,25 +116,6 @@ Figure: Model architecture using Depth
 |                  | conv26        | conv27   | 1           | 512             | 64               | 1      | LeakyReLU  |
 |                  | conv27        | conv28   | 1           | 64              | 3                | 1      | LeakyReLU  |
 
-## Results
-
-
-
-## Related Work
-
-Apart from the previously mentioned related work in this direction, we would like to particularly highlight few recent papers which are directly related to this project. 
-[[1]](#references) focuses on fitting an in-shop garment into a clothed person image for which garment warping is the core step. Existing methods face the problem of failing difficult body poses,occlusions and large mis-alignments between person and garment images. The authors propose a novel global appearance flow estimation model. This helps us leverage a global style vector which encodes the whole-image context.
-
-### ShineOn: Video Virtual Tryon
-
-ShineOn is a model that performs virtual video tryon. The model uses a UNET based architecture at the core that does the cloth warping on the image of the person. The UNET based model is connected with a flow based architecture that helps the model gain better flow in the videos compared to simply appending the frames one after the other. There were few issues with the model where the neck part of the image was disappearing when the images were zoomed in while trying to generate the output. In our work we try to extract few interesting aspects of the ShineOn model like including flow for frame generation.
-
-## Proposal
-Our proposal is to combine the work previously done in image to image Virtual Try-On and addressing temporal coherency in video generation methods to result in high quality video Virtual Try-On output. Below are the brief steps:
-- Given an in-shop garment image and a person's image, align the garment on to the person using existing dense appearance flow estimation methods.
-- Naive approach for video generation : Take frames from input video, applying image-to-image virtual try-on algorithm and stitch the frames. This is going to result in temporal misalignments due to independent stitching. Find ways to estimate the decoherency in the output.
-- Address temporal coherencey : Generate output video from input combining virtual try-on and adjusting time based frames flow (as proposed in [[2]](#references)) to smoothen the temporal misalignments.
-
 ## Datasets
 - **Original Dataset:**
 
@@ -173,50 +160,36 @@ Our proposal is to combine the work previously done in image to image Virtual Tr
 
 - **Generating DepthMap training data:**
 
-  
 
-## Timeline
-- Week 1-2: Perform extensive research on possible options in the different modules
-  and shortlist a few unique and relevant problems.
-- Week 3: Research available datasets and codebases and understand
-   the various challenges to solve the shortlisted problems and zero down 
-  one option.
-- Week 4-5: Work on running and understanding available codebases for the three 
- papers and isolate salient features from them. Provide prelimnary results for 
-  the virtual try-on model and understand the challenges in to combine ideas.
-- Week 6-8: Combine temporal stitching and style warping ideas together. Write code
- for various dataloaders and also the combined models and utilities. Train models.
-- Week 9-10: Improve model, obtain results and write the report and presentation.
 
-## Baseline runs
-- We have done tests using the pretrained checkpoints provided by Style-Based global appearance flow paper [[1]](#references) [github repo](https://github.com/SenHe/Flow-Style-VTON/). This is to do image based virtual try-on over VITON dataset. Below are some of the results we have obtained:
 
-![]({{ '/assets/images/team10/res1.jpg' | relative_url }})
-{: style="width: 800px; max-width: 100%;"}
-![]({{ '/assets/images/team10/res2.jpg' | relative_url }})
-{: style="width: 800px; max-width: 100%;"}
-![]({{ '/assets/images/team10/res3.jpg' | relative_url }})
-{: style="width: 800px; max-width: 100%;"}
-*Fig 1. Baseline results for image based virtual try-on using model proposed in* [[1]](#references).
+## Results
+
+
+
+## Conclusions
+
+## 
 
 ## References
-[1] He, S., Song, Y.-Z., and Xiang, T. Style-based global ap-
-pearance flow for virtual try-on, 2022. URL [https://arxiv.org/abs/2204.01046](https://arxiv.org/abs/2204.01046).
+[1] He, S., Song, Y.-Z., and Xiang, T. Style-based global appearance flow for virtual try-on, 2022.
 
-[2] Tzaban, R., Mokady, R., Gal, R., Bermano, A. H., and
+[2] Kuppa, Gaurav, et al. "ShineOn: Illuminating Design Choices for Practical Video-based Virtual Clothing Try-on." *Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision*. 2021.
+
+[3] Tzaban, R., Mokady, R., Gal, R., Bermano, A. H., and
 Cohen-Or, D. Stitch it in time: Gan-based facial editing
 of real videos, 2022. URL [https://arxiv.org/abs/2201.08361](https://arxiv.org/abs/2201.08361).
 
-[3] Alaluf, Y., Patashnik, O., Wu, Z., Zamir, A., Shechtman,
+[4] Alaluf, Y., Patashnik, O., Wu, Z., Zamir, A., Shechtman,
 E., Lischinski, D., and Cohen-Or, D. Third time’s the
 charm? image and video editing with stylegan3, 2022.
 URL [https://arxiv.org/abs/2201.13433](https://arxiv.org/abs/2201.13433).
 
-[4] Zhong, X., Wu, Z., Tan, T., Lin, G., and Wu, Q. MV-TON:
+[5] Zhong, X., Wu, Z., Tan, T., Lin, G., and Wu, Q. MV-TON:
 Memory-based video virtual try-on network. In Proceed-
 ings of the 29th ACM International Conference on Multi-
 media. ACM, oct 2021. doi: 10.1145/3474085.3475269.
 URL [https://doi.org/10.1145%2F3474085.3475269](https://doi.org/10.1145%2F3474085.3475269).
 
-[5] Han, X., Wu, Z., Wu, Z., Yu, R., and Davis, L. S. Viton: An
+[6] Han, X., Wu, Z., Wu, Z., Yu, R., and Davis, L. S. Viton: An
 image-based virtual try-on network, 2017. URL [https://arxiv.org/abs/1711.08447](https://arxiv.org/abs/1711.08447)

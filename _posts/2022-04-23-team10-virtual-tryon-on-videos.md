@@ -119,11 +119,9 @@ Figure: Model architecture using Depth
 Apart from the previously mentioned related work in this direction, we would like to particularly highlight few recent papers which are directly related to this project. 
 [[1]](#references) focuses on fitting an in-shop garment into a clothed person image for which garment warping is the core step. Existing methods face the problem of failing difficult body poses,occlusions and large mis-alignments between person and garment images. The authors propose a novel global appearance flow estimation model. This helps us leverage a global style vector which encodes the whole-image context.
 
-[[2]](#references) tries to tackle temporal incoherency for using GANs to tackle video genration.
-The paper uses tendency of neural networks to learn low frequency functions,
-the natural alignment of StyleGAN  to provide a strongly consistent prior. It is observed that the technique does produce highly consistent manipulations with respect to the temporal domain as well as is highly generalisable. 
+### ShineOn: Video Virtual Tryon
 
-StyleGAN is one of the most well studied generative models and results in impressive performance in image generation. [[3]](#references) explores the recent styleGAN3 architecture and its latent space patterns. [[1]](#references) also uses StyleGAN based architecture for appearance flow estimation. We could also potentially use styleGAN to generate intermittent frames in video generation as necessary.
+ShineOn is a model that performs virtual video tryon. The model uses a UNET based architecture at the core that does the cloth warping on the image of the person. The UNET based model is connected with a flow based architecture that helps the model gain better flow in the videos compared to simply appending the frames one after the other. There were few issues with the model where the neck part of the image was disappearing when the images were zoomed in while trying to generate the output. In our work we try to extract few interesting aspects of the ShineOn model like including flow for frame generation.
 
 ## Proposal
 Our proposal is to combine the work previously done in image to image Virtual Try-On and addressing temporal coherency in video generation methods to result in high quality video Virtual Try-On output. Below are the brief steps:

@@ -33,10 +33,50 @@ Our proposal is to combine the work previously done in image to image Virtual Tr
 - Address temporal coherencey : Generate output video from input combining virtual try-on and adjusting time based frames flow (as proposed in [[2]](#references)) to smoothen the temporal misalignments.
 
 ## Datasets
-- VITON - the dataset is based virtual try-on of clothing items. 
-It consists of 16,253 pairs of images of a person and a clothing item .
-- VVT - dataset designed for video virtual try-on task, contains 791 videos of fashion model catwalk.
-- Flickr-Faces-HQ (FFHQ)  dataset - consists of 70,000 high-quality PNG images and contains considerable diversity and variety in terms of age, ethnicity and image background.
+- **Original Dataset:**
+
+  - VVT - dataset designed for video virtual try-on task, contains 791 videos of fashion model catwalk.
+  - Most widely used videos dataset for virtual try on applications.
+  - All videos have white background and hence models might overfit the background information while detecting the cloth position.
+
+- **VVT subset dataset used for Training:**
+
+  Considering the computation power and timelines, we have hand picked 40 videos which has an average of 250 frames per video. So in total we had trained our models on around 10000 frames. Out of which 30 videos data is used for training and 5 videos each are used for validation and test. Frame size in these videos is (256, 192). 
+
+- **Augmented VVT dataset with non-plain backgrounds**:
+
+  All the videos present in the original VVT dataset have white background and hence we have observed many artifacts when we test on  outdoor videos. So we have augmented the original VVT dataset by adding different backgrounds. We have trained a `person-segmentation` model to segment the person in the foreground and thus replacing the background seamlessly with different backgrounds. Here are the details of the `person-segmentation` model we have trained for foreground-background separation:
+
+  - Person Segmentation Model details:
+
+    - ConvNet based model
+
+    - Reference: `[person-segmentation](https://github.com/dkorobchenko-nv/person-segmentation)`
+
+    - Trained on COCO segmentation (person) dataset for 100 epochs.
+
+      
+
+
+  Here are the results from the person segmentation model:
+
+  ![]({{ '/assets/images/team10/person_segmentation_result.png' | relative_url }})
+
+  Figure1: a) Original frame b) Person segmentation result c) foreground mask
+
+  
+
+  Once the foreground mask is detected, we take background from a different image and combine it to result in the new augmented image. Here are some of the augmentation results:
+
+  ![]({{ '/assets/images/team10/background_addition_results.png' | relative_url }})
+
+  Figure2: 	a1) original 	a2) with background 	b1) original 	b2) with background
+
+  
+
+- **Generating DepthMap training data:**
+
+  
 
 ## Timeline
 - Week 1-2: Perform extensive research on possible options in the different modules

@@ -100,7 +100,7 @@ Semantic segmentation has proved to improve the performance of visual question a
 
 Initially, we replaced the pre-trained MCAN’s image encoder (Faster RCNN) with the image encoder of CLIP (with ResNet-50 backbone) and tried direct inference and training + inference on that setting. Then, instead of replacing the image encoder completely, we tried augmenting the data so as to capture the image features using both CLIP’s image encoder and Faster RCNNs. And then, we replace the MCAN’s text encoder (GLoVe + LSTM) with the text encoder of CLIP. In this setting also we tried only inference and training + inference. Overall, the best performing CLIP + MCAN architecture is shown in Figure [8]. It is the one where we augmented the features of pre-trained CLIP’s image with the features of Faster RCNN and replaced the GLoVe + LSTM features with the pre-trained CLIP’s text encoder features.
 
-![]({{ '/assets/images/team11/lseg2.png' | relative_url }})
+![]({{ '/assets/images/team11/mcan4.png' | relative_url }})
 {: style="width: 800px; max-width: 100%;"}
 <p style="text-align:center;">
 <i>Fig 8. Best performing CLIP + MCAN Model</i>.

@@ -61,16 +61,50 @@ Having observed these misalignments, we create our own dataset that uses more re
 <center><i>Fig.3 New training set created with PhotoSketch</i></center> 
 <br>
 
-### Running the project
-When we were deploying the model, we found that there are many legacy codes and some intrinsic bugs. We raised an issue on [GitHub](https://github.com/sysu-imsl/EdgeGAN/issues/16) for training customized dataset. We hope this help people facing the same issue. We also observe that EdgeGAN is written in TensorFlow 1.x and it depends on many obselete packages such as scipy.misc. We updated the code to be compatible with TensorFlow 2.x that supports the latest CUDA driver and replace scipy.misc with imageio. We also included several Python files to generate new dataset and a Jupyter notebook for interactive drawing. Our code can be found on [https://github.com/WaichungLing/EdgeGAN_TF2](https://github.com/WaichungLing/EdgeGAN_TF2)
-
 ## Experiments
+
+### PyTorch Reimplementation
+
+We spent the majority of time using PyTorch to reimplement the network. Our motivation is that many of the research nowadays use PyTorch instead of TensorFlow. Writing EdgeGAN with PyTorch helps deploy EdgeGAN with other models (the inpainting model as we initially consider) under same environment, which can be pipelined to complete the whole object replacing work. Then we could finetune the pipeline to achieve better results for the generation task.
+
+Our code of PyTorch implementation can be found on [https://github.com/WaichungLing/EdgeGAN_Pytorch](https://github.com/WaichungLing/EdgeGAN_Pytorch).
+
+### Training
 
 We trained the EdgeGAN model with our new training dataset. We trained three models with 100 epochs and a batch size of 64. Each model only differs in the learning rates, which are 1e-3, 2e-4(default), and 1e-5. We first manually inspected the results. We found that the 1e-5 model only generates vague outlines because of the small learning rate failed to drive the model to optimal. Therefore, we will drop this model from the following discussion. We also finetuned the pretrained model on our new dataset for 20 epochs with learning rate 1e-5.
 
-### Result Visualization
+### FID Comparison
 
-Here we report several successful and failure cases below. We consider an output to be successful if the output has correct position for each component (e.g. head and legs), the texture is correctly recovered (e.g. stripes of zebra), and the body ratio is maintained. 
+The Frechet Inception Distance score, or FID for short, is a metric that calculates the distance between feature vectors calculated for real and generated images [11]. The score summarizes how similar the two groups are in terms of statistics on computer vision features of the raw images calculated using the inception v3 model used for image classification. Lower scores indicate the two groups of images are more similar, or have more similar statistics, with a perfect score being 0.0 indicating that the two groups of images are identical.
+
+We adapted FID as a metric to quantify the quality of synthesized images. We compared the output of each model with the ground truth images using the [pytorch_fid](https://github.com/mseitzer/pytorch-fid) tool. The results are listed below.
+
+### Running The Project
+
+When we were deploying the model, we found that there are many legacy codes and some intrinsic bugs. We raised an issue on [GitHub](https://github.com/sysu-imsl/EdgeGAN/issues/16) for training customized dataset. We hope this help people facing the same issue. We also observe that EdgeGAN is written in TensorFlow 1.x and it depends on many obselete packages such as scipy.misc. We updated the code to be compatible with TensorFlow 2.x that supports the latest CUDA driver and replace scipy.misc with imageio. We also included several Python files to generate new dataset and a Jupyter notebook for interactive drawing. Our code can be found on [https://github.com/WaichungLing/EdgeGAN_TF2](https://github.com/WaichungLing/EdgeGAN_TF2)
+
+### Interactive Notebook
+
+EdgeGAN can be designed to be interactive, accepting user's drawing and generating the synthesized image. Running the Python file directly requires the user to somehow draw the sketch and save in the corresponding folder. The drawing part is especially inconvenient. Traditional drawing interface like OpenCV opens a new window therefore the user cannot finish the process of interaction with only one setup. We built a notebook with ipycanvas package, which allows user to sketch directly on a notebook cell. We then run the test model directly on the notebook to generate output. Fig.6 shows one of our sketch and the corresponding output.
+
+![EC-Structure]({{ '/assets/images/06/sketch.png' | relative_url }})
+{: style="width:70%; margin-left:15%;"}
+<center><i>Fig.6 Sketch we drew on the notebook (left) and the model output (right)</i></center> 
+<br>
+
+## Result
+
+### PyTorch Model Result
+
+After finishing rewriting the model in PyTorch, we found there are misaligned behaviors in the training loss and our model fails to converge, although the architecture of the PyTorch model is perfectly identical to that of the original TensorFlow one,. Due to the time constraint, we are not able to debug and tune the whole PyTorch model. Here we list some of the challenges during reimplementation:
+- Many code blocks of EdgeGAN are handwritten, after replacing it with PyTorch models, the bebavior is different.
+- EdgeGAN uses complicated weight initialization and the activation different from case by case. We replace them by Xavier initialization and Prelu, which might lead to different result.
+- EdgeGAN has many intrinsic bugs, such as misalignments in API calls lead to use default arguments. We are not able to debug all of these misuses.
+- EdgeGAN uses gradient regularization, which we find is too strong. We replace it with L2-regularization but this needs parameter tuning.
+
+### TensorFlow Model Result Visualization
+
+Below we report several successful and failure cases for the model in TensorFlow version. We consider an output to be successful if the output has correct position for each component (e.g. head and legs), the texture is correctly recovered (e.g. stripes of zebra), and the body ratio is maintained. 
 
 
 #### Successful cases
@@ -84,24 +118,6 @@ Training from sketch with new data vs finetuned <br>
 
 #### Failure cases
 
-
-### FID Comparison
-
-The Frechet Inception Distance score, or FID for short, is a metric that calculates the distance between feature vectors calculated for real and generated images [11]. The score summarizes how similar the two groups are in terms of statistics on computer vision features of the raw images calculated using the inception v3 model used for image classification. Lower scores indicate the two groups of images are more similar, or have more similar statistics, with a perfect score being 0.0 indicating that the two groups of images are identical.
-
-We adapted FID as a metric to quantify the quality of synthesized images. We compared the output of each model with the ground truth images using the [pytorch_fid](https://github.com/mseitzer/pytorch-fid) tool. The results are listed below.
-
-
-
-
-### Interactive Notebook
-
-EdgeGAN can be designed to be interactive, accepting user's drawing and generating the synthesized image. Running the Python file directly requires the user to somehow draw the sketch and save in the corresponding folder. The drawing part is especially inconvenient. Traditional drawing interface like OpenCV opens a new window therefore the user cannot finish the process of interaction with only one setup. We built a notebook with ipycanvas package, which allows user to sketch directly on a notebook cell. We then run the test model directly on the notebook to generate output. Fig.6 shows one of our sketch and the corresponding output.
-
-![EC-Structure]({{ '/assets/images/06/sketch.png' | relative_url }})
-{: style="width:70%; margin-left:15%;"}
-<center><i>Fig.6 Sketch we drew on the notebook (left) and the model output (right)</i></center> 
-<br>
 
 ## Discussion
 
@@ -123,21 +139,11 @@ When exploring the outputs of all models, we found that many different sketches 
 <center><i>Fig.8 Similar outputs w.r.t different sketches</i></center> 
 <br>
 
-## PyTorch implementation
-
-We spent most of time using PyTorch to reimplement the algorithm. Our motivation is that many of the research nowadays use PyTorch instead of TensorFlow. Writing EdgeGAN with PyTorch helps deploy EdgeGAN with other models (the inpainting model as we initially consider) under same environment, which can be pipelined to complete the whole object replacing work. Then we could finetune the pipeline to achieve better results for the generation task.
-
-However, after finishing rewriting the model, although the architecture of the PyTorch model is perfectly identical to that of the original TensorFlow one, we found there are misaligned behaviors in the training loss and our model fails to converge. Due to the time constraint, we are not able to debug and tune the whole PyTorch model. Here we list some of the challenges during reimplementation:
-- Many code blocks of EdgeGAN are handwritten, after replacing it with PyTorch models, the bebavior is different.
-- EdgeGAN uses complicated weight initialization and the activation different from case by case. We replace them by Xavier initialization and Prelu, which might lead to different result.
-- EdgeGAN has many intrinsic bugs, such as misalignments in API calls lead to use default arguments. We are not able to debug all of these misuses.
-- EdgeGAN uses gradient regularization, which we find is too strong. We replace it with L2-regularization but this needs parameter tuning.
+### PyTorch Reimplementation Takeaways
 
 The key takeaways are that: 
 - Small inconsistency in sub-modules between PyTorch and TensorFlow can cause the model to produce completely different results.
 - It is very difficult to replicate deep neural networks. Even though the same architecture can be reproduced, unrevealed hyper-parameters of the original model may cause the replication result to be different.
-
-Our code of PyTorch implementation can be found on [https://github.com/WaichungLing/EdgeGAN_Pytorch](https://github.com/WaichungLing/EdgeGAN_Pytorch).
 
 ## Reference
 

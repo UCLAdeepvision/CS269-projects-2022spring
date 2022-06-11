@@ -109,34 +109,53 @@ Below we report several successful and failure cases for the model in TensorFlow
 
 #### Successful cases
 
+![EC-Structure]({{ '/assets/images/06/success.png' | relative_url }})
+{: style="width:70%; margin-left:15%;"}
+<center><i>Fig.7 Examples of successful outputs from all four models</i></center> 
+<br>
 
-Training from sketch with new data vs the original one <br>
-Judging from the synthesized images of zebra, we can see that the original model's generation is siginificantly affected by the incorrect body ratio of the sketch. This is because the original model was trained on edge maps which do not have as many variations as the sketch. The outputs of both 1e-3 and 2e-4 tend to retain the correct body ratio better. Although the synthesized images look decent, the corresponding edge map pinpoints some drawbacks of using our new data. Since our new data replace the edge maps with sketches, some details and textual information are dropped. This leads to that both 1e-3 and 2e-4 did a poor job in synthesizing the complicated parts like head. We can also observe several incomplete and artifact parts in the model using new dataset. We suspect that this is because the sketches in the training samples are incomplete and thus misguide the model. We will discuss more on the dataset quality in the Discussion section.
 
-Training from sketch with new data vs finetuned <br>
+**Training from sketch with new data vs the original one** <br>
+Judging from the synthesized images of zebra, we can see that the original model's generation is siginificantly affected by the incorrect body ratio of the sketch. This is because the original model was trained on edge maps which do not have as many variations as the sketch. The outputs of both 1e-3 and 2e-4 tend to retain the correct body ratio better. Although the synthesized images look decent, the corresponding edge map pinpoints some drawbacks of using our new data. Since our new data replace the edge maps with sketches, some details and textual information are dropped. This leads to that both 1e-3 and 2e-4 did a poor job in synthesizing the complicated parts like head. We can also observe several incomplete and artifact parts in the model using new dataset. We suspect that this is because the sketches in the training samples are fragmentary and thus misguide the model. We will discuss more on the dataset quality in the Discussion section.
+
+**Training from sketch with new data vs finetuned** <br>
+We finetune the pretrained model with our new dataset. From the edge map, we can see that finetuning keeps the detailed information. Therefore, compared to training from sketch, finetuned version better generate more detailed heads. On the contrary, affected by the quality of our sketch, finetuned model tends to generate more incomplete patches.
 
 
 #### Failure cases
 
+![EC-Structure]({{ '/assets/images/06/failed.png' | relative_url }})
+{: style="width:70%; margin-left:15%;"}
+<center><i>Fig.8 Examples of failed outputs of all four models</i></center> 
+<br>
+
+All four models did a poor job in synthesizing cats and dogs. There are two major reasons for this. First is cats' and dogs' generation requires more detailed information, making it a more difficult task. Second, the ground truth images of cats and dogs are already very poor. The cats and dogs images are much more diverse. Many of them are of weird orientations and poses, making the models fail to learn representative features.
+
+#### FID scores
+
+![EC-Structure]({{ '/assets/images/06/fid.png' | relative_url }})
+{: style="width:70%; margin-left:15%;"}
+<center><i>Table.1 FID scores</i></center> 
+Table.1 shows the FID scores of four models. If we train with our new dataset from sketch, the best model 2e-4 is slightly larger than the original one. If we finetune the pretrained model, our new dataset can perform nearly as good as the original one. Although training with our new dataset does not surpass the original result, we have shown that training with sketch is not significantly worse than using edge map. It's noticeble that the ground truth images we used are in poor quality. It may amplify the weakness of using sketches (incomplete or even lack of details). We expect that sketches can perform better with cleaner datasets, which we believe also enhance the quality of the final outputs.
 
 ## Discussion
 
 ### Dataset Quality
 
-The ground truth images of both our new dataset and the one EdgeGAN used are from segmenting the COCO dataset. Fig.7 shows that some of the ground truth images are in poor quality. It might be distorted, incomplete, or vague in details. Therefore, we could not generate reasonable sketch or edge map from these samples. In the previous section, we discussed all of the models did a poor job in dogs and cats generation. After inspecting, we realized that the ground truth image of cats and dogs are relatively worse. For example, most of the cat images are black cats, whose details are barely distinguishable. We recognized that this is the first obstacle to train a high-quality EdgeGAN. 
+The ground truth images of both our new dataset and the one EdgeGAN used are from segmenting the COCO dataset. Fig.9 shows that some of the ground truth images are in poor quality. It might be distorted, incomplete, or vague in details. Therefore, we could not generate reasonable sketch from these samples. In the previous section, we discussed all of the models did a poor job in dogs and cats generation. After inspecting, we realized that the ground truth image of cats and dogs are relatively worse. For example, most of the cat images are black cats, whose details are barely distinguishable. We recognized that this is the first obstacle to train a high-quality EdgeGAN. 
 
 ![EC-Structure]({{ '/assets/images/06/dataQuality.png' | relative_url }})
 {: style="width:70%; margin-left:15%;"}
-<center><i>Fig.7 Examples of distorted (left), incomplete (middle), and vague (right)</i></center> 
+<center><i>Fig.9 Examples of distorted (left), incomplete (middle), and vague (right)</i></center> 
 <br>
 
 ### Generation diversity
 
-When exploring the outputs of all models, we found that many different sketches end up with nearly identical image generations (See Fig.8). We suspect that the GAN model may be merely remembering some examples for each category and each orientation. Currently, the inputs and outputs are only in 64*64 resolution, at which we cannot see the detailed difference from images to images. We think it's worthwhile to train the model in higher resolution and justify if the model generation is various enough. 
+When exploring the outputs of all models, we found that many different sketches end up with nearly identical image generations (See Fig.10). We suspect that the GAN model may be merely remembering some examples for each category and each orientation. Currently, the inputs and outputs are only in 64*64 resolution, at which we cannot see the detailed difference from images to images. We think it's worthwhile to train the model in higher resolution and justify if the model generation is various enough. 
 
 ![EC-Structure]({{ '/assets/images/06/similar.png' | relative_url }})
 {: style="width:70%; margin-left:15%;"}
-<center><i>Fig.8 Similar outputs w.r.t different sketches</i></center> 
+<center><i>Fig.10 Similar outputs w.r.t different sketches</i></center> 
 <br>
 
 ### PyTorch Reimplementation Takeaways

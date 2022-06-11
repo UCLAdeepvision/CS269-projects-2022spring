@@ -2,7 +2,7 @@
 layout: post
 comments: true
 title: Virtual Try-on on Videos
-author: Manish Reddy Gottimukkula, Shardul Shailendra Parab, Vishnu Vardhan Bachupally
+author:  Shardul Shailendra Parab, Manish Reddy Gottimukkula,Vishnu Vardhan Bachupally
 date: 2022-04-23
 ---
 
@@ -159,6 +159,8 @@ Figure: Model architecture using Depth
   
 
 - **Generating DepthMap training data:**
+As we said, this is the first work to introduce depth maps for virtual tryons. However, we need a solid depth map generating system which can provide us all the necessary auxiliary information which can help reinforce better virtual tryon systems. For the same, we pass the input body mask image(explained earlier)  through the Megadepth hourglass model. The result of this model is then passed through a mononet5 model which in turn does give us a holistic picture having 16 channels. This 16 channels is fully used for our tryon model.
+
 
 
 ## Results

@@ -220,6 +220,14 @@ Qualitative comparison of DenseTryon and CSPTryon models:
 ![]({{ '/assets/images/team10/densenet_csp_128.jpeg' | relative_url }})
 
 We can observe that CSPTryon model's output looks much better than DenseTryon as underlying CSPNet is a better model as compared to DenseNet. Also, the model is able to perform well even on the side pose scenarios which are considered to be difficult for various virtual Tryon methods.
+On a quantitative note, we use structural similarity index measure(SSIM) to compare the performance
+of the models. We compare only between DenseTryOn and CSPTryOn. The reason being ResTryOn has given comparatively poorer results.
+The SSIM graph is as follows:
+![]({{ '/assets/images/team10/ssim.png' | relative_url }})
+
+The results is a combination of SSIM scores from 10 unseen videos containing a total of 80 frames each. 
+We can clearly see CSPTryOn does give much better results. Hence, we can say that CSPTryOn can be the best option in case of 
+available hardware resources. If not it is better to use DenseTryOn.
 
 ### Frame Interpolation
 
@@ -231,7 +239,11 @@ We can observe that CSPTryon model's output looks much better than DenseTryon as
 
 We have started with naive approach of generating videos frame by frame from image tryon models. We have improved the quality of the videos by adding flow to our model and could see a slight improvement qualitatively and quantitatively. From this point we have taken an novel approach of applying depth using depth based models such DenseNet and CSPNet and have included the improved results. Depth provides lot of useful information to obtain the correct garment warping and hence globally improving the Tryon. This is the first work that uses depth based model for Video Virtual Tryon task. 
 
-We conclude by saying that we have seen significant improvement in the video quality from the baseline videos that are generated frame by frame considering the limited amount of resources available to us
+We conclude by saying that we have seen significant improvement in the video quality from the baseline videos that are generated frame by frame considering the limited amount of resources available to us.
+
+## Code
+
+[link](https://github.com/manishmanu/VideoVirtualTryon-HCAI-Project)
 
 ## References
 [1] He, S., Song, Y.-Z., and Xiang, T. Style-based global appearance flow for virtual try-on, 2022.

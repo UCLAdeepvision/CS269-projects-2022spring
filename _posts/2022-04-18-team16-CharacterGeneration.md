@@ -223,9 +223,9 @@ The phase 2 of the training process is to train an encoder that can map a user i
 
 In phase 3, we will use either a ramdomly sampled or an encoder output as an initial $$\mathcal{w}^+$$ in the latent space. Then we would still need to perform some inference steps with the reconstructive loss as a local optimization objective. We have tried to use either the reconstruction loss or relabel loss as the objective when the input is a sketch. And there are more results in the following sessions. 
 
-![SemanticGAN Phase 1]({{ '/assets/images/team16/reconst_loss.png' | relative_url }}) 
+![SemanticGAN Phase 3]({{ '/assets/images/team16/reconst_loss.png' | relative_url }}) 
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
-![SemanticGAN Phase 1]({{ 'assets/images/team16/optimization objective.png' | relative_url }})
+![SemanticGAN Phase 3]({{ 'assets/images/team16/optimization objective.png' | relative_url }})
 {: style="width: 500px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 ![SemanticGAN Phase 3]({{ '/assets/images/team16/semanticGAN_sketch_phase3.png' | relative_url }}) 
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
@@ -234,6 +234,60 @@ In phase 3, we will use either a ramdomly sampled or an encoder output as an ini
 </div>
 
 ## Results
+
+### Training Samples
+
+
+![Train Gif]({{ '/assets/images/team16/gan_train_samples.gif' | relative_url }}) 
+{: style="width: 800px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
+<div style="text-align: center;">
+  <i>Fig r. Samples generated during the StyleGAN training process</i>
+</div>
+
+![Encoder Val Gif]({{ '/assets/images/team16/en_val_samples.gif' | relative_url }}) 
+{: style="width: 800px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
+<div style="text-align: center;">
+  <i>Fig r. Samples generated during the encoder taining process.</i>
+  (the top half are ground truth, lower half are images/masks generated from mapped latents)
+</div>
+
+ Although the GAN training samples does not have much meaningful shapes, the encoder validation
+ results are rather consistent despite the poor quality of the GAN.
+
+
+### Inference Results
+
+![Train Gif]({{ '/assets/images/team16/inference_comparison.png' | relative_url }}) 
+{: style="width: 1200px; max-width: 150%; display: block; margin-left: auto; margin-right: auto;"}
+<div style="text-align: center;">
+  <i>Fig s. Inference results under different settings (unseen test data)</i>
+</div>
+ 
+ It is obvious that under all settings, the edge map generation result is very accurate. 
+ Yet just like what we've seen in the sampled results from the training process, the StyleGAN does not 
+ have very meaningful result and it is hard for encoder to find good latent vector that both satisfy the 
+ edge outline and the high quality image requirements. And from the top row random initialization setting, 
+ we can see that there is latent space where the outline can be very realistic and is slightly shown in the image,
+ but the coloring is completely decoupled from the outline. 
+
+ Since the sketch encoder is trained to find a latent vector that can both find realistic sketches and images, 
+ some coloring is shown on the boundaries of the pokemons. Yet without color information it is hard for the inference
+ process to find outputs with concrete colors. 
+
+ When directly use image to find similar images in the generation. It is obvious that similar images can be found through
+ encoder initialization and the inference process. Compared to "Sketch Your Own GAN", the reason that it is hard for our encoder
+ with less input signals to find desirable generation seems to be caused by both the decoupling of outline and coloring in the GAN
+ latent space (sketch cannot be an indicator of perceptually equivalen timage), and the lack of data also make encoder performance
+ deteriorate for unseen data. We can see that the sketch encoder performs rather well for validation data in the previous section. 
+ Yet the obvious performance drop in the test data looks like another side effect of data deficiency.
+
+![Encoder Val Gif]({{ '/assets/images/team16/self_imgs.png' | relative_url }}) 
+{: style="width: 400px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
+<div style="text-align: center;">
+  <i>Fig s. images generated given user sketches </i>
+</div>
+
+The above plots show more results of image generaion based on our own sketches.
 
 
 ## Conclusion and Future Work

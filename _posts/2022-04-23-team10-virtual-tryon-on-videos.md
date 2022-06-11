@@ -40,14 +40,15 @@ To improve the videos generated using the baseline method given above, we have t
 
 
 
-### Training new models to improve the performance
+### Main Novelty: Adding depth to enhance performance
 
+(a) **Including depth maps/ creating new models**
+For creating virtual tryons with depth we have created our own tweaked models. As previously stated, according to our knowledge this is the first work to use depth features for virtual tryons. We introduce ResTryon, DenseTryOn and CSPTryOn, which do use ResNet, DenseNet and CSP Net as inspirations.
 
+ResTryOn is a simple combination of three residual blocks.
+The architectures are created in such a way that they can flexible to take inputs of any number of channels which makes the model very flexible for future research purposes too. 
 
-
-
-#### 
-
+Their architectures as stated below:
 
 
 ## Network architectures
@@ -115,6 +116,12 @@ Figure: Model architecture using Depth
 |                  | conv25        | conv26   | 1           | 1024            | 512              | 1      | LeakyReLU  |
 |                  | conv26        | conv27   | 1           | 512             | 64               | 1      | LeakyReLU  |
 |                  | conv27        | conv28   | 1           | 64              | 3                | 1      | LeakyReLU  |
+
+Herein, firstly we take the input image and the cloth to be worn. This is both passed to the depth creation module as well the style generation module. The results from the depth module are then split into 2 stacks of 8 channels - each passed to a convolution block to get 3 channel results. The style generation module gives us a body mask and well as warped cloth.
+The 4 feature maps(12 channel input)  are then concatenated and passed onto the “Tryon” model. The tryon model can be either ResTryon, DenseTryOn Or CSPTryon
+
+(b) **Frame interpolation Tryon for fast videos:**
+The  architecture is a little more complex wherein instead of the previous 12 channel input to the tryon model, we use a 24 channel input to the model (which is a simple concatenation of the two frames to join both the videos) i.e. 12 channels each from frame1 and frame2 which is then passed on to the “tryon” models to get the interpolated frame.
 
 ## Datasets
 - **Original Dataset:**

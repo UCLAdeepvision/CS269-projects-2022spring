@@ -62,6 +62,59 @@ You can find more Markdown syntax at [this page](https://www.markdownguide.org/b
 ## Reference
 Please make sure to cite properly in your work, for example:
 
-[1] Redmon, Joseph, et al. "You only look once: Unified, real-time object detection." *Proceedings of the IEEE conference on computer vision and pattern recognition*. 2016.
+[1] Dwibedi, Debidatta, et al. "Counting out time: Class agnostic video repetition counting in the wild." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2020.   
+
+[2] 
 
 ---
+
+
+## Data Rich and Physics Certain
+
+| Experiment 					| Parameters  											| Results  								| Comments 							|
+| :---       					|    :----:   											|     :---: 							|     ---: 							|
+| **DL + Data**																																						|
+
+| Predicting only velocity  	| Dataset size : 10000<br> Network : 2->5->5->1 <br> activation: ReLU	|  ~100% accurate	| Generalises well over various initial velocities |
+| Predicting only displacement 	| Dataset size : 10000<br> Network : 2->16->16->1 <br>	activation: ReLU |	Reasonable		| Better prediction for $u_0 \in dataset$, average prediction outside | 
+| Predicting both $v_t, s_t$	| Dataset size : 10000<br> Network : 2->16->16->2 <br>	activation: tanh	|	Reasonable		| Better prediction for $u_0 \in dataset$, poor prediction outside |
+
+-----
+
+| **DL + Physics**																																			|
+| Predicting both $v_t, s_t$, using Loss $L_{physics} = \|v_{predicted}^2-u_{initial}^2-2*g*s_{predicted}\|$ | Dataset size : 10000<br> Network : 2->16->16->1 <br>	activation: ReLU |	~0% accuracy		| Expected result as no supervision of any kind is provided |
+| Predicting both $v_t, s_t$, using Loss $L_{velocity+phy} = (v_{predicted}-v_{actual})^2+\gamma*(v_{predicted}^2-u_{initial}^2-2*g*s_{predicted})^2$ | Dataset size : 10000<br> Network : 2->16->16->1 <br>	activation: ReLU |	Reasonable	| Prediction of $v_t$ is good. Was able to learn $s_t$ reasonably well without direct supervision |
+| Predicting both $v_t, s_t$, using Loss $L_{supervised+phy} = (v_{predicted}-v_{actual})^2+(s_{predicted}-s_{actual})^2+\gamma*(v_{predicted}^2-u_{initial}^2-2*g*s_{predicted})^2$ | Dataset size : 10000<br> Network : 2->16->16->1 <br>	activation: ReLU |	Reasonable	| Not a better result w.r.t direct supervision |
+
+
+**Observations :** 
+- Physics equations are certain in this case and are the best to use.
+- Both DL, Hybrid(DL+Physics) methods performance are equivalent (actual accuracy/loss varies based on fine training, random dataset generation)
+
+Re running the above experiments with Dataset size of 200(Data Starvation), yielded the following observations
+- DL performance is comparable with 10000 dataset when trained on much mode epochs(5x)
+- Hybrid(DL+Physics) without direct supervision on $s_t$ has comparable/better closeness than DL only method for limited epochs($\sim$300) training.
+
+
+
+
+## Data Rich and Physics Uncertain
+
+| Experiment 					| Parameters  											| Results  								| Comments 							|
+| :---       					|    :----:   											|     :---: 							|     ---: 							|
+| **DL + Data**																																						|\
+| Predicting both $v_t, s_t$	| Dataset size : 10000<br> Network : 2->16->16->2 <br>	activation: tanh	|	Reasonable		| Better prediction for $u_0 \in dataset$, poor prediction outside |
+| **DL + Physics**																																			|
+| Predicting both $v_t, s_t$<br> using Loss $L_{physics} = \|v_{predicted}^2-u_{initial}^2-2*g*s_{predicted}\|$ | Dataset size : 10000<br> Network : 2->16->16->1 <br>	activation: ReLU |	~0% accuracy		| Expected result as no supervision of any kind is provided |
+| Predicting both $v_t, s_t$<br> using Loss $L_{velocity+phy} = (v_{predicted}-v_{actual})^2+\gamma*(v_{predicted}^2-u_{initial}^2-2*g*s_{predicted})^2$ | Dataset size : 10000<br> Network : 2->16->16->1 <br>	activation: ReLU |	Reasonable	| Prediction of $v_t$ is good. Was able to learn $s_t$ reasonably well without direct supervision |
+| Predicting both $v_t, s_t$<br> using Loss $L_{supervised+phy} = (v_{predicted}-v_{actual})^2+(s_{predicted}-s_{actual})^2+\gamma*(v_{predicted}^2-u_{initial}^2-2*g*s_{predicted})^2$ | Dataset size : 10000<br> Network : 2->16->16->1 <br>	activation: ReLU |	Reasonable	| Not a better result w.r.t direct supervision, but bettr than DL when $u0$ is out of dataset |
+
+
+**Observations :** 
+- Both DL, Hybrid(DL+Physics) methods performance are similar, Hybrid(DL+Physics) is better when $u0$ is out of dataset, DL is better for $u0$ in dataset.
+- Physics equations are not certain in this case and the above methods are better to use than Physics.
+
+## Data Starvation and Physics Uncertain
+- Similar observations as in data rich
+
+

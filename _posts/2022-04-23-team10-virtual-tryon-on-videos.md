@@ -6,7 +6,7 @@ author: Manish Reddy Gottimukkula, Shardul Shailendra Parab, Vishnu Vardhan Bach
 date: 2022-04-23
 ---
 
-> Image-based Virtual Try-On focuses on transferring a desired clothing item on to a person's image seamlessly without using 3D information of any form. A key objective of Virtual Try-On models is to align the in-shop garment with the corresponding body parts in the person image. The problem at hand becomes challenging due to the spatial misalignment between the garment and the person's image. With the recent advances of deep learning and Generative Adversarial Networks(GANs), intensive studies were done to accomplish this task and were able to achieve moderately succesful results. The subsequent task in this direction would be is to apply the Virtual Try-On on videos. This has many applications in fashion, e-commerce etc sectors. We have started by using an existing state of the art image virtual tryon model and included various state of the art techniques to improve the performance of the videos. We have included Flow obtained from Flownet model to improve the overall smoothness of the video. Previously in video virtual tryon tasks, depth has never been taken into consideration to improve the video quality. In a novel approach, To improve the fitting of the cloth, we have used depth information and trained on various models including ResNet, DenseNet and CSPNet. The video quality has improved after adding these training tasks. Finally we have augmented the dataset by adding different backgrounds in the videos and trained on the above models to understand the effect of background in virtual tryon.
+> Image-based Virtual Try-On focuses on transferring a desired clothing item on to a person's image seamlessly without using 3D information of any form. A key objective of Virtual Try-On models is to align the in-shop garment with the corresponding body parts in the person image. The problem at hand becomes challenging due to the spatial misalignment between the garment and the person's image. With the recent advances of deep learning and Generative Adversarial Networks(GANs), intensive studies were done to accomplish this task and were able to achieve moderately succesful results. The subsequent task in this direction would be is to apply the Virtual Try-On on videos. This has many applications in fashion, e-commerce etc sectors. We have started by using an existing state of the art image virtual tryon model and included various state of the art techniques to improve the performance of the videos. We have included Flow obtained from Flownet model to improve the overall smoothness of the video. Previously in video virtual tryon tasks, depth has never been taken into consideration to improve the video quality. In a novel approach, To improve the fitting of the cloth, we have used depth information and trained on various models including ResNet, DenseTron and CSPTryon. The video quality has improved after adding these training tasks. Finally we have augmented the dataset by adding different backgrounds in the videos and trained on the above models to understand the effect of background in virtual tryon.
 
 <!--more-->
 {: class="table-of-content"}
@@ -56,7 +56,7 @@ To improve the videos generated using the baseline method given above, we have t
 
 Figure: Model architecture using Depth
 
-### DenseNet
+### DenseTryon
 
 |                  | Input                       | Output   | Kernel Size | #input channels | #output channels | Stride | Activation |
 | ---------------- | --------------------------- | -------- | ----------- | --------------- | ---------------- | ------ | ---------- |
@@ -82,7 +82,7 @@ Figure: Model architecture using Depth
 | TransitionLayer3 | conv16                      | conv17   | 1           | 160             | 64               | 1      | ReLU       |
 | TransitionLayer3 | conv17                      | avgpool3 | 2           | 128             | 64               | 2      | -          |
 
-### CSPNet
+### CSPTryon
 
 |                  | Input         | Output   | Kernel Size | #input channels | #output channels | Stride | Activation |
 | ---------------- | ------------- | -------- | ----------- | --------------- | ---------------- | ------ | ---------- |
@@ -161,9 +161,29 @@ Figure: Model architecture using Depth
 - **Generating DepthMap training data:**
 
 
-
-
 ## Results
+
+### Video tryon comparison
+
+### Depth model generated image comparison
+
+We have masked the cloths from original videos and tried to regenerate the original frames using our depth models. 
+
+We compare the outputs of DenseTryon at various epochs:
+
+![]({{ '/assets/images/team10/densenet_epoch_comp.jpeg' | relative_url }})
+
+We compare the outputs of CSPTryon at various epochs:
+
+![]({{ '/assets/images/team10/cspnet_epoch_comp.jpeg' | relative_url }})
+
+Following is the comparison between various models(left image output is from DenseTryon and right image output is from CSPTryon:
+
+![]({{ '/assets/images/team10/depth_csp_comparison.jpeg' | relative_url }})
+
+![]({{ '/assets/images/team10/densenet_csp_128.jpeg' | relative_url }})
+
+DenseTryon vs CSPTryon
 
 
 

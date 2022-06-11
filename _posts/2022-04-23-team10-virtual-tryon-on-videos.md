@@ -165,6 +165,28 @@ Figure: Model architecture using Depth
 
 ### Video tryon comparison
 
+
+
+### Improving Tryon on non-plain backgrounds
+
+We have used our trained `person-segmentation` model and segmented out the background and then used `Flow-Style` model to generated tryon and at the end we have stitched back the background. The results has much less artifacts than the one without background adjustment.
+
+Original video
+
+![]({{ '/assets/images/team10/bkg_vid_orig.gif' | relative_url }})
+
+Result obtained by directly passing through StyleFlow model
+
+![]({{ '/assets/images/team10/bkg_vid_orig_res.gif' | relative_url }})
+
+Result after removing background
+
+![]({{ '/assets/images/team10/bkg_vid_new_plain.gif' | relative_url }})
+
+Result after removing background and adding it back after tryon
+
+![]({{ '/assets/images/team10/bkg_vid_full_bkg.gif' | relative_url }})
+
 ### Depth model generated image comparison
 
 We have masked the cloths from original videos and tried to regenerate the original frames using our depth models. 

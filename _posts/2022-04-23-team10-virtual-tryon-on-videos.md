@@ -209,6 +209,16 @@ DenseTryon vs CSPTryon
 
 
 
+### Frame Interpolation
+
+![]({{ '/assets/images/team10/interpolation.jpeg' | relative_url }})
+
+## Outputs Compilation
+
+The videos we have generated through our models along with the original videos are uploaded in the following google drive link:
+
+https://drive.google.com/drive/folders/1oW_ENuN1hZfwyLPnOnl-UloD4qgNPKVF?usp=sharing
+
 ## Conclusions
 
 ## 

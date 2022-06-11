@@ -84,7 +84,7 @@ The ITR factor $$\eta$$ can be used in three levels:
 3. For cases where the inverse function can only give likelihood estimation but the domain is on Riemann manifold _i.e._ gradients are available, backpropogating $$\eta^{-i}(X)$$ to $$X$$ could be helpful for auto-denoising the adversarial inputs and defend the adversarial attacks.
 
 ## Experimental Setup
-### Out-of-vocabulary and/or other grammatical typos detection and human-in-the-loop detection
+### Human-in-the-loop Correction of OOV in Human-AI Collaborating Writing System
 
 We inject our module to some previously published human-in-the-loop storytelling systems like Plan-And-Write. The experiments consist of two parts. 
 * Evaluate whether the module can detect the out-of-vocabulary and/or grammatical typos, by passing some mistakenly-altered-on-purpose samples to the module and see if those mistakes are well recognized. 

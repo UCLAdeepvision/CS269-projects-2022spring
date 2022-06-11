@@ -214,9 +214,14 @@ Following is the comparison between various models(left image output is from Den
 
 ![]({{ '/assets/images/team10/densenet_csp_128.jpeg' | relative_url }})
 
-DenseTryon vs CSPTryon
+On a quantitative note, we use structural similarity index measure(SSIM) to compare the performance
+of the models. We compare only between DenseTryOn and CSPTryOn. The reason being ResTryOn has given comparatively poorer results.
+The SSIM graph is as follows:
+![]({{ '/assets/images/team10/ssim.png' | relative_url }})
 
-
+The results is a combination of SSIM scores from 10 unseen videos containing a total of 80 frames each. 
+We can clearly see CSPTryOn does give much better results. Hence, we can say that CSPTryOn can be the best option in case of 
+available hardware resources. If not it is better to use DenseTryOn.
 
 ### Frame Interpolation
 

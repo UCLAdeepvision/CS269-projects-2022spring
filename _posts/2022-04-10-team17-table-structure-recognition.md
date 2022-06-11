@@ -106,7 +106,7 @@ We make an extra change. We use ConvMAE [11] instead of MAE because of its multi
 {: style="width: 800px; max-width: 100%;"}
 *Fig 11: ConvMAE Architecture [6].*
 
-We pre-train the image encoder for 40 epochs. For finetuning, we use three variations mainly in the decoder block: 1. 8 pre-trained decoder blocks 2. 4 pre-trained decoder blocks 3. 4 pre-trained + 4 randomly initialized decoder blocks. The entire network contains more than 100M parameters and is trained with learning rate of 0.0001 for 20 epochs. We find that all three variations achieve same validation loss after 20 epochs but the first variation has lower sentence accuracy than the other two cases. Nonetheless, this pre-training performs much better than the other two self-supervised pre-training strategies discussed above in terms of improving over corresponding randomly initialized model. Finetuning pre-trained ConvMAE has 10% better sentence accuracy than ConvMAE trained from scratch (row 5 vs row 7 in results table below). Also, the best performing convMAE has sentence accuracy very close to the baseline architecture with pretrained decoder and trained for extra 10 epochs (row 3). However, it is difficult to draw conclusion due to different encoder architectures and model sizes.
+We pre-train the image encoder for 40 epochs. For finetuning, we use three variations mainly in the decoder block: 1. 8 pre-trained decoder blocks 2. 4 pre-trained decoder blocks 3. 4 pre-trained + 4 randomly initialized decoder blocks. The entire network contains more than 100M parameters and is trained with learning rate of 0.0001 for 20 epochs. We find that all three variations achieve same validation loss after 20 epochs but the first variation has lower sentence accuracy than the other two cases. Nonetheless, this pre-training performs much better than the other two self-supervised pre-training strategies discussed above in terms of improving over corresponding randomly initialized model. Finetuning pre-trained ConvMAE has 8% better sentence accuracy than ConvMAE trained from scratch (row 5 vs row 7 in results table below). Also, the best performing convMAE has sentence accuracy very close to the baseline architecture with pretrained decoder and trained for extra 10 epochs (row 3). However, it is difficult to draw conclusion due to different encoder architectures and model sizes.
 
 ### Post Processing
 Sometimes the model outputs LaTeX code that does not compile. Upon analysis it was found that this happens when there is a mismatch in the number of table columns expected by 2 different parts of the LaTeX code.
@@ -123,7 +123,7 @@ By performing this post-processing we were able to correct many common test imag
 | + Decoder Pre-training        | ---        | ---          | 32% |
 | + 10 epochs        | 0.076        | 92.1%          | 49.1% |
 | MAE        | 0.140        | ---          | --- |
-| ConvMAE Baseline (Random initialization)       | 0.119        | 90.03         | 40.04 |
+| ConvMAE Baseline (Random initialization)       | 0.119        | 90.03%         | 40.04% |
 | ConvMAE (8 pre-trained decoder blocks)        | 0.107        | 90.9%          | 44.1% |
 | ConvMAE (4 pre-trained decoder blocks)        | 0.109        | 92.6%          | 48.7% |
 | ConvMAE (4 pre-trained + 4 randomly initialized decoder blocks)        | 0.107        | 91.9%          | 48.2% |

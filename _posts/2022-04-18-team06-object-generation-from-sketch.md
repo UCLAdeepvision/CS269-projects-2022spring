@@ -48,13 +48,13 @@ As shown in Fig.1, EdgeGAN has two channels: one including generator GE and disc
 
 ### Dataset
 
-As discussed in the previous section, using edge map or sketch for training has its own benefits. Fig.2 shows the data samples used in [6] \(left\) and [1] \(right\). We can see that SketchyGAN's training set is consist of crowd worker's drawings, which are in poor quality. Using this dataset raise the difficulties during training. On the other hand, EdgeGAN's training set uses purely edge map. The edge maps are too detailed, which even include the textual of fur. However, during inference time, it is impossible for human beings to draw a sketch like that.
+As discussed in the previous section, using edge map or sketch for training has its own benefits. Fig.2 shows the data samples used in [6] \(left\) and [1] \(right\). We can see that SketchyGAN's training set consists of crowd worker's drawings, which are in poor quality. Using this dataset raise the difficulties during training. On the other hand, EdgeGAN's training set uses purely edge map. The edge maps are too detailed, which even include the textual of fur. However, during inference time, it is impossible for human beings to draw a sketch like that.
 
 ![EC-Structure]({{ '/assets/images/06/originalDataSet.png' | relative_url }})
 {: style="width:70%; margin-left:15%;"}
 <center><i>Fig.2 Training set of SketchyGAN (left) and EdgeGAN (right)</i></center> 
 <br>
-Observing these misalignments, we create our own dataset that use more reasonable sketchs for training. We inspired by Sketch Your Own GAN [10], which use PhotoSketch [2] to generate sketches that are more conformed to edge map. The original training set of [1] consists of 14 categories and around 30k data samples. Considering the training time, we only focus on 5 categories of them (dog, cat, zebra, giraffe, sheep) and transform them using PhotoSketch. The total number of training samples are 10272. Each sample is 3*64\*128. Fig.3 demonstrates some examples of our dataset. As we can see, our data sample removes or abstract away textual informations. However, as we can see, it also removes most of the stripes of zebra. We will discuss more with this later.
+Having observed these misalignments, we create our own dataset that uses more reasonable sketches for training. We are inspired by Sketch Your Own GAN [10], which uses PhotoSketch [2] to generate sketches that are more conformed to edge map. The original training set of [1] consists of 14 categories and around 30k data samples. Considering the training time, we only focus on 5 categories of them (dog, cat, zebra, giraffe, sheep) and transform them using PhotoSketch. The total number of training samples are 10272. Each sample is 3*64\*128. Fig.3 demonstrates some examples of our dataset. As we can see, our data samples remove or abstract away textual informations. However, as we can see, it also removes most of the stripes of zebra. We will discuss more with this later.
 
 ![EC-Structure]({{ '/assets/images/06/ourDataSet.png' | relative_url }})
 {: style="width:70%; margin-left:15%;"}
@@ -62,41 +62,41 @@ Observing these misalignments, we create our own dataset that use more reasonabl
 <br>
 
 ### Running the project
-When we deploy the model, we found that there are many legacy codes and some intrinsic bugs. We raised an issue [GitHub](https://github.com/sysu-imsl/EdgeGAN/issues/16) for training customized dataset. We hope this help people facing the same issue. We also observe that EdgeGAN is written in TensorFlow 1.x and it depends on many obselete packages such as scipy.misc. We update the code to be compatible with TensorFlow 2.x that support latest CUDA driver and replace scipy.misc with imageio. We also include several python files to generate new dataset and a jupyter notebook for interactive drawing. Our code can be found on [https://github.com/WaichungLing/EdgeGAN_TF2](https://github.com/WaichungLing/EdgeGAN_TF2)
+When we were deploying the model, we found that there are many legacy codes and some intrinsic bugs. We raised an issue on [GitHub](https://github.com/sysu-imsl/EdgeGAN/issues/16) for training customized dataset. We hope this help people facing the same issue. We also observe that EdgeGAN is written in TensorFlow 1.x and it depends on many obselete packages such as scipy.misc. We updated the code to be compatible with TensorFlow 2.x that supports the latest CUDA driver and replace scipy.misc with imageio. We also included several Python files to generate new dataset and a Jupyter notebook for interactive drawing. Our code can be found on [https://github.com/WaichungLing/EdgeGAN_TF2](https://github.com/WaichungLing/EdgeGAN_TF2)
 
 ## Experiments
 
-We trained the EdgeGAN model with our new training dataset. We trained three models with 100 epochs and a batchsize of 64. Each model only differs in the learning rates, which are 1e-3, 2e-4(default), and 1e-5. We first manually inspect the results. We found that the 1e-5 model only generates vague outlines because of the small learning rate failed to drive the model to optimal. Therefore, we will drop this model from the following discussion. We also finetuned the pretrained model on our new dataset for 20 epochs with learning rate 1e-5.
+We trained the EdgeGAN model with our new training dataset. We trained three models with 100 epochs and a batch size of 64. Each model only differs in the learning rates, which are 1e-3, 2e-4(default), and 1e-5. We first manually inspected the results. We found that the 1e-5 model only generates vague outlines because of the small learning rate failed to drive the model to optimal. Therefore, we will drop this model from the following discussion. We also finetuned the pretrained model on our new dataset for 20 epochs with learning rate 1e-5.
 
 ### Result Visualization
 
-Here we report several successful and failed cases belowed. We consider an output to be successful as the the output has correct position for each component (e.g. head and legs), the texture is correctly recovered (e.g. stripes of zebra), and the body ratio is maintained. 
+Here we report several successful and failure cases below. We consider an output to be successful if the output has correct position for each component (e.g. head and legs), the texture is correctly recovered (e.g. stripes of zebra), and the body ratio is maintained. 
 
 
 #### Successful cases
 
 
 Training from sketch with new data vs the original one <br>
-Judging from the synthesized images of zebra, we can see that the original model's generation is siginificantly affected by the incorrect body ratio of the sketch. This is because the original model is trained on edge maps which do not have many variations as the sketch. The outputs of both 1e-3 and 2e-4 tend to retain the correct body ratio better. Although the synthesized images look descent, the corresponding edge map pinpoints some drawbacks of using our new data. Since our new data replace the edge maps with sketches, some details and textual information are dropped. This leads to that both 1e-3 and 2e-4 did a poor job in synthesizing the complicated parts like head. We can also observe several incomplete and artifact parts in the model using new dataset. We suspect that this is because the sketches in the training samples are incomplete and thus misguide the model. We will discuss more on the dataset quality in the Discussion section.
+Judging from the synthesized images of zebra, we can see that the original model's generation is siginificantly affected by the incorrect body ratio of the sketch. This is because the original model was trained on edge maps which do not have as many variations as the sketch. The outputs of both 1e-3 and 2e-4 tend to retain the correct body ratio better. Although the synthesized images look decent, the corresponding edge map pinpoints some drawbacks of using our new data. Since our new data replace the edge maps with sketches, some details and textual information are dropped. This leads to that both 1e-3 and 2e-4 did a poor job in synthesizing the complicated parts like head. We can also observe several incomplete and artifact parts in the model using new dataset. We suspect that this is because the sketches in the training samples are incomplete and thus misguide the model. We will discuss more on the dataset quality in the Discussion section.
 
 Training from sketch with new data vs finetuned <br>
 
 
-#### Failed cases
+#### Failure cases
 
 
 ### FID Comparison
 
 The Frechet Inception Distance score, or FID for short, is a metric that calculates the distance between feature vectors calculated for real and generated images [11]. The score summarizes how similar the two groups are in terms of statistics on computer vision features of the raw images calculated using the inception v3 model used for image classification. Lower scores indicate the two groups of images are more similar, or have more similar statistics, with a perfect score being 0.0 indicating that the two groups of images are identical.
 
-We adapt FID as a metric to quantify the quality of synthesized images. We compare the output of each model with the ground truth images using the [pytorch_fid](https://github.com/mseitzer/pytorch-fid) tool. The results are listed below.
+We adapted FID as a metric to quantify the quality of synthesized images. We compared the output of each model with the ground truth images using the [pytorch_fid](https://github.com/mseitzer/pytorch-fid) tool. The results are listed below.
 
 
 
 
 ### Interactive Notebook
 
-EdgeGAN means to be interactive, accepting user's drawing and generating the synthesized image. Running the python file directly requires the user to somehow draw the sketch and save in the corresponding folder. The drawing part is especially inconvenient. Traditional drawing interface like OpenCV opens a new window therefore the user cannot finish the process of interaction with only one setup. We build a notebook with ipycanvas package, which allows user to to sketch directly on a notebook cell. We then run the test model directly on the notebook to generate output. Fig.6 shows one of our sketch and the corresponding output.
+EdgeGAN can be designed to be interactive, accepting user's drawing and generating the synthesized image. Running the Python file directly requires the user to somehow draw the sketch and save in the corresponding folder. The drawing part is especially inconvenient. Traditional drawing interface like OpenCV opens a new window therefore the user cannot finish the process of interaction with only one setup. We built a notebook with ipycanvas package, which allows user to sketch directly on a notebook cell. We then run the test model directly on the notebook to generate output. Fig.6 shows one of our sketch and the corresponding output.
 
 ![EC-Structure]({{ '/assets/images/06/sketch.png' | relative_url }})
 {: style="width:70%; margin-left:15%;"}
@@ -107,7 +107,7 @@ EdgeGAN means to be interactive, accepting user's drawing and generating the syn
 
 ### Dataset Quality
 
-The ground truth images of both our new dataset and the one EdgeGAN used are from segmenting the COCO dataset. Fig.7 shows that some of the ground truth images are in poor quality. It might be distorted, incomplete, or vague in details. Therefore, we could not generate reasonable sketch or edge map from these samples. In the previous section, we discuss all of the models did a poor job in dogs and cats generation. After human inspecting, we realize that the ground truth image of cats and dogs are relatively worse. For example, most of the cat images are black cats, whose details are barely distinguishable. We recognize that this is the first obstacle to train a high-quality EdgeGAN. 
+The ground truth images of both our new dataset and the one EdgeGAN used are from segmenting the COCO dataset. Fig.7 shows that some of the ground truth images are in poor quality. It might be distorted, incomplete, or vague in details. Therefore, we could not generate reasonable sketch or edge map from these samples. In the previous section, we discussed all of the models did a poor job in dogs and cats generation. After inspecting, we realized that the ground truth image of cats and dogs are relatively worse. For example, most of the cat images are black cats, whose details are barely distinguishable. We recognized that this is the first obstacle to train a high-quality EdgeGAN. 
 
 ![EC-Structure]({{ '/assets/images/06/dataQuality.png' | relative_url }})
 {: style="width:70%; margin-left:15%;"}
@@ -125,11 +125,17 @@ When exploring the outputs of all models, we found that many different sketches 
 
 ## PyTorch implementation
 
-We spend most of time using PyTorch to reimplement the algorithm. Our motivation is that many of the research nowadays use PyTorch instead of TensorFlow. Writing EdgeGAN with PyTorch helps deploy EdgeGAN with other models (the inpainting model as we initially consider) under same environment, which can be pipelined to complete the whole object replacing work. However, after rewriting the model, we found there are misaligned behavior in the training loss and our model fails to converge. Due to the time constrain, we are not able to debug and tune the whole project. Here we list some of the challenges during reimplementation:
+We spent most of time using PyTorch to reimplement the algorithm. Our motivation is that many of the research nowadays use PyTorch instead of TensorFlow. Writing EdgeGAN with PyTorch helps deploy EdgeGAN with other models (the inpainting model as we initially consider) under same environment, which can be pipelined to complete the whole object replacing work. Then we could finetune the pipeline to achieve better results for the generation task.
+
+However, after finishing rewriting the model, although the architecture of the PyTorch model is perfectly identical to that of the original TensorFlow one, we found there are misaligned behaviors in the training loss and our model fails to converge. Due to the time constraint, we are not able to debug and tune the whole PyTorch model. Here we list some of the challenges during reimplementation:
 - Many code blocks of EdgeGAN are handwritten, after replacing it with PyTorch models, the bebavior is different.
 - EdgeGAN uses complicated weight initialization and the activation different from case by case. We replace them by Xavier initialization and Prelu, which might lead to different result.
 - EdgeGAN has many intrinsic bugs, such as misalignments in API calls lead to use default arguments. We are not able to debug all of these misuses.
 - EdgeGAN uses gradient regularization, which we find is too strong. We replace it with L2-regularization but this needs parameter tuning.
+
+The key takeaways are that: 
+- Small inconsistency in sub-modules between PyTorch and TensorFlow can cause the model to produce completely different results.
+- It is very difficult to replicate deep neural networks. Even though the same architecture can be reproduced, unrevealed hyper-parameters of the original model may cause the replication result to be different.
 
 Our code of PyTorch implementation can be found on [https://github.com/WaichungLing/EdgeGAN_Pytorch](https://github.com/WaichungLing/EdgeGAN_Pytorch).
 

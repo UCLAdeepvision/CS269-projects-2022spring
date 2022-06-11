@@ -46,7 +46,7 @@ Furthermore, inspite of this investment, there is not always a clear consensus b
 ### Applications
 <p style="text-align:justify;">Several notable attempts have been made to automate the task of web-UI generation, using different starting points. While some applications such as [1],[3],[4] and [5], similar to our use-case, convert hand-drawn sketches to code, applications [2] and [9]convert images/screenshots to code. Our project is based off of the work done in [3] which converts the problem to one of an image-captioning[11]problem, where the image is the hand-drawn sketch, and the corresponding caption is the layout(gui) file. These models work well on their "element set", which by nature of the problem at hand, is limited to the tags present in the created dataset and restricted to the limited layout forms in the training dataset. However, the projects in [4] and [5] suffer from poor generalization because of the aformentioned constrained layout in the underlying dataset. Microsoft's sketch2code[1], hosted on their website, remains a key player in this space, with the additional power of using OCR to add handwritten text to the generated output as well. However, the workings of the model as embedded within the Azure framework, and as can be visualised on their website, even this model is not free from errors. Some other works on this task also include drag-and-drop tools such as Sketch[14] and Bubble[15]</p>
 
-![Figure2]({{ '/assets/images/team04/eve_image.png' | relative_url }})
+![Figure2]({{ '/assets/images/team04/eve_image.PNG' | relative_url }})
 {: style="width: 750px; max-width: 200%;"}
 
 *Fig 2. The EVE tool[10]*
@@ -65,7 +65,7 @@ Furthermore, inspite of this investment, there is not always a clear consensus b
 ### Dataset Generation
 <p style="text-align:justify;">The first step in the process involved generating a custom dataset. As discussed in the previous sections, one of the key issues with existing datasets in this space is the restriction to a fixed layout. In order to remedy this and allow the develpoment of a model that can predict well on several layouts, we first undertake the generation of a new dataset.</p>
 
-![Figure3]({{ '/assets/images/team04/web_generator_samples.png' | relative_url }})
+![Figure3]({{ '/assets/images/team04/web_generator_samples.PNG' | relative_url }})
 {: style="width: 750px; max-width: 200%;"}
 
 *Fig 3. Samples generated using the Web-Generator tool*

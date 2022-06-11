@@ -251,13 +251,13 @@ In phase 3, we will use either a ramdomly sampled or an encoder output as an ini
 ![Train Gif]({{ '/assets/images/team16/gan_train_samples.gif' | relative_url }}) 
 {: style="width: 800px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig r. Samples generated during the StyleGAN training process</i>
+  <i>Fig 16. Samples generated during the StyleGAN training process</i>
 </div>
 
 ![Encoder Val Gif]({{ '/assets/images/team16/en_val_samples.gif' | relative_url }}) 
 {: style="width: 800px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig r. Samples generated during the encoder taining process.</i>
+  <i>Fig 17. Samples generated during the encoder taining process.</i>
   (the top half are ground truth, lower half are images/masks generated from mapped latents)
 </div>
 
@@ -268,40 +268,29 @@ In phase 3, we will use either a ramdomly sampled or an encoder output as an ini
 ### Inference Results
 
 ![Train Gif]({{ '/assets/images/team16/inference_comparison.png' | relative_url }}) 
-{: style="width: 1200px; max-width: 150%; display: block; margin-left: auto; margin-right: auto;"}
+{: style="width: 1100px; max-width: 150%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig s. Inference results under different settings (unseen test data)</i>
+  <i>Fig 18. Inference results under different settings (unseen test data)</i>
 </div>
  
- It is obvious that under all settings, the edge map generation result is very accurate. 
- Yet just like what we've seen in the sampled results from the training process, the StyleGAN does not 
- have very meaningful result and it is hard for encoder to find good latent vector that both satisfy the 
- edge outline and the high quality image requirements. And from the top row random initialization setting, 
- we can see that there is latent space where the outline can be very realistic and is slightly shown in the image,
- but the coloring is completely decoupled from the outline. 
+It is obvious that under all settings, the edge map generation result is very accurate. Yet just like what we've seen in the sampled results from the training process, the StyleGAN does not have a very meaningful result and it is hard for the encoder to find a good latent vector that both satisfies the edge outline and the high-quality image requirements. And from the top row random initialization setting, we can see that there is latent space where the outline can be very realistic and is slightly shown in the image, but the coloring is completely decoupled from the outline. 
 
- Since the sketch encoder is trained to find a latent vector that can both find realistic sketches and images, 
- some coloring is shown on the boundaries of the pokemons. Yet without color information it is hard for the inference
- process to find outputs with concrete colors. 
+Since the sketch encoder is trained to find a latent vector that can both find realistic sketches and images, some coloring is shown on the boundaries of Pokemon. Yet without color information, it is hard for the inference process to find outputs with concrete colors. 
 
- When directly use image to find similar images in the generation. It is obvious that similar images can be found through
- encoder initialization and the inference process. Compared to "Sketch Your Own GAN", the reason that it is hard for our encoder
- with less input signals to find desirable generation seems to be caused by both the decoupling of outline and coloring in the GAN
- latent space (sketch cannot be an indicator of perceptually equivalen timage), and the lack of data also make encoder performance
- deteriorate for unseen data. We can see that the sketch encoder performs rather well for validation data in the previous section. 
- Yet the obvious performance drop in the test data looks like another side effect of data deficiency.
+When directly using an image to find similar images in the generation. It is obvious that similar images can be found through the encoder initialization and the inference process. Compared to "Sketch Your Own GAN", the reason that it is hard for our encoder with fewer input signals to find desirable generation seems to be caused by both the decoupling of outline and coloring in the GAN latent space (sketch cannot be an indicator of perceptually equivalent to the image), and the lack of data also make encoder performance deteriorate for unseen data. We can see that the sketch encoder performs rather well for validation data in the previous section. Yet the obvious performance drop in the test data looks like another side effect of data deficiency.
 
 ![Encoder Val Gif]({{ '/assets/images/team16/self_imgs.png' | relative_url }}) 
 {: style="width: 400px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig s. images generated given user sketches </i>
+  <i>Fig 19. images generated given user sketches </i>
 </div>
 
 The above plots show more results of image generaion based on our own sketches.
 
 
 ## Conclusion
-For the results image, we do not achieve a perfect-looking Pokemon. There are three possible reasons. First, the dataset is not large enough, yet the official art of Pokemon is limited. To augment the training dataset, we can try to include the fanart, but the art style might not be the same as the official art. Also, we will need better hardware resources to speed up the training process. The second reason is that we do not train the model long enough. We can tell that the shape and color of Pokemon are gradually formed during the training process. Given the limited time, we only train our model for about a week. If we can train the model for a longer time, we could possibly get a better result. Lastly, color maps may contain too many colors. In the original  [SemanticGAN paper](http://arxiv.org/abs/2104.05833), their segmentation consists of about 8 colors. 73 colors may be too complicated as labels leading to less generalization of labels. Nevertheless, our project allows human control in the Pokemon generation process. Humans can choose whether they want to provide the labels to control the output result. To improve the result of this work, we can try to increase the training dataset, increase the train time, label with color maps with a lower number of colors, or come up with different methods to substitute segmentation.
+For the results image, we do not achieve a perfect-looking Pokemon. There are three possible reasons. First, the dataset is not large enough, yet the official art of Pokemon is limited. To augment the training dataset, we can try to include the fanart, but the art style might not be the same as the official art. Also, we will need better hardware resources to speed up the training process. The second reason is that we do not train the model long enough. We can tell that the shape and color of Pokemon are gradually formed during the training process. Given the limited time, we only train our model for about a week. If we can train the model for a longer time, we could possibly get a better result. Lastly, color maps may contain too many colors. In the original  [SemanticGAN paper](http://arxiv.org/abs/2104.05833), their segmentation consists of about 8 colors. 73 colors may be too complicated as labels leading to less generalization of labels. Nevertheless, our project allows human control in the Pokemon generation process. Humans can choose whether they want to provide the labels to control the output result. To improve the result of this work, we can try to increase the training dataset, increase the train time, label with color maps with a lower number of colors, or come up with different methods to substitute segmentation. Also, having more latent space analysis for SemanticGAN can allow humans to use sliders to control the changing directions of Pokemon. These are the directions for future work to improve the project.
+
 
 ## Acknowledgments
 

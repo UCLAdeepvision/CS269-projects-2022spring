@@ -106,7 +106,7 @@ We make an extra change. We use ConvMAE [11] instead of MAE because of its multi
 {: style="width: 800px; max-width: 100%;"}
 *Fig 11: ConvMAE Architecture [6].*
 
-We pre-train the image encoder for 40 epochs. For finetuning, we use three variations mainly in the decoder block: 1. 8 pre-trained decoder blocks 2. 4 pre-trained decoder blocks 3. 4 pre-trained + 4 randomly initialized decoder blocks. The entire network contains more than 100M parameters and is trained with learning rate of 0.0001 for 20 epochs. We find that all three variations achieve same validation loss after 20 epochs but the first variation has lower sentence accuracy than the other two cases. Nonetheless, this pre-training performs much better than the other two self-supervised pre-training strategies discussed above. It has accuracy very close to the baseline. However, it is difficult to draw conclusion due to different encoder architectures and model sizes.
+We pre-train the image encoder for 40 epochs. For finetuning, we use three variations mainly in the decoder block: 1. 8 pre-trained decoder blocks 2. 4 pre-trained decoder blocks 3. 4 pre-trained + 4 randomly initialized decoder blocks. The entire network contains more than 100M parameters and is trained with learning rate of 0.0001 for 20 epochs. We find that all three variations achieve same validation loss after 20 epochs but the first variation has lower sentence accuracy than the other two cases. Nonetheless, this pre-training performs much better than the other two self-supervised pre-training strategies discussed above in terms of improving over corresponding randomly initialized model. Finetuning pre-trained ConvMAE has 10% better sentence accuracy than ConvMAE trained from scratch (row 5 vs row 7 in results table below). Also, the best performing convMAE has sentence accuracy very close to the baseline architecture with pretrained decoder and trained for extra 10 epochs (row 3). However, it is difficult to draw conclusion due to different encoder architectures and model sizes.
 
 ### Post Processing
 Sometimes the model outputs LaTeX code that does not compile. Upon analysis it was found that this happens when there is a mismatch in the number of table columns expected by 2 different parts of the LaTeX code.
@@ -123,6 +123,7 @@ By performing this post-processing we were able to correct many common test imag
 | + Decoder Pre-training        | ---        | ---          | 32% |
 | + 10 epochs        | 0.076        | 92.1%          | 49.1% |
 | MAE        | 0.140        | ---          | --- |
+| ConvMAE Baseline (Random initialization)       | 0.119        | 90.03         | 40.04 |
 | ConvMAE (8 pre-trained decoder blocks)        | 0.107        | 90.9%          | 44.1% |
 | ConvMAE (4 pre-trained decoder blocks)        | 0.109        | 92.6%          | 48.7% |
 | ConvMAE (4 pre-trained + 4 randomly initialized decoder blocks)        | 0.107        | 91.9%          | 48.2% |
@@ -166,7 +167,7 @@ Not all rows of a table are followed by a horizontal line. Some rows consist of 
 - Artificial dataset - We have been using the dataset from the ICDAR 2021 challenge. This dataset has noisy images and distorted images. We could construct our own artificial image dataset by randomly changing the number of rows, columns and other features in LaTeX code and rendering multiple different table images.
 
 ## Conclusion
-Identifying table structure from images is a non-trivial task. We find that the baseline model performs decently. However, it is difficult to apply pre-training techniques directly to a different domain. We identified some critical shortcomings in adapting algorithms developed for natural images to table images and provided plausible alternatives. Our solution requires parallel data but it is relatively easy to obtain as compared to other computer vision tasks. It is possible that we may see benefits of the proposed pre-training scheme if we perform the experiments with a large dataset and train much longer.
+Identifying table structure from images is a non-trivial task. We find that the baseline model performs decently. However, it is difficult to apply pre-training techniques directly to a different domain. We identified some critical shortcomings in adapting algorithms developed for natural images to table images and provided plausible alternatives. Our solution requires parallel data but it is relatively easy to obtain as compared to other computer vision tasks. It is possible that we may see even larger benefits of the proposed pre-training scheme if we perform the experiments with a large dataset and train much longer.
 
 ## References
 [1] Kayal, Pratik et al. “ICDAR 2021 Competition on Scientific Table Image Recognition to LaTeX.” ArXiv abs/2105.14426 (2021)

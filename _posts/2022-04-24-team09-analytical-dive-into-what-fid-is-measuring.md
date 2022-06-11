@@ -148,7 +148,8 @@ Some of these images have attention omnipresent across the entire image. In imag
 
 ![comp5]({{ '/assets/images/team09/comp5.png' | relative_url }})
 {: style="width: 100%;"}
-[*Figure 7. Images with their FID attention from StyleGAN3-T and StyleGAN2-ADA with MetFaces. Only bad images are presented here. See the discussion in the paragraph above.*]
+[*Figure 7. Images with their FID attention from StyleGAN3-T and StyleGAN2-ADA with MetFaces. Only bad images are presented here. See the discussion in the paragraph above.*] 
+  
 Finally, we review the phenomenon discovered in Table 2 and detailed in Section 3.2. To be more specific, previously, we found that there exist cases where replacing bad images with better ones causes FID to improve. In this category, we found that FID calculation generally does not focus on improvements in the image's human face structure. Instead, some new texture, pattern, or shape usually dominates the FID's attention, causing a decrease in FID. Figure 8 illustrates this behavior. In both experiments, replacement caused FID improvement. However, in the example on the left, FID focuses almost purely on the hair and chin shape, entirely omitting the face, contrary to a human understanding of improvement. On the right, FID's attention is performing similarly, focusing on the kerchief rather than facial features.
 
 ![comp6]({{ '/assets/images/team09/comp6.png' | relative_url }})

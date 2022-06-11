@@ -17,7 +17,7 @@ date: 2022-04-18
 ## Introduction
 Partial image editing is by far a manual task. People depend on traditional tools like PhotoShop for a series of photo editing. Here we consider a simple case, what if we want to replace a horse in the photo with a sheep? Traditionally, people use lasso tool to outline the horse, remove it, crop the sheep from another image, place it to the right place, and spend a lot of time refining the conjunction. We realize that this task can be finished in a two-step manner by incorporating object generation from sketch and a inpainting model. 
 
-Our work focuses on the first step. Observing that EdgeGAN uses an image and its corresponding edge map for training, we claim that during inference time, manual sketch cannot achieve the same quality as edge map. Therefore, we first create a new training dataset by utilizing PhotoSketch[2], which transform the input image into a sketch-alike one. We then retrain the EdgeGAN model with the new dataset. As a result, we show that using both old and new datasets generates images of similar FID score. With human inspection, we found that the model trained with new dataset is more robust to sketch distortion while the model trained with old dataset generates images with better details. [### Finetune ###]
+Our work focuses on the first step. Observing that EdgeGAN uses an image and its corresponding edge map for training, we claim that during inference time, manual sketch cannot achieve the same quality as edge map. Therefore, we first create a new training dataset by utilizing PhotoSketch[2], which transform the input image into a sketch-alike one. We then retrain the EdgeGAN model with the new dataset. As a result, we show that using both old and new datasets generates images of similar FID score. With human inspection, we found that the model trained with new dataset is more robust to sketch distortion while the model trained with old dataset generates images with better details. In order to exploit the strengths of both datasets, we also finetuned the pretrained model with our new dataset. We show that finetuned model surpasses the models trained from sketch and its performance is as competitive as the original one.
 
 Besides experiments, we also present a jupyter notebook for interactive sketch drawing and image generation. In addition, we also work on a PyTorch implementation of EdgeGAN. However, after building the model, we cannot reproduce the result. We still list some of our thoughts and ideas in the last section. We extend this into a future work.
 
@@ -25,7 +25,7 @@ Besides experiments, we also present a jupyter notebook for interactive sketch d
 
 ### Sketch-Based Image Synthesis
 
-Early sketch-based image synthesis approaches are based on image retrieval. Sketch2Photo [3] and PhotoSketcher [4] synthesize realistic images by compositing objects and backgrounds retrieved from a given sketch. These methods suffer from low preciseness and their results lack variation. After the publication of generative adversarial nets(GAN)[5], many works have adpated it for more diversified and precise sketch-based image generating tasks. Specifically, SketchyGAN[6] and ContextualGAN[7] have demonstrated the value of variant GANs for image generation from freehand sketches. Compared to the previous work, SketchyCOCO generates pure objects (without background), which is suitablt for our goal. 
+Early sketch-based image synthesis approaches are based on image retrieval. Sketch2Photo [3] and PhotoSketcher [4] synthesize realistic images by compositing objects and backgrounds retrieved from a given sketch. These methods suffer from low preciseness and their results lack variation. After the publication of generative adversarial networks(GAN)[5], many works have adpated it for more diversified and precise sketch-based image generating tasks. Specifically, SketchyGAN[6] and ContextualGAN[7] have demonstrated the value of variant GANs for image generation from freehand sketches. Compared to the previous work, SketchyCOCO generates pure objects (without background), which is suitablt for our goal. 
 
 ### Sketch Datasets
 
@@ -89,7 +89,7 @@ EdgeGAN can be designed to be interactive, accepting user's drawing and generati
 
 ![EC-Structure]({{ '/assets/images/06/sketch.png' | relative_url }})
 {: style="width:70%; margin-left:15%;"}
-<center><i>Fig.6 Sketch we drew on the notebook (left) and the model output (right)</i></center> 
+<center><i>Fig.4 Sketch we drew on the notebook (left) and the model output (right)</i></center> 
 <br>
 
 ## Result
@@ -111,7 +111,7 @@ Below we report several successful and failure cases for the model in TensorFlow
 
 ![EC-Structure]({{ '/assets/images/06/success.png' | relative_url }})
 {: style="width:70%; margin-left:15%;"}
-<center><i>Fig.7 Examples of successful outputs from all four models</i></center> 
+<center><i>Fig.5 Examples of successful outputs from all four models</i></center> 
 <br>
 
 
@@ -119,14 +119,14 @@ Below we report several successful and failure cases for the model in TensorFlow
 Judging from the synthesized images of zebra, we can see that the original model's generation is siginificantly affected by the incorrect body ratio of the sketch. This is because the original model was trained on edge maps which do not have as many variations as the sketch. The outputs of both 1e-3 and 2e-4 tend to retain the correct body ratio better. Although the synthesized images look decent, the corresponding edge map pinpoints some drawbacks of using our new data. Since our new data replace the edge maps with sketches, some details and textual information are dropped. This leads to that both 1e-3 and 2e-4 did a poor job in synthesizing the complicated parts like head. We can also observe several incomplete and artifact parts in the model using new dataset. We suspect that this is because the sketches in the training samples are fragmentary and thus misguide the model. We will discuss more on the dataset quality in the Discussion section.
 
 **Training from sketch with new data vs finetuned** <br>
-We finetune the pretrained model with our new dataset. From the edge map, we can see that finetuning keeps the detailed information. Therefore, compared to training from sketch, finetuned version better generate more detailed heads. On the contrary, affected by the quality of our sketch, finetuned model tends to generate more incomplete patches.
+We finetuned the pretrained model with our new dataset. From the edge map, we can see that finetuning keeps the detailed information. Therefore, compared to training from sketch, finetuned version better generate more detailed heads. On the contrary, affected by the quality of our sketch, finetuned model tends to generate more incomplete patches.
 
 
 #### Failure cases
 
 ![EC-Structure]({{ '/assets/images/06/failed.png' | relative_url }})
 {: style="width:70%; margin-left:15%;"}
-<center><i>Fig.8 Examples of failed outputs of all four models</i></center> 
+<center><i>Fig.6 Examples of failed outputs of all four models</i></center> 
 <br>
 
 All four models did a poor job in synthesizing cats and dogs. There are two major reasons for this. First is cats' and dogs' generation requires more detailed information, making it a more difficult task. Second, the ground truth images of cats and dogs are already very poor. The cats and dogs images are much more diverse. Many of them are of weird orientations and poses, making the models fail to learn representative features.
@@ -146,7 +146,7 @@ The ground truth images of both our new dataset and the one EdgeGAN used are fro
 
 ![EC-Structure]({{ '/assets/images/06/dataQuality.png' | relative_url }})
 {: style="width:70%; margin-left:15%;"}
-<center><i>Fig.9 Examples of distorted (left), incomplete (middle), and vague (right)</i></center> 
+<center><i>Fig.7 Examples of distorted (left), incomplete (middle), and vague (right)</i></center> 
 <br>
 
 ### Generation diversity
@@ -155,7 +155,7 @@ When exploring the outputs of all models, we found that many different sketches 
 
 ![EC-Structure]({{ '/assets/images/06/similar.png' | relative_url }})
 {: style="width:70%; margin-left:15%;"}
-<center><i>Fig.10 Similar outputs w.r.t different sketches</i></center> 
+<center><i>Fig.8 Similar outputs w.r.t different sketches</i></center> 
 <br>
 
 ### PyTorch Reimplementation Takeaways
@@ -163,6 +163,10 @@ When exploring the outputs of all models, we found that many different sketches 
 The key takeaways are that: 
 - Small inconsistency in sub-modules between PyTorch and TensorFlow can cause the model to produce completely different results.
 - It is very difficult to replicate deep neural networks. Even though the same architecture can be reproduced, unrevealed hyper-parameters of the original model may cause the replication result to be different.
+
+## Conclusion
+
+In this project, we tried to improve the performance of EdgeGAN. We reimplemented EdgeGAN in Pytorch version, although the training outcome of the Pytorch model was unsatisfactory due to inconsistency between Pytorch and TensorFlow. We generated our new sketch dataset using PhotoSketch to make our model generalize better. We trained our model with various learning rates and finetuned it. It turned out the finetuned model achieved slightly lower performance (evaluated in FID) tested on the test dataset than the original model, but we are expecting the finetuned model can potentially generalize better in the real world. We built the interface for EdgeGAN which can take users' drawing as input and generate the corresponding object. In the future work, we will figure out the Pytorch version of EdgeGAN and pipeline it with impainting model to create a smoother flow of object generation from sketch.
 
 ## Reference
 

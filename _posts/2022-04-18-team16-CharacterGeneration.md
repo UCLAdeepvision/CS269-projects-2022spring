@@ -40,12 +40,12 @@ Other than HED, [PhotoSketch](https://arxiv.org/pdf/1901.00542.pdf) [3] is anoth
 
 ### Sketch to Image
 
-Isola et al. [5] propose [Pix2Pix](http://arxiv.org/abs/1611.07004 arXiv:1611.07004) to transform a sketch into an image. Pix2Pix is an example of image-to-image translation. It uses a conditional generative adversarial network (cGAN) to learn the mapping between edge and photo. The idea is shown in Fig x. The discriminator, D, learns to distinguish between fake (synthesized by the generator) and real {edge, photo} tuples. The generator, G, learns to trick the discriminator. The problem with this model is that it requires a sketch image as input. If we want to have a mass generation such as 1000 characters, we have to provide 1000 sketches. Our proposed model makes the input sketch optional. We allow the mass generation without the user input.
+Isola et al. [5] propose [Pix2Pix](http://arxiv.org/abs/1611.07004 arXiv:1611.07004) to transform a sketch into an image. Pix2Pix is an example of image-to-image translation. It uses a conditional generative adversarial network (cGAN) to learn the mapping between edge and photo. The idea is shown in Fig 3. The discriminator, D, learns to distinguish between fake (synthesized by the generator) and real {edge, photo} tuples. The generator, G, learns to trick the discriminator. The problem with this model is that it requires a sketch image as input. If we want to have a mass generation such as 1000 characters, we have to provide 1000 sketches. Our proposed model makes the input sketch optional. We allow the mass generation without the user input.
 
 ![Pix2Pix Structure Idea]({{ '/assets/images/team16/pix2pix.png' | relative_url }}) 
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig x. Pix2Pix Structure Idea</i>
+  <i>Fig 3. Pix2Pix Structure Idea</i>
 </div>
 
 
@@ -56,20 +56,20 @@ Due to the success of [StyleGAN](https://arxiv.org/pdf/1812.04948.pdf) [3] and [
 ![StyleGAN Architecture]({{ '/assets/images/team16/StyleGAN_architect.png' | relative_url }})
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig 3. Traditional GAN vs. StyleGAN structure (Image source: <a> https://arxiv.org/abs/1812.04948 </a>)</i>
+  <i>Fig 4. Traditional GAN vs. StyleGAN structure (Image source: <a> https://arxiv.org/abs/1812.04948 </a>)</i>
 </div>
 
-Unlike the traditional GAN where the generator takes a random latent input $$z$$, StyleGAN generator takes a constant input of size 4x4x512, and its latent input $$z$$ is only used to generate the styles. Specifically, $$z$$ is mapped to an intermediate late space $$\mathcal{W}$$, whose vector $$w$$ will be affine transformed into style $$y$$. We can see in Fig. 3 that these feature map-specific styles are used to modulate adaptive instance normalization (AdaIN) operations.
+Unlike the traditional GAN where the generator takes a random latent input $$z$$, StyleGAN generator takes a constant input of size 4x4x512, and its latent input $$z$$ is only used to generate the styles. Specifically, $$z$$ is mapped to an intermediate late space $$\mathcal{W}$$, whose vector $$w$$ will be affine transformed into style $$y$$. We can see in Fig 4 that these feature map-specific styles are used to modulate adaptive instance normalization (AdaIN) operations.
 
 Another type of input for StyleGAN generator is the noise image injected into each layer of the network (module B in StyleGAN). These noises are introduced to generate stochastic scale-specific details (i.e. hair and freckles) into the image generation.
 
-In the practical application of StyleGAN, people usually have insufficient labeled data to train the model. To obtain a better generation ability for StyleGAN, Li et al. [6] propose a novel framework for discriminative pixel-level tasks built on top of styleGAN2, which is called [SemanticGAN](http://arxiv.org/abs/2104.05833). It adds a label synthesis branch that generates image labels during the test time. The encoder added is to help with mapping the user inputs to the latent space. It is trained with the supervised loss and the image reconstruction loss as shown in Fig m. This model is an example of semi-supervised learning. Our model is based on this structure.
+In the practical application of StyleGAN, people usually have insufficient labeled data to train the model. To obtain a better generation ability for StyleGAN, Li et al. [6] propose a novel framework for discriminative pixel-level tasks built on top of styleGAN2, which is called [SemanticGAN](http://arxiv.org/abs/2104.05833). It adds a label synthesis branch that generates image labels during the test time. The encoder added is to help with mapping the user inputs to the latent space. It is trained with the supervised loss and the image reconstruction loss as shown in Fig 5. This model is an example of semi-supervised learning. Our model is based on this structure.
 
 
 ![SemanticGAN Overview]({{ '/assets/images/team16/semanticGAN_overview.png' | relative_url }})
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig m. SemanticGAN Overview</i>
+  <i>Fig 5. SemanticGAN Overview</i>
 </div>
 
 
@@ -98,12 +98,12 @@ We combined the images from different datasets found on Kaggle. Most of the pict
 
 ### Sketch
 
-We apply HED and PhotoSketch to extract the line art of the images to be the labels. The results are shown in Fig y. The first row is the original image. The second row is the sketch generated by HED, and the last row is the sketch rendered by PhotoSketch. Unlike HED, PhotoSketch's result is more like human-drawing line art. Since not most people have well-trained art skills. Given a limited time, it is common for people, especially us, to draw the line art in PhotoSketch's style. Therefore, we choose to use the PhotoSketch's sketch as labels, the input to the branch.
+We apply HED and PhotoSketch to extract the line art of the images to be the labels. The results are shown in Fig 6. The first row is the original image. The second row is the sketch generated by HED, and the last row is the sketch rendered by PhotoSketch. Unlike HED, PhotoSketch's result is more like human-drawing line art. Since not most people have well-trained art skills. Given a limited time, it is common for people, especially us, to draw the line art in PhotoSketch's style. Therefore, we choose to use the PhotoSketch's sketch as labels, the input to the branch.
 
 ![HED vs PhotoSketch]({{ '/assets/images/team16/sketch.png' | relative_url }}) 
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig y. HED vs PhotoSketch</i>
+  <i>Fig 6. HED vs PhotoSketch</i>
 </div>
 
 
@@ -118,7 +118,7 @@ To convert the original images to color maps, we go over each pixel of the origi
 ![RGB Color Space]({{ '/assets/images/team16/rgb.png' | relative_url }}) 
 {: style="width: 400px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig a. RGB Color Space</i>
+  <i>Fig 7. RGB Color Space</i>
 </div>
 
 For RGB, we calculate the distance using the following formula:
@@ -130,10 +130,12 @@ $$
 ![HSV Color Space]({{ '/assets/images/team16/hsv.png' | relative_url }}) 
 {: style="width: 400px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig b. HSV Color Space</i>
+  <i>Fig 8. HSV Color Space</i>
 </div>
 
 For HSV, we calculate the distance using the following formula:
+
+
 $$
 HueDistance = min(abs(h_1-h_0), 360 - abs(h_1-h_0))
 $$
@@ -155,35 +157,39 @@ distance = sqrt(dh^2 + ds^2 + dv^2)
 $$
 
 
-The results of the different combinations of color lists and color spaces are shown in Fig c and Fig d. We think the color map of RGB 73 is closer to the original image, so we chose to calculate the closet distance in RGB color space from [73 Crayola Crayon Colors in 2020](http://www.jennyscrayoncollection.com/2020/04/complete-list-of-prismacolor-premier.html).
+The results of the different combinations of color lists and color spaces are shown in Fig 9 and Fig 10. We think the color map of RGB 73 is closer to the original image, so we chose to calculate the closet distance in RGB color space from [73 Crayola Crayon Colors in 2020](http://www.jennyscrayoncollection.com/2020/04/complete-list-of-prismacolor-premier.html).
 
 
 ![64 Color Maps]({{ '/assets/images/team16/64colormap.png' | relative_url }}) 
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig c. The results of calculating closet distance to the 64 Crayola Crayon Colors</i>
+  <i>Fig 9. The results of calculating closet distance to the 64 Crayola Crayon Colors</i>
 </div>
 
 ![73 Color Maps]({{ '/assets/images/team16/73colormap.png' | relative_url }}) 
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig d. The results of calculating closet distance to the 73 Crayola Crayon Colors</i>
+  <i>Fig 10. The results of calculating closet distance to the 73 Crayola Crayon Colors</i>
 </div>
 
 
 
 ### Modified StyleGAN/SemanticGAN
 
-Since we do not have segmentation for Pokemon images, and it is hard to define the segmentation of Pokemon, we decide to replace the segmentation part of SegmanticGAN with sketches or color maps. The structures of our model are shown in Fig n and Fig o. The training process of our model is divided into 3 phases.
+Since we do not have segmentation for Pokemon images, and it is hard to define the segmentation of Pokemon, we decide to replace the segmentation part of SemanticGAN with sketches or color maps. The structures of our model are shown in Fig 11 and Fig 12. The training process of our model is divided into 3 phases.
 
 ![Sketch SemanticGAN]({{ '/assets/images/team16/semanticGAN_sketch.png' | relative_url }}) 
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
+
+<div style="text-align: center;">
+  <i>Fig 11. SemanticGAN Structures with Sketches</i>
+</div>
 
 
 ![Color Map SemanticGAN]({{ '/assets/images/team16/semanticGAN_colormap.png' | relative_url }}) 
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig o. SemanticGAN Structures with Color Maps</i>
+  <i>Fig 12. SemanticGAN Structures with Color Maps</i>
 </div>
 
 
@@ -191,31 +197,35 @@ Since we do not have segmentation for Pokemon images, and it is hard to define t
 
 The phase 1 is training GAN model. Just like the training of the original StyleGAN or any other GAN model, the two discriminators $$D_r$$ and $$D_m$$. $$D_r$$ is a normal real or fake image discriminator while $$D_m$$ is to distinguish between a real or fake pair of image and label map. in this phase, we are simply training StyleGAN with an additional semantic map branch. All the losses are normal GAN losses and are listed below. The only difference is that the mask and image pair discriminator will not pass its gradients back into the image generation branch. You can think of it as the mask generation branch needs to fool the discriminator on its own. 
 
-![SemanticGAN Phase 1]({{ '/assets/images/team16/gan_losses.png' | relative_url }}) 
+![GAN Loss]({{ '/assets/images/team16/gan_losses.png' | relative_url }}) 
 {: style="width: 500px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
-![SemanticGAN Phase 1]({{ '/assets/images/team16/semanticGAN_sketch_phase1.png' | relative_url }}) 
+
+
+
+![SemanticGAN Phase 1]({{ '/assets/images/team16/semanticGAN_sketch_phase1.png' | relative_url }})
+
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig p. Phase 1 of SemanticGAN</i>
+  <i>Fig 13. Phase 1 of SemanticGAN</i>
 </div>
+
+
 
 #### Phase 2: Encoder for Initialization
 
-The phase 2 of the training process is to train an encoder that can map a user input image or sketch into the embedding space. When we enter into this phase, the generator is freezed and will not be impacted in this phase. Since StyleGAN are found to perform better with different style modulations for different layers, the encoder $$E$$ generates a latent vector $\mathcal{w}$ for each layer. The objective of this encoder is to find a good latent vector that can make StyleGAN generate an image or sketch similar to the input. This encoder is trained with supervision loss on the mask branch, which includes pixel-wise CE loss and Dice loss. While the image generation branch produces a image reconstruction loss that contains LPIPS a deep perceptual similarity loss based on VGG and a MSE loss. 
+The phase 2 of the training process is to train an encoder that can map a user input image or sketch into the embedding space. When we enter into this phase, the generator is freezed and will not be impacted in this phase. Since StyleGAN are found to perform better with different style modulations for different layers, the encoder $$E$$ generates a latent vector $$\mathcal{w}$$ for each layer. The objective of this encoder is to find a good latent vector that can make StyleGAN generate an image or sketch similar to the input. This encoder is trained with supervision loss on the mask branch, which includes pixel-wise CE loss and Dice loss. While the image generation branch produces a image reconstruction loss that contains LPIPS a deep perceptual similarity loss based on VGG and a MSE loss. 
 
-![SemanticGAN Phase 1]({{ '/assets/images/team16/supervised_loss.png' | relative_url }}) 
+![Supervised Loss]({{ '/assets/images/team16/supervised_loss.png' | relative_url }}) 
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
-![SemanticGAN Phase 1]({{ '/assets/images/team16/unsupervised_loss.png' | relative_url }})
+![Unsupervised Loss]({{ '/assets/images/team16/unsupervised_loss.png' | relative_url }})
 {: style="width: 500px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 
-<div style="text-align: center;">
-  <i>Fig p. Phase 1 of SemanticGAN</i>
-</div>
+
 
 ![SemanticGAN Phase 2]({{ '/assets/images/team16/semanticGAN_sketch_phase2.png' | relative_url }}) 
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig q. Phase 2 of SemanticGAN</i>
+  <i>Fig 14. Phase 2 of SemanticGAN</i>
 </div>
 
 
@@ -230,7 +240,7 @@ In phase 3, we will use either a ramdomly sampled or an encoder output as an ini
 ![SemanticGAN Phase 3]({{ '/assets/images/team16/semanticGAN_sketch_phase3.png' | relative_url }}) 
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
-  <i>Fig q. Phase 3 of SemanticGAN</i>
+  <i>Fig 15. Phase 3 of SemanticGAN</i>
 </div>
 
 ## Results
@@ -290,8 +300,8 @@ In phase 3, we will use either a ramdomly sampled or an encoder output as an ini
 The above plots show more results of image generaion based on our own sketches.
 
 
-## Conclusion and Future Work
-For the results image, we do not achieve a perfect-looking Pokemon. There are three possible reasons. First, the dataset is not large enough, yet the official art of Pokemon is limited. To augment the training dataset, we can try to include the fanart, but the art style might not be the same as the official art. Also, we will need better hardware resources to speed up the training process. The second reason is that we do not train the model long enough. We can tell that the shape and color of Pokemon are gradually formed during the training process. Given the limited time, we only train our model for about a week. If we can train the model for a longer time, we could possibly get a better result. Lastly, color maps may contain too many colors. In the original  [SemanticGAN paper](http://arxiv.org/abs/2104.05833), their segmentation consists of about 8 colors. 73 colors may be too complicated as labels leading to less generalization of labels. Nevertheless, our project allows human control in the Pokemon generation process. Humans can choose whether they want to provide the labels to control the output result.
+## Conclusion
+For the results image, we do not achieve a perfect-looking Pokemon. There are three possible reasons. First, the dataset is not large enough, yet the official art of Pokemon is limited. To augment the training dataset, we can try to include the fanart, but the art style might not be the same as the official art. Also, we will need better hardware resources to speed up the training process. The second reason is that we do not train the model long enough. We can tell that the shape and color of Pokemon are gradually formed during the training process. Given the limited time, we only train our model for about a week. If we can train the model for a longer time, we could possibly get a better result. Lastly, color maps may contain too many colors. In the original  [SemanticGAN paper](http://arxiv.org/abs/2104.05833), their segmentation consists of about 8 colors. 73 colors may be too complicated as labels leading to less generalization of labels. Nevertheless, our project allows human control in the Pokemon generation process. Humans can choose whether they want to provide the labels to control the output result. To improve the result of this work, we can try to increase the training dataset, increase the train time, label with color maps with a lower number of colors, or come up with different methods to substitute segmentation.
 
 ## Acknowledgments
 

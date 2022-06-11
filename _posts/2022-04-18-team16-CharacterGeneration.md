@@ -201,8 +201,10 @@ The phase 1 is training GAN model. Just like the training of the original StyleG
 {: style="width: 500px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 
 
-![SemanticGAN Phase 1]({{ '/assets/images/team16/semanticGAN_sketch_phase1.png' | relative_url }}) {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 
+![SemanticGAN Phase 1]({{ '/assets/images/team16/semanticGAN_sketch_phase1.png' | relative_url }})
+
+{: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}
 <div style="text-align: center;">
   <i>Fig 13. Phase 1 of SemanticGAN</i>
 </div>

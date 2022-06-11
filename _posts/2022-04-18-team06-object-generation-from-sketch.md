@@ -77,7 +77,7 @@ We trained the EdgeGAN model with our new training dataset. We trained three mod
 
 The Frechet Inception Distance score, or FID for short, is a metric that calculates the distance between feature vectors calculated for real and generated images [11]. The score summarizes how similar the two groups are in terms of statistics on computer vision features of the raw images calculated using the inception v3 model used for image classification. Lower scores indicate the two groups of images are more similar, or have more similar statistics, with a perfect score being 0.0 indicating that the two groups of images are identical.
 
-We adapted FID as a metric to quantify the quality of synthesized images. We compared the output of each model with the ground truth images using the [pytorch_fid](https://github.com/mseitzer/pytorch-fid) tool. The results are listed below.
+We adapted FID as a metric to quantify the quality of synthesized images. We compared the output of each model with the ground truth images using the [pytorch_fid](https://github.com/mseitzer/pytorch-fid) tool.
 
 ### Running The Project
 

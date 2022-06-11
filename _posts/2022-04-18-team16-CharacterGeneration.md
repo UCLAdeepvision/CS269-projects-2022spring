@@ -209,9 +209,11 @@ The phase 1 is training GAN model. Just like the training of the original StyleG
   <i>Fig 13. Phase 1 of SemanticGAN</i>
 </div>
 
+
+
 #### Phase 2: Encoder for Initialization
 
-The phase 2 of the training process is to train an encoder that can map a user input image or sketch into the embedding space. When we enter into this phase, the generator is freezed and will not be impacted in this phase. Since StyleGAN are found to perform better with different style modulations for different layers, the encoder $$E$$ generates a latent vector $\mathcal{w}$ for each layer. The objective of this encoder is to find a good latent vector that can make StyleGAN generate an image or sketch similar to the input. This encoder is trained with supervision loss on the mask branch, which includes pixel-wise CE loss and Dice loss. While the image generation branch produces a image reconstruction loss that contains LPIPS a deep perceptual similarity loss based on VGG and a MSE loss. 
+The phase 2 of the training process is to train an encoder that can map a user input image or sketch into the embedding space. When we enter into this phase, the generator is freezed and will not be impacted in this phase. Since StyleGAN are found to perform better with different style modulations for different layers, the encoder $$E$$ generates a latent vector $$\mathcal{w}$$ for each layer. The objective of this encoder is to find a good latent vector that can make StyleGAN generate an image or sketch similar to the input. This encoder is trained with supervision loss on the mask branch, which includes pixel-wise CE loss and Dice loss. While the image generation branch produces a image reconstruction loss that contains LPIPS a deep perceptual similarity loss based on VGG and a MSE loss. 
 
 ![Supervised Loss]({{ '/assets/images/team16/supervised_loss.png' | relative_url }}) 
 {: style="width: 600px; max-width: 100%; display: block; margin-left: auto; margin-right: auto;"}

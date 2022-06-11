@@ -123,7 +123,7 @@ By performing this post-processing we were able to correct many common test imag
 | + Decoder Pre-training        | ---        | ---          | 32% |
 | + 10 epochs        | 0.076        | 92.1%          | 49.1% |
 | MAE        | 0.140        | ---          | --- |
-| ConvMAE Baseline (Random initialization)       | 0.119        | 90.03%         | 40.04% |
+| ConvMAE Baseline (Random initialization)       | 0.119        | 90.0%         | 40.0% |
 | ConvMAE (8 pre-trained decoder blocks)        | 0.107        | 90.9%          | 44.1% |
 | ConvMAE (4 pre-trained decoder blocks)        | 0.109        | 92.6%          | 48.7% |
 | ConvMAE (4 pre-trained + 4 randomly initialized decoder blocks)        | 0.107        | 91.9%          | 48.2% |

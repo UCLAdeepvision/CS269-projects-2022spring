@@ -62,17 +62,17 @@ $$
 
 ### Inference and CLIP Post-processing
 
-For inference, we generate segments on both the training set and inference set. We predict labels on the inference segments based on KNN on the labeled training segments. Additionally, We use CLIP to influence the vectors for KNN by penalizing segmentations for classes that are unlikely to appear in the image.
+For inference, we generate segments on both the training set and inference set. We predict labels on the inference segments based on KNN on the labeled training segments. Additionally, we use CLIP to influence the vectors for KNN by penalizing segmentations for classes that are unlikely to appear in the image.
 
 CLIP is a neural network trained on image-text pair and is valuable in the weak supervision setting because additional annotations are unneeded. As shown below, CLIP takes in as input an image along with text describing the contents of the image. The model outputs a prediction of whether or not the sentence is true.
 
 ![CLIP]({{ '/assets/images/team02/CLIP.png' | relative_url }})
 
-We provide a sentence for each possible class to get softmax probabilities for the image using the CLIP model. We adjust the feature affinities significantly for those that contain classes for which receive a high CLIP prediction.
+We provide a sentence for each possible class to get softmax probabilities for the image using the CLIP model. We adjust the feature affinities based on the CLIP probability that the tag is in image.
 
-Let us denote the feature embeddings obtained from the inference set as $$ I \in  R^{n \times c}$$ where $$n$$ is the size of the inference set and $$c$$ is the embedding dimension. Let us also denote $T \in R^{m \times c}$ as the feature embeddings obtained from the original training set, where $$m$$ is the size of the training set and $$c$$ is defined as before. We can then obtain the feature affinity matrix by $$ F = I T^T$$.
+Let us denote the feature embeddings obtained from the inference set as $$ I \in  R^{n \times c}$$ where $$n$$ is the size of the inference set and $$c$$ is the embedding dimension. Let us also denote $$T \in R^{m \times c}$$ as the feature embeddings obtained from the original training set, where $$m$$ is the size of the training set and $$c$$ is defined as before. We can then obtain the feature affinity matrix by $$ F = I T^T$$.
 
-Next, let us denote $$t \in R^m$$ as the generated training set labels and $\mathbf p^{CLIP} \in R^{20}$ as the softmax probabilities provided by CLIP for the 20 classes in PASCAL VOC2012 for an arbitrary image. We can then compute our adjusted feature affinities by
+Next, let us denote $$t \in R^m$$ as the generated training set labels and $$ p^{CLIP} \in R^{20}$$ as the softmax probabilities provided by CLIP for the 20 classes in PASCAL VOC2012 for an arbitrary image. We can then compute our adjusted feature affinities by
 
 $$ 
 F_{ij}^* = F_{ij} + \alpha 1 [t_j = k]  p_k^{CLIP} \ \forall \ i \in [n], \forall \ j \in [m], \forall \ k \in [20]
@@ -115,13 +115,14 @@ Below, we showcase the results for each type of annotation. Homogeneous results 
 | Scribbles + CLIP + WE     |**69.11**               |
 
 
+
 From the baseline results, we observe that scribbles perform the best and bounding boxes and image tags performing worse in that order. The poor performance of image tags match our expectation because they require the least annotation effort. Our mixed label annotations perform comparably to their homogeneous counterparts. As expected, each models trained on mixed labels are in the range of the models' performances trained on each of the homogeneous labels that they consist of. 
 
 Our combined label consisting of scribbles and bounding boxes exceeds the performance of all homogeneous and mixed labels. This makes sense intuitively because combining weak labels results in higher quality annotation for network supervision.
 
 Finally, we observe that our word embedding loss and CLIP post-processing both improve the performance of homogeneous scribbles. In fact, the performances for each modification are roughly equivalent to the performance of the models trained on combined scribbles and bounding boxes. We note that the best performance is achieved when combining both the word embedding loss and CLIP post-processing procedure. This shows that the benefits of each language-domain modification may compound and may provide a more cost-effective performance boost than other annotation types.
 
-Below, we show two examples of our language-domain modifications to SPML's segmentation. Notice that for each example, the segmentation produced by homogeneous scribbles contain classes that do not belong to ground truth. When including the word embedding loss, we see a clear improvement for the example in the first row while the example in the second row completely removes the incorrect class prediction. Adding the CLIP post-processing completely remedies the incorrect class prediction in the first example while for the second example, the motorcycle rear-view mirror is better segmented. Overall, we observe excellent improvements when incorporating language-domain information to the vision task. Again, these results are exciting because there is virtually no annotation cost.
+Below, we show two examples of our language-domain modifications to SPML's segmentation. Notice that for each example, the segmentation produced by homogeneous scribbles contain classes that do not belong to ground truth. When including the word embedding loss, we see a clear improvement for the example in the first row while the example in the second row completely removes the incorrect class prediction. Adding the CLIP post-processing completely remedies the incorrect class prediction in the first example while for the second example, the motorcycle rear-view mirror is better segmented. Overall, we observe excellent improvements when incorporating language-domain information to the vision task. Again, these results are exciting because there is virtually no additional annotation cost.
 
 ![OUTPUT]({{ '/assets/images/team02/model_output.png' | relative_url }})
 
@@ -162,7 +163,7 @@ By far the largest differentials are produced by our best method, SC+WE+CLIP, wh
 
 ## Conclusion
 
-In this project, we studied the effects of heterogeneous weak labels in the form of mixed and combined labels using the SPML model. We show that mixed labels produce comparable results with their homogenous counterparts while combined labels had improved performance. In addition to this, we developed two novel modifications to the SPML algorithm that incorporate language-domain information in the form of a word embedding loss and CLIP post-processing procedure. We show that both methods individually improved the performance for homogeneous scribbles and when combined, compounded these benefits for further performance boost.
+In this project, we studied the effects of heterogeneous weak labels in the form of mixed and combined labels using the SPML model. We show that mixed labels produce comparable results with their homogenous counterparts while combined labels had improved performance. In addition to this, we developed two novel modifications to the SPML algorithm that incorporate language-domain information in the form of a word embedding loss and CLIP post-processing procedure. We show that both methods individually improved the performance for homogeneous scribbles and when combined, compounded these benefits for further performance boost. In future work, we hope to explore more significant differences in architectures (especially those used by A2GNN) to see if we can extrapolate better performance. Additionally, we hope to utilize active learning to suggest annotation types that may be beneficial to model performance, thus further reducing annotation costs.
 
 
 ## References

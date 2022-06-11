@@ -84,18 +84,105 @@ The ITR factor $$\eta$$ can be used in three levels:
 3. For cases where the inverse function can only give likelihood estimation but the domain is on Riemann manifold _i.e._ gradients are available, backpropogating $$\eta^{-i}(X)$$ to $$X$$ could be helpful for auto-denoising the adversarial inputs and defend the adversarial attacks.
 
 ## Experimental Setup
-### Irregular input rejection in image manipulators
-
-We will work on injecting BNF to some recently published human face manipulators. We will try to explore the method is able to reject non-human input images. The effectiveness will be evaluated as a classifier (allowed input/rejected input).
-
 ### Out-of-vocabulary and/or other grammatical typos detection and human-in-the-loop detection
 
-We will try to inject our models to some previously published human-in-the-loop storytelling systems like Plan-And-Write. The experiments will be consisting of two parts. First is to evaluate whether the module can detect the out-of-vocabulary and/or grammatical typos, by passing some mistakenly-altered-on-purpose samples to the module and see if those mistakes are well recognized. Second is to launch the system w/-w/o BNF, collect human feedbacks and compare with each other.
+We inject our module to some previously published human-in-the-loop storytelling systems like Plan-And-Write. The experiments consist of two parts. 
+* Evaluate whether the module can detect the out-of-vocabulary and/or grammatical typos, by passing some mistakenly-altered-on-purpose samples to the module and see if those mistakes are well recognized. 
+* Launch the system w/-w/o BNF, collect human feedbacks and compare with each other.
 
-### Adversarial attack detect and defense
+#### Dataset Selection and Creation
+We evaluate our model on a long story generation dataset [_Reddit Scary story_](https://www.reddit.com/r/scarystories/).
 
-We will follow the standard adversarial attack detect and defense pipeline, and evaluate the performance of a vanilla classifier equipped with BNF towards adversarial attacks on classical datasets like CIFAR etc.
+We construct the corrupted data from the story titles in two aspects: 
+* wrong spelled words, and 
+* easily confused words. 
 
+Specifically, we first crawled 4,000 <story, title> pairs from reddit. For the first type of corruption, we only misspell nouns and adjectives, as these two groups contribute most to the semantic meaning. We also filter out nouns/adjectives that are shorter than 5 characters so that reconstruction from spelling is more feasible. Table 1 lists several examples for _Spelling Corruptions_.
+
+| Original Title      | Corrupted |
+| ----------- | ----------- |
+| The Vampire Hooker     | The Vampire Hookeeer       |
+| Through the window   | Through the wwwindow        |
+| Why Won't You Stay Dead? | Why Won't You Stay Dad? |
+
+
+
+As for the second type, we hypothesize that easily confused words either sound similar (and are thus spelled similarly). Such characteristics align with a form of word play called puns, which exploits multiple meanings of a term, or of similar-sounding words (e.g., hear and here), for an intended humorous or rhetorical effect. To this end, we propose to extract pun word pairs from the Semeval 2017 Homophonic Pun dataset [10]. We then pollute the original correct story titles by replacing them with their similar-sounding words. Table 2 lists several examples for _Confusion Corruptions_.
+
+| Original Title      | Corrupted |
+| ----------- | ----------- |
+| Can you hear me?     | Can you here me?       |
+| Just taking a break   | Just taking a brake        |
+|First a blackout then an earthquake | First a blackout than an earthquake|
+
+#### Model Setup
+We finetine the backbone story generation model from a pretrained GPT-2 checkpoint in the Plan-And-Write paradigm. Specifically, we first extract keywords from the sentences in the stories and connect them as a _storyline_. Then we train a model to model the sequence distribution of the following prompt:
+
+```
+   $ <Title> # <Storyline> # <Story, "\n" separated> </s>
+```
+
+The resulting model will be capable of doing three things:
+* Calculating the _unconditional_ step-wise probability of any given title
+* Given a title, generate a storyline/evaluate the likelihood of a given storyline
+* Given a title and a storyline, generate the corresponding story.
+
+In addition, we also train a probabilistic inverse of the model to actually perform the proposed Back-N-Forth algorithm. Specifically, the inverse module is trained to model the distribution of the following prompts:
+
+
+```
+   $ <Storyline> # <Title> </s>
+```
+
+#### Quantitative Evaluation
+As part of the quantitative evaluation, we evaluate the BNF framework as an unsupervised _corrupted sequence_ classifier. Specifically, for each <original/corrupted> title pair $$\mathbf{s} / \mathbf{s}^{\sim}$$ in the two scenarios, we calculate $$\eta^{-i}(\mathbf{s})$$ and $$\eta^{-i}(\mathbf{s}^{\sim})$$. We call a pair of corrupted sequence is _separated_, if $$\eta^{-i}(\mathbf{s}) - \eta^{-i}(\mathbf{s}^{\sim}) \geq \Delta$$, where $$\Delta$$ is a hyperparameter that controls the sensitivity of the decision-making boundary marginalization.
+
+Since we are using an auto-regressive model/formulation for the likelihood function, we can further split the likelihood into step-wise likelihood atoms. By applying different reduction strategies, we can get multiple variants of BNF which could potentially have very different performances. To provide a larger range of comparison, we also present the result of a simpler BNF baseline, which is implemented not in the paradigm of Plan-And-Write but vanilla sequence-to-sequence. Here, the probabilistic inverse of the model takes in the generated full story as the condition instead of the storyline (since there's no storyline), modeling the following prompts:
+
+```
+   $ <Story, "\n" separated> # <Title> </s>
+```
+
+
+The results are shown in the following Table 3:
+
+| Model/Reduction | Spelling Corruption Acc. | Confusion Corruption Acc. |
+| ----- | ------------------- | -------------------- |
+| $$\eta^{-i}(\mathbf{s})=\inf_t\{\eta^{-i}_t(\mathbf{s})\}$$     | **706 / 800**       | **260 / 391**
+| $$\eta^{-i}(\mathbf{s})=\sup_t\{\eta^{-i}_t(\mathbf{s})\}$$     | 541/800       | 201 / 391
+| $$\eta^{-i}(\mathbf{s})=\mathbb{E}_t[\eta^{-i}_t(\mathbf{s})]$$     | 647 / 800       | 240 / 391
+| $$\eta^{-i}(\mathbf{s})=\sum_t\eta^{-i}_t(\mathbf{s})$$     | 641 / 800       | 241 / 391
+| Seq2seq | 495 / 800      | 200 / 391
+
+#### Inspecting the failure cases
+We are curious about how the sequence to sequence model falls short so drastically compared to the best Plan-And-Write based model variant. We find the following example very expressive to show that, the copy mechanism in powerful models like transformers actually hinders the effective learning of $$\eta^{-i}(\mathbf{s})$$:
+
+| Attributes | Value | Description |
+| ---------- | ----- | ----------- |
+| title | The _littllle_ things | Typo for "The _little_ things"|
+| Seq2seq Generation | Jimmy once met Laura. He told her about the littllle things. The littllle things are so annoying. He chased that thing. The littllle things disappeared. | _littllle_ is copied here and there as if it were a name of something. |
+
+
+
+
+#### Qualitative Evaluation
+
+In addition, we also pack the model into an interactive demo to conduct human evaluation. The demo is designed as follows:
+
+![Demo Design]({{ '/assets/images/team01/BNFdemo.png' | relative_url }})
+
+We present the evaluators two version of the demo: with or without the injected BNF module. The user is asked to freely type in the title. Then in the version witht the BNF module, they can use BNF to check whether the model understands well of the input title. After which, The user will be able to collaborate with the machine to cope with the storyline/story generation process in a fully interactive fashion.
+
+We planned to collect enough feedback from the user. Unfortunately, due to the limited throughput of our backend server, we are unable to present any results with sufficient statistical confidences. We plan to keep this as a scheduled future work when a more stable source of computation power (in addition, they should be safely exposable to the public internet) should be available to us.
+
+
+## Model Playground and Code Release
+Most implementation can be found in [this repo](https://github.com/desire2020/Back-N-Forth).  
+
+![Repo Snapshot]({{ '/assets/images/team01/repo_snapshot.png' | relative_url }})
+### Irregular input rejection in image classifiers
+
+We worked on injecting BNF to some classical image classifiers on domain-shifted cases. We attempted to explore whether the method is able to close the domain shift of one dataset (Caltech-101, cars) over another (ImageNet cars) by gradient ascending along the $$\eta^{-i}(X)$$ manifold. We failed to get any reasonable results, unfortunately. For visualization and our attempts' records, please refer to our code base.
 ## Reference
 
 [1] You C, Robinson D P, Vidal R. Provable self-representation based outlier detection in a union of subspaces, *Proceedings of the ieee conference on computer vision and pattern recognition,* 2017
@@ -115,5 +202,8 @@ We will follow the standard adversarial attack detect and defense pipeline, and 
 [8] Hsieh C Y, Yeh C K, et al. Evaluations and methods for explanation through robustness analysis. *International Conference on Learning Representations*, 2020.
 
 [9] Sundararajan M, Taly A, Yan Q. Axiomatic attribution for deep networks. *International conference on machine learning,* 2017:
+
+[10] SemEval-2017 Task 7: Detection and Interpretation of English Puns
+Tristan Miller, Christian Hempelmann, Iryna Gurevych
 
 ---

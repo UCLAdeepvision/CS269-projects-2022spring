@@ -48,39 +48,49 @@ We aim to show (1) how TCAV behaves when concepts are not linearly separable in 
 
 #### Notation
 
-We denote the input space as $\mathcal{X}$, label space as $\mathcal{Y}$, and concept space as $\mathcal{C}$. Let us consider a target function $f:\mathcal{X} \rightarrow \mathcal{Y}$ and concept function $g: \mathcal{X} \rightarrow \mathcal{C}$.
+We denote the input space as $$ \mathcal{X} $$, label space as $$\mathcal{Y}$$, and concept space as $$\mathcal{C}$$. Let us consider a target function $$f:\mathcal{X} \rightarrow \mathcal{Y}$$ and concept function $$g: \mathcal{X} \rightarrow \mathcal{C}$$.
 
 #### CAV concept saliency
 
-Given $x \in \mathcal{X}$, Kim et al. [1] defines a concept activation vector (CAV) of a concept function $g$ by first approximating $g$ with a linear function $\hat{g}(x) = \hat{w}^Tx+\hat{b}$
+Given $$x \in \mathcal{X}$$, Kim et al. [1] defines a concept activation vector (CAV) of a concept function $$g$$ by first approximating $$g$$ with a linear function $$\hat{g}(x) = \hat{w}^Tx+\hat{b}$$
+
 $$
 \hat{w}, \hat{b} := {\arg\min}_{w, b} \mathbb{E}_{x\in\mathcal{X}} [L\big( w^Tx + b, g(x) \big)]
 $$
-where $L$ is the loss function of choice. $\hat{w}$ is the concept activation vector (CAV) and represents the concept in the input space $\mathcal{X}$.
 
-CAV concept saliency is then defined as follows
+where $$L$$ is the loss function of choice. $$\hat{w}$$ is the concept activation vector (CAV) and represents the concept in the input space $$\mathcal{X}$$.
+
+CAV concept saliency is then defined as follows,
+
 $$
 S_{f,g}(x) 
 = \langle \nabla f(x), \frac{\nabla \hat{g}(x)}{\|\nabla \hat{g}(x)\|}\rangle 
 = \langle \nabla f(x), \frac{\hat{w}}{\|\hat{w}\|} \rangle
 $$
-CAV concept saliency aims to capture the sensitivity of the target function output in the direction of a given CAV. Higher $S_{f,g}$ implies moving towards the CAV direction in the input space increases the target output more, implying more concept relevance.
+
+CAV concept saliency aims to capture the sensitivity of the target function output in the direction of a given CAV. Higher $$S_{f,g}$$ implies moving towards the CAV direction in the input space increases the target output more, implying more concept relevance.
 
 #### Concept gradients
 
 We define the **Concept Gradient (CG)** to measure how small perturbations on each concept affects the label prediction:
+
 $$
 \text{CG}(x) := \nabla f(x) \nabla g(x)^\dagger
 $$
-We show that CAV concept saliency is a special case of CG. Let us consider $g$ restricted to linear functions, as assumed in the CAV case.
+
+We show that CAV concept saliency is a special case of CG. Let us consider $$g$$ restricted to linear functions, as assumed in the CAV case.
+
 $$
 g(x) = w^Tx + b
 $$
+
 We can then derive the CAV concept saliency from CG
+
 $$
 \text{CG}(x) = \nabla f(x) \nabla g(x)^\dagger = \nabla f(x) (w^T)^\dagger
 = \nabla f(x) \cdot \frac{w}{\|w\|^2} = \frac{S_{f,g}(x)}{\|w\|}
 $$
+
 Thus, we conclude that CAV is a special case of CG (normalized by the gradient norm). Furthermore, CG is better than CAV concept saliency when **concepts cannot be represented by linear functions**.
 
 ### Experiment results
@@ -91,29 +101,29 @@ We started out with a synthetic example to demonstrate that the linear separabil
 
 The purpose of this example is to test whether TCAV and CG can recover the actual gradient in a synthetic scenario where the derivative of target y with respect to concept c uniquely exist and can be expressed in closed-form. Theoretically, we have shown CG is capable of exactly recovering the derivative via chain rule. On the other hand, CAV can only retrieve the gradient attribution if the concepts are linearly separable in some input latent representation. We find that the linear separability assumption doesn’t hold even in such simple scenarios.
 
-<img src="../assets/images/team07/synthetic_dataset_decsription.png" alt="synthetic_dataset_decsription" style="zoom:70%;" />
+![synthetic_dataset_decsription]({{ '/assets/images/team07/synthetic_dataset_decsription.png' | relative_url }})
 
 The concepts are visualized in Fig. 1 below. Observe that the sine functions are unable to be approximated linearly well.
 
-<img src="../assets/images/team07/synthetic_visualization.png" alt="synthetic_dataset_decsription" style="zoom:100%;" />
+![synthetic_dataset_decsription]({{ '/assets/images/team07/synthetic_visualization.png' | relative_url }})
 
 <figcaption>Fig.1 - Visualization of concepts.</figcaption>
 
 ##### Training
 
-First, we trained a 4-hidden-layer, fully-connected neural network model $f$ that maps $(x_0, x_1)$ to $y$. This serves as the target model to be interpreted. For CAV, we calculate the CAVs  corresponding to the two concepts $(c_0, c_1)$ in the first 3 hidden layers. Note that the last hidden ayer cannot be used to calculate CAV otherwise the concept saliency score $S_{f,g}$ would degenerate to a constant for all input $(x_0, x_1)$. For CG, we trained two 4-hidden-layer, fully-connected neural network models $g_0, g_1$ that maps $(x_0, x_1)$ to $c_0$ and $c_1$, respectively.
+First, we trained a 4-hidden-layer, fully-connected neural network model $$f$$ that maps $$(x_0, x_1)$$ to $$y$$. This serves as the target model to be interpreted. For CAV, we calculate the CAVs  corresponding to the two concepts $$(c_0, c_1)$$ in the first 3 hidden layers. Note that the last hidden ayer cannot be used to calculate CAV otherwise the concept saliency score $$S_{f,g}$$ would degenerate to a constant for all input $$(x_0, x_1)$$. For CG, we trained two 4-hidden-layer, fully-connected neural network models $$g_0, g_1$$ that maps $$(x_0, x_1)$$ to $$c_0$$ and $$c_1$$, respectively.
 
 ##### Evaluation
 
-Fig. 2 visualizes the concept prediction results with CAV and CG. Here we fixed one the input variables ($x_0$ or $x_1$) to a constant value and show the relation between the remaining input variable and the predicted concepts. CG captures the concept relation significantly better than the linear functions of CAV (for all layers). CG concept predictions are almost identical to the ground truth. 
+Fig. 2 visualizes the concept prediction results with CAV and CG. Here we fixed one the input variables ($$x_0$$ or $$x_1$$) to a constant value and show the relation between the remaining input variable and the predicted concepts. CG captures the concept relation significantly better than the linear functions of CAV (for all layers). CG concept predictions are almost identical to the ground truth. 
 
-![synthetic_prediction_results](../assets/images/team07/synthetic_prediction_results.png)
+![synthetic_prediction_results]({{ '/assets/images/team07/synthetic_prediction_results.png' | relative_url }})
 
 <figcaption>Fig.2 - Synthetic experiment prediction results.</figcaption>
 
-Next we compare the concept importance attribution between CAV and CG. For CAV, we calculate the concept saliency $S_{f,g}$ as concept importance. For CG, we calculate the concept gradient via chain rule. Recall the ground truth importance attribution for y is $\alpha_0, \alpha_1$ for $c_0, c_1$ respectively, constant for every input sample. The mean square error for the predicted concept importance is shown in Fig. 3. The error of CG is an order less than even the best of the CAVs. Thus, we have shown that CG is capable of capturing the concept relation better, which leads to more accurate gradient estimation and outperforming CAV in concept importance attribution.
+Next we compare the concept importance attribution between CAV and CG. For CAV, we calculate the concept saliency $$S_{f,g}$$ as concept importance. For CG, we calculate the concept gradient via chain rule. Recall the ground truth importance attribution for y is $$\alpha_0, \alpha_1$$ for $$c_0, c_1$$ respectively, constant for every input sample. The mean square error for the predicted concept importance is shown in Fig. 3. The error of CG is an order less than even the best of the CAVs. Thus, we have shown that CG is capable of capturing the concept relation better, which leads to more accurate gradient estimation and outperforming CAV in concept importance attribution.
 
-<img src="../assets/images/team07/synthetic_error.png" alt="synthetic_error" style="zoom:67%;" />
+![synthetic_error]({{ '/assets/images/team07/synthetic_error.png' | relative_url }})
 
 <figcaption>Fig.3 - Synthetic experiment concept importance estimation errors.</figcaption>
 
@@ -126,13 +136,13 @@ retrieving relevant concepts in a setting where the ground truth concept importa
 
 We conducted the experiment on the CUB-200-2011 dataset. We followed experimental setting and preprocessing in [2] where class-wise attributed labels are derived from instance-wise attribute labels via majority vote
 
-![cub_sample](../assets/images/team07/cub_sample.png)
+![cub_sample]({{ '/assets/images/team07/cub_sample.png' | relative_url }})
 
 <figcaption>Fig.4 - A sample from the CUB dataset.</figcaption>
 
 ##### Training
 
-We first trained models to predict the class labels as the target model $f$ . We then finetuned $f$ to predict concepts labels, freezing some model weights, to serve as the concept model $g$. The study is conducted on three CNN architectures: Inception v3, Resnet50, and VGG16. We performed extensive study on how finetuning different portions of the model as well as which layer is used for evaluating concept gradient affect CG’s importance attribution. We also performed trained CAVs on different model layers as baselines for comparison. The layer for evaluating CG or CAV defaults to the previous layer of finetuning, unless specified otherwise.
+We first trained models to predict the class labels as the target model $$f$$ . We then finetuned $$f$$ to predict concepts labels, freezing some model weights, to serve as the concept model $$g$$. The study is conducted on three CNN architectures: Inception v3, Resnet50, and VGG16. We performed extensive study on how finetuning different portions of the model as well as which layer is used for evaluating concept gradient affect CG’s importance attribution. We also performed trained CAVs on different model layers as baselines for comparison. The layer for evaluating CG or CAV defaults to the previous layer of finetuning, unless specified otherwise.
 
 ##### Evaluation
 
@@ -140,9 +150,9 @@ We evaluate the performance of concept importance attribution by measuring the c
 
 ###### Analysis on CG
 
-For CG, we experimented with finetuning with different portions of the model weights frozen. We plotted the CG concept recalls in Fig. 5. The plus sign in x-axis implies all layers after the specified layer are also finetuned. For reference, we also plotted the concept prediction accuracy. The first thing we notice is that as the number of finetuned layers increases, the concept validation accuracy increases until some layer, then plateaus. The mutual information between the representation of $\mathcal{X}$ and the concept $\mathcal{C}$ gradually reduces in deeper layers. Therefore as more layers are unfrozen and finetuned, more information can be used to predict concepts. The optimal recall occurs when the concept accuracy plateaus.
+For CG, we experimented with finetuning with different portions of the model weights frozen. We plotted the CG concept recalls in Fig. 5. The plus sign in x-axis implies all layers after the specified layer are also finetuned. For reference, we also plotted the concept prediction accuracy. The first thing we notice is that as the number of finetuned layers increases, the concept validation accuracy increases until some layer, then plateaus. The mutual information between the representation of $$\mathcal{X}$$ and the concept $$\mathcal{C}$$ gradually reduces in deeper layers. Therefore as more layers are unfrozen and finetuned, more information can be used to predict concepts. The optimal recall occurs when the concept accuracy plateaus.
 
-![cub_CG](../assets/images/team07/cub_CG.png)
+![cub_CG]({{ '/assets/images/team07/cub_CG.png' | relative_url }})
 
 <figcaption>Fig.5 - CG concept recall and concept prediction accuracy for different finetuned layers and model architectures on CUB (left to right, deep to shallow layers). The optimal recall generally occurs when concept accuracy plateaus (circled).</figcaption>
 
@@ -152,7 +162,7 @@ For CAV, we experimented with different layers of the model. We plotted the CAV 
 
 CAV is equivalent to CG in the final layer since the final layer is a linear layer. Interestingly, the result is the best for CAV, but the worst for CG in the final layer. This is also verified in Fig. 5 and Fig. 6, where the worst result of CG matches the best result of CAV at the final layer. Therefore, the performance of CG dominates that of CAV’s.
 
-![cub_CAV](../assets/images/team07/cub_CAV.png)
+![cub_CAV]({{ '/assets/images/team07/cub_CAV.png' | relative_url }})
 
 <figcaption>Fig.6 - CAV concept recall and prediction accuracy for different selected layers and model
 architectures on CUB (left to right, deep to shallow layers). The optimal recall occurs when finetuning
@@ -173,9 +183,9 @@ The training is identical to the quantitative experiments.
 
 ##### Evaluation
 
-The evaluation is performed on the validation set. Fig. 7 visualizes the instances with the highest CG importance attribution for 6 selected concepts, filtering out samples from the same class (top 1 instance in the top 3 classes). The concepts are selected to represent different levels of semantics. The top row contains colors (low-level), the middle row contains textures (medium-level), and the bottom row contains body components (high-level). Observe that CG is capable of handling different levels of semantics simultaneously well, owing to the expressiveness of non-linear concept model $g$. 
+The evaluation is performed on the validation set. Fig. 7 visualizes the instances with the highest CG importance attribution for 6 selected concepts, filtering out samples from the same class (top 1 instance in the top 3 classes). The concepts are selected to represent different levels of semantics. The top row contains colors (low-level), the middle row contains textures (medium-level), and the bottom row contains body components (high-level). Observe that CG is capable of handling different levels of semantics simultaneously well, owing to the expressiveness of non-linear concept model $$g$$. 
 
-![awa2_visualization](../assets/images/team07/awa2_visualization.png)
+![awa2_visualization]({{ '/assets/images/team07/awa2_visualization.png' | relative_url }})
 
 <figcaption>Fig.7 - Visualization of instances with highest CG attributed importance (AwA2 validation set) for each concept (top 1 instance in the top 3 classes per concept). CG is capable of handling low level
 (colors), middle level (textures), and high level (body components) concepts simultaneously.</figcaption>
@@ -190,7 +200,7 @@ The evaluation is performed on the validation set. Fig. 7 visualizes the instanc
 ### Future directions
 
 1. Beyond natural image tasks (e.g. text, biomed)
-2. Drop dependence on representation of input $\mathcal{X}$
+2. Drop dependence on representation of input $$\mathcal{X}$$
 3. Connect with plethora of gradient-based feature attribution methods (e.g. Smooth-Grad, Integrated Gradients, DeepLIFT, LIME)
 
 ## Reference

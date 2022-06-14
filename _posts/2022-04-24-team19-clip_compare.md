@@ -39,49 +39,80 @@ The experiment is run on the following model, there are 3 type of model
 
 Type 1: language supervised model
 - CLIP model( VIT-32 ) [1]  
-![clip](team19/clip.png)  
+![clip]({{ '/assets/images/team19/clip.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 1. CILP model*
+
 We have introduced [CLIP](#goal) model in the motivation section.
+
 
 Type 2: model trained on open scource dataset (ImageNet)
 - Vision Transformer: VIT-32 (base and large version), VIT-16 (base and large version) [2]  
-![ViT](team19/ViT.png)  
+![ViT]({{ '/assets/images/team19/ViT.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 2. VIT model*
+
 Vision Transformer is the first attemption to use transformer architecture on CV tasks and achieves SoTA performance. It divides the image horizontally and vertically into several patchies (for example, dividing a 224\*224 image into \#(14\*14) pacthes of size 16\*16) and then linear transforms every patch and adds them with respective positional embeddings. (Here a special token embedding position 0 and having special meaning 'cls' is used to capture the overall relation of patches) The resulting 196 vectors are quantitively small enough to be used as input tokens to feed the standard transformer encoder architecture. After several encoder layers, the output at position 0, which captures the overall relation, is connected with header network to generate the result.  
 Experiments show that with the help of masive number of supervised training data, ViT can beat state-of-the-art convolution-based models, and its performance scales well with the number of parameters and the amount of training data.  
 For ViT-16 and ViT-32, the number difference indicates the number of dividents on each dimension. E.g. for ViT-16, images are divided into \#16\*16 pacthes.
 
 - New CNN: convnext_small, convnext_base [3]  
-![ConvNextBlock](team19/ConvNextBlock.png)  
+![ConvNextBlock]({{ '/assets/images/team19/ConvNextBlock.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 3. ConvNextBlock*
+
 Since the invention of vision transformer, researchers find many ways to replace the core attention mechanism with simplier modules while still attaining comparable performance, and thus it's doubtable whether the success of ViT contributes to the attention mechanism or other delicate designs of the transformer architecture. In ConvNext, researchers modify ResNet architecture to adopt several modern designs in ViT. It uses a different stage compute ratio and different stem cell structure, and use grouped convolution to reduce the computation amount. ConvNext also follows ViT to use a inverted bottleneck layer, and larger kernel size.  
 Besides these macro changes, ConvNext also has some micro changes like replacing ReLU activation with GeLU activation and reducing the activation layer number. Overall, ConvNext uses pure convolutional architecture to reach the top performance once again.
 
 - Traditional CNN: efficientnet_b4,efficientnet_b6 [4]  
-![EfficientNet](team19/efficientNet.png)  
+![EfficientNet]({{ '/assets/images/team19/efficientNet.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 4. EfficientNet*
+
 EfficientNet is a class of convolutional networks found by NAS (neural architecture search). Researchers use MBConv as basic block and search the same exploration space as MnasNet to get most basic EfficientNet-B0. Then they do grid search on the space consisting of three scaling factors: network depth (number of layers), width (number of kernels per layer) and resolution (size of image/feature map). Finally for different accuracy/efficiency requirement, they multiply these factors with a single compound value to get the network configuration.
 
 Type 3: Model with self-supervised pretraining
 
 - Beit [5]  
-![BEIT](team19/BEIT.png)  
+![BEIT]({{ '/assets/images/team19/BEIT.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 5. BEIT*
+ 
 Beit is a self-supervised pretrained ViT model. It has two parts.  
 The first part is a dVAE (Discrete Variational Autoencoder). The dVAE is trained to compress the original image into a series of token (integer value) with each token representing a patch in the original image. Then tokens are mapped to a dictionary storing their latent vectors, and further used to restore the original image. After dVAE training, the dVAE part generating tokens produce good representations of image patches.  
 The second part is a ViT. In every training step, the original image is masked for several patches and then fed into the vision transformer to generate a series of value for the patches. At the same time, the original image without any mask is fed into dVAE to get the token repsentation per patch. The dVAE generated tokens are used as labels to train the vision transformer to learn the masked patch tokens. In this process, it learns the representation of images.
 
 - MAE [6]  
-![ViTMAE](team19/ViTMAE.png)  
+![ViTMAE]({{ '/assets/images/team19/ViTMAE.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 6. ViTMAE*
+
+
 MAE (masked autoencoders) is another self-supervised learning approach for vision transformers. It masks patches of the original image and use the simply linear transformed representation of unmasked patches as well as their positional embeddings as input tokens to feed into the vision transformer, and feed the output into another network to rebuild the original image. It differs from the most primitive self-supervised learning method proposed in ViT paper in two ways. First, the authors observe that image data has much more redundant information than the word sequence, and thus a low proportion of patch masking is not sufficient to learn. For example, an image masked one patch for every two patches can be easily restored by linear interpolation with little loss of semantic information. Consequently, in MAE most patches are masked and only unmasked patches participant into the computation. Second, images contain many details and a MLP network (original head network of ViT) is not sufficient to regenerate it well, and thus MAE use another transformer instead.
 
 - DINO [7]  
-![DINO](team19/DINO.png)  
+![DINO]({{ '/assets/images/team19/DINO.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 7. DINO*
+
+
 DINO uses a process called self-distillation to learn. It consists of two transformer networks of the same architecture, a student network and a teacher network. The teacher network is a momentum teacher, which means its parameters are exponential-weighted moving average of parameters of the student network. Every training step, the original image passes two different data augmentation transformation, and then the two outputs are respectively fed into student and teacher network (In teacher network it additionally goes through centering and sharpening steps). Then the two results pass softmax layer to generate two distribution vectors. The training uses cross-entropy-loss with teacher network's output as the label to optimize student network's parameters, so as to encourage student network to have same output as the teacher network, in other words to make the output invariant to the image deformation, which indicates the transformer learnt the high level representation of images.  
 Without the centering and sharpening steps in teacher network's output, the learning process can collapse to either a flat distribution or a spike distribution, neither making the transformer learn useful parameters. To deal with this issue, the centering step minus every output with its mean value so that prevents any one feature from dominating and forming a spike in the output. Similarly, the sharpening step prevents flat output by exaggerating small differences between high and low values.
 
 - Data2vec [8]  
-![data2vec](team19/data2vec.jpg)  
+![data2vec]({{ '/assets/images/team19/data2vec.jpg' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 8. data2vec*
+ 
 Data2vec also uses a student ViT network to imitate the output of the teacher network (still exponential-weighted moving average of student network in history). Contrast with DINO, it doesn't apply different augmentation transformation to original image, instead it feeds in masked image into student network and unmasked image into teacher network, encouraging the student network to have the same output as the teacher network. Data2vec combines the idea of self-distillation and mask model. 
 ## Summary of tested model
 
 
-|    | model               |   year | Key technology                                    | Fine tune on imagenet                     | Good for representation learning    | pretrain dataset                           | dataset reference                                                                                                                                                                                                                                                                                 |
+|    | model               |   year | Key technology                                    | Fine tune on imagenet                     | Good for representation learning    | pretrain dataset                                 |
+|---:|:--------------------|-----------:|:-----------------------------------------------------------|:------------------------------------------|:------------------------------------|:-------------------------------------------|
+|  0 | CLIP                |   2021 | Contrastive learning, vision-language supervision |                                           | Y                                   | 400 million (image,text) pairs from openai          |
+|  1 | Data2vec            |   2022 | teacher-student Mask                              | 84.2(B)                          |                                     | ImageNet 1k                                | 
+|  2 | DINO                |   2021 | teacher student                                   | 82.8 (B)                                  | Y                                   | ImageNet                                   |
+|  3 | Beit                |   2021 | dVAE mask                                         | 83.4 (B)                           |                                     | training set of ImageNet 1k (1.2 M)        | 
+|  4 | MAE                 |   2021 | Mask                                              | 83.6 (B)                          |                                     | ImageNet-1K                                | 
+|  5 | vit_b_16 & vit_b_32 |   2021 | VIT, pretrain                                     | 84.15 (16 B JFT300M) 80.73 (32 B JFT300M) |                                     | JFT300M                                    | 
+|  6 | convnext            |   2022 | CNN modification                                  | 85.1 (B)                          |                                     | ImageNet-22K.                           |
+|  7 | EfficientNet        |   2020 | NAS                                               | 80.1 (B6) 84.0 (B6)                       |                                     |                                                                                                                                        
+
+
+<!-- |    | model               |   year | Key technology                                    | Fine tune on imagenet                     | Good for representation learning    | pretrain dataset                           | dataset reference                                                                                                                                                                                                                                                                                 |
 |---:|:--------------------|-------:|:--------------------------------------------------|:------------------------------------------|:------------------------------------|:-------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |  0 | CLIP                |   2021 | Contrastive learning, vision-language supervision |                                           | Y                                   | 400 million (image,text) pairs from openai |                                                                                                                                                                                                                                                                                                   |
 |  1 | Data2vec            |   2022 | teacher-student Mask                              | 84.2(B)                          |                                     | ImageNet 1k                                | Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li Fei-Fei. ImageNet: A large-scale hierarchical image database. In CVPR, 2009.                                                                                                                                                        |
@@ -90,7 +121,7 @@ Data2vec also uses a student ViT network to imitate the output of the teacher ne
 |  4 | MAE                 |   2021 | Mask                                              | 83.6 (B)                          |                                     | ImageNet-1K                                | Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li Fei-Fei. ImageNet: A large-scale hierarchical image database. In CVPR, 2009.                                                                                                                                                        |
 |  5 | vit_b_16 & vit_b_32 |   2021 | VIT, pretrain                                     | 84.15 (16 B JFT300M) 80.73 (32 B JFT300M) |                                     | JFT300M                                    | Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, et al. An image is worth 16x16 words: Transformers for image recognition at scale. preprint arXiv:2010.11929, 2020. |
 |  6 | convnext            |   2022 | CNN modification                                  | 85.1 (B)                          |                                     | ImageNet-22K.                              |                                                                                                                                                                                                                                                                                                   |
-|  7 | EfficientNet        |   2020 | NAS                                               | 80.1 (B6) 84.0 (B6)                       |                                     |                                            |                                                                                                                                                                                                                                                                                                   |
+|  7 | EfficientNet        |   2020 | NAS                                               | 80.1 (B6) 84.0 (B6)                       |                                     |                                            |                      -->
 
 
 ## Dataset for general classification
@@ -98,34 +129,44 @@ Data2vec also uses a student ViT network to imitate the output of the teacher ne
 There are two type of dataset we will test:
 
 Dataset similar to CLIP pretraining data
-- Flowers102: 102 category dataset, consisting of 102 flower categories. The flowers chosen to be flower commonly occuring in the United Kingdom. Some examples are shown below. 
+- Flowers102: 102 category dataset, consisting of 102 flower categories. The flowers chosen to be flower commonly occuring in the United Kingdom. Some examples are shown below.
+-  
+![Dataset_Flowers102]({{ '/assets/images/team19/Dataset_Flowers102.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 9. Dataset_Flowers102*
 
-
-<img src="team19/Dataset_Flowers102.png" width="400"/>
+<!-- <img src="team19/Dataset_Flowers102.png" width="400"/> -->
 
 - FGVCAircraft: The dataset contains 10,200 images of aircraft, with 100 images for each of 102 different aircraft model variants, most of which are airplanes. 
 
-<img src="team19/Dataset_FGVCAircraft.png" width="400"/>
+![Dataset_FGVCAircraft]({{ '/assets/images/team19/Dataset_FGVCAircraft.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 10. Dataset_FGVCAircraft*
+<!-- <img src="team19/Dataset_FGVCAircraft.png" width="400"/> -->
 
 - DTD: DTD we use consists of 1880 images and organized according to a list of 47 terms (categories) inspired from human perception. Image sizes range between 300x300 and 640x640, and the images contain at least 90% of the surface representing the category attribute.  
 
-<img src="team19/Dataset_DTD.png" width="400"/>
-
-
+![Dataset_DTD]({{ '/assets/images/team19/Dataset_DTD.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 11. Dataset_DTD*
+<!-- <img src="team19/Dataset_DTD.png" width="400"/> -->
 
 Dataset different from CLIP pretraining data
 - PatternNet(torch geo): Dataset from torchgeo package [9] The PatternNet dataset is a dataset for remote sensing scene classification and image retrieval. It have 38 scene classes, 800 images per class. 
 
+![PatternNet_Dataset]({{ '/assets/images/team19/PatternNet_Dataset.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 12. PatternNet_Dataset*
 
-<img src="team19/PatternNet_Dataset.png" width="400"/>
+<!-- <img src="team19/PatternNet_Dataset.png" width="400"/> -->
 
 - UCMerced(torch geo): Dataset from torchgeo package [9]. The UC Merced dataset is a land use classification dataset of 2.1k 256x256 1ft resolution RGB images of urban locations around the U.S. extracted from the USGS National Map Urban Area Imagery collection with 21 land use classes (100 images per class).
 
-<img src="team19/UCMerced_Dataset.png" width="400"/>
+![UCMerced_Dataset]({{ '/assets/images/team19/UCMerced_Dataset.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 13. UCMerced_Dataset*
+<!-- <img src="team19/UCMerced_Dataset.png" width="400"/> -->
 
 - ISIC [10]: Data from SIIM-ISIC Melanoma Classification 2020. This competition aim to predicting a binary target for each image, 0 denotes benign, and 1 indicates malignant.
 
-<img src="team19/ISIC.png" width="400"/>
+![ISIC]({{ '/assets/images/team19/ISIC.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 14. ISIC*
+<!-- <img src="team19/ISIC.png" width="400"/> -->
 
 
 ## Dataset for data drift
@@ -133,12 +174,16 @@ Dataset different from CLIP pretraining data
 <!-- - rxrx1dataset (wilds) -->
 - iwildcamdataset (wilds): Dataset from wilds [11] for animal classification. The input x is a photo from a camera trap, the label y is one of 182 animal species, and the domain d specifies the identity of the camera trap. The training, validation and in-distribution data contain the images from different camera, but out-of-distribution test data are not capture by the camera used in in-distribution camera.
 
-<img src="team19/iwildcam_dataset.jpg" width="400"/>
+![iwildcam_dataset]({{ '/assets/images/team19/iwildcam_dataset.jpg' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 15. iwildcam_dataset*
+<!-- <img src="team19/iwildcam_dataset.jpg" width="400"/> -->
 
 
 - fmowdataset (wilds): Dataset from wilds [11] for satellite image classification. As satellite data constantly changes due to human activity and environmental processes, these models must be robust to distribution shifts over time. The input x is an RGB satellite image, the label y is one of 62 building or land use. The in-distribution data comprises data from before 2013, while the out-of-distribution test set comprises data from 2016 and after.
 
-<img src="team19/fmow_dataset.jpg" width="400"/>
+![fmow_dataset]({{ '/assets/images/team19/fmow_dataset.jpg' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 16. fmow_dataset*
+<!-- <img src="team19/fmow_dataset.jpg" width="400"/> -->
 
 
 # Experiment: 
@@ -156,7 +201,7 @@ Fine tuning on each dataset:
 The evaluation metric for this experiment is accuracy. In this case, we want to test the performance of each model on each general dataset with respect to different amount of training and validation data. The amount of training and validation data increased in order of 10 from 10 samples per class to 1000 samples per class. But for general dataset, not all dataset have enough data. Thus, we detailed designed the training, validation and testing split for dataset in following table. The number listed in (10)train:val:test, (100)train:val:test and (1000)train:val:test means the number of data used in training, validation and testing dataset. In simple ML algorithm, we only use (10)train:val:test and (100)train:val:test for training and testing. 
 
 |    | dataset              |   total data |   Number of labels | (10)train:val:test   | (100)train:val:test   | (1000)train:val:test   |
-|---:|:---------------------|-------------:|-------------------:|:---------------------|:----------------------|:-----------------------|
+|:---|:---------------------:|:-------------:|:-------------------:|:---------------------:|:----------------------:|-----------------------:|
 |  0 | ISIC                 |         1150 |                  2 | 14:4:1132            | 148:50:952            | 688:230:232            |
 |  1 | PatternNet_Dataset   |        30400 |                 38 | 266:76:30058         | 2812:950:26638        | 18202:6080:6118        |
 |  2 | UCMerced_Dataset     |         1260 |                 21 | 147:42:1071          | 567:189:504           |             |
@@ -205,6 +250,7 @@ The GPU used for fine tuning is NVIDIA GeForce RTX 3070 laptop GPU. The batch si
 The result for training representation on KNN and logistic regression is shown in the following tables. The row is ordered by accuracy of logistic regression at 100. 
 
 ### Dataset_FGVCAircraft
+
 | model           |     knn_10 |    knn_100 |     lr_10 |    lr_100 |
 |:----------------|-----------:|-----------:|----------:|----------:|
 | DINO            | 0.202958   | 0.28777    | 0.38373   | 0.516787  |
@@ -223,6 +269,7 @@ The result for training representation on KNN and logistic regression is shown i
 
 
 ### ISIC
+
 | model           |   knn_10 |   knn_100 |    lr_10 |   lr_100 |
 |:----------------|---------:|----------:|---------:|---------:|
 | DINO            | 0.650528 |  0.538732 | 0.715669 | 0.71919  |
@@ -241,6 +288,7 @@ The result for training representation on KNN and logistic regression is shown i
 
 
 ### Dataset_DTD
+
 | model           |    knn_10 |   knn_100 |     lr_10 |    lr_100 |
 |:----------------|----------:|----------:|----------:|----------:|
 | DINO            | 0.523533  | 0.661939  | 0.602192  | 0.742317  |
@@ -259,6 +307,7 @@ The result for training representation on KNN and logistic regression is shown i
 
 
 ### Dataset_Flowers102
+
 | model           |    knn_10 |     lr_10 |
 |:----------------|----------:|----------:|
 | CLIP            | 0.803922  | 0.905229  |
@@ -277,6 +326,7 @@ The result for training representation on KNN and logistic regression is shown i
 
 
 ### UCMerced_Dataset
+
 | model           |    knn_10 |   knn_100 |     lr_10 |    lr_100 |
 |:----------------|----------:|----------:|----------:|----------:|
 | DINO            | 0.781475  | 0.904573  | 0.885791  | 0.970179  |
@@ -295,6 +345,7 @@ The result for training representation on KNN and logistic regression is shown i
 
 
 ### PatternNet_Dataset
+
 | model           |    knn_10 |   knn_100 |     lr_10 |    lr_100 |
 |:----------------|----------:|----------:|----------:|----------:|
 | CLIP            | 0.864434  | 0.942952  | 0.944148  | 0.979638  |
@@ -321,6 +372,7 @@ As for model representation, DINO is superisingly the best model in most cases a
 The result for fine tuning and comparation with simple ML + feature training is shown below table, the models are ordered by the best performance among correspond dataset.
 
 ### PatternNet_Dataset
+
 | model           |       10 |      100 |     1000 |    knn_10 |   knn_100 |     lr_10 |    lr_100 | performance order                       |   Best performance |
 |:----------------|---------:|---------:|---------:|----------:|----------:|----------:|----------:|:----------------------------------------|-------------------:|
 | convnext_base   | 0.969792 | 0.991441 | 0.996404 | 0.709587  | 0.854591  | 0.897355  | 0.961466  | 1000>100>10>lr_100>lr_10>knn_100>knn_10 |           0.996404 |
@@ -338,6 +390,7 @@ The result for fine tuning and comparation with simple ML + feature training is 
 
 
 ### Dataset_Flowers102
+
 | model           |       10 |    knn_10 |     lr_10 | performance order   |   Best performance |
 |:----------------|---------:|----------:|----------:|:--------------------|-------------------:|
 | convnext_base   | 0.938998 | 0.428105  | 0.834967  | 10>lr_10>knn_10     |           0.938998 |
@@ -355,6 +408,7 @@ The result for fine tuning and comparation with simple ML + feature training is 
 
 
 ### Dataset_DTD
+
 | model           |       10 |      100 |    knn_10 |   knn_100 |     lr_10 |    lr_100 | performance order                  |   Best performance |
 |:----------------|---------:|---------:|----------:|----------:|----------:|----------:|:-----------------------------------|-------------------:|
 | DINO            | 0.350721 | 0.591017 | 0.523533  | 0.661939  | 0.602192  | 0.742317  | lr_100>knn_100>lr_10>100>knn_10>10 |           0.742317 |
@@ -372,6 +426,7 @@ The result for fine tuning and comparation with simple ML + feature training is 
 
 
 ### UCMerced_Dataset
+
 | model           |       10 |      100 |    knn_10 |   knn_100 |     lr_10 |    lr_100 | performance order                  |   Best performance |
 |:----------------|---------:|---------:|----------:|----------:|----------:|----------:|:-----------------------------------|-------------------:|
 | DINO            | 0.776844 | 0.943452 | 0.781475  | 0.904573  | 0.885791  | 0.970179  | lr_100>100>knn_100>lr_10>knn_10>10 |           0.970179 |
@@ -389,6 +444,7 @@ The result for fine tuning and comparation with simple ML + feature training is 
 
 
 ### Dataset_FGVCAircraft
+
 | model           |        10 |       100 |     knn_10 |    knn_100 |     lr_10 |    lr_100 | performance order                  |   Best performance |
 |:----------------|----------:|----------:|-----------:|-----------:|----------:|----------:|:-----------------------------------|-------------------:|
 | convnext_base   | 0.493837  | 0.673261  | 0.0784717  | 0.106715   | 0.222268  | 0.364508  | 100>10>lr_100>lr_10>knn_100>knn_10 |          0.673261  |
@@ -406,6 +462,7 @@ The result for fine tuning and comparation with simple ML + feature training is 
 
 
 ### ISIC
+
 | model           |       10 |      100 |     1000 |   knn_10 |   knn_100 |    lr_10 |   lr_100 | performance order                       |   Best performance |
 |:----------------|---------:|---------:|---------:|---------:|----------:|---------:|---------:|:----------------------------------------|-------------------:|
 | convnext_tiny   | 0.693463 | 0.77521  | 0.875    | 0.571303 |  0.512324 | 0.62412  | 0.627641 | 1000>100>10>lr_100>lr_10>knn_10>knn_100 |           0.875    |
@@ -439,6 +496,7 @@ Apart from the result of convnext and fine tuning result with more than 100 samp
 The result of classification experiment with KNN and logistic regression on Data Drift dataset is shown below. The different between in-distribution result and out-of-distribution result is shown in last 4 column.
 
 ### IWildCamDataset
+
 | model         |   knn_10_id |   knn_10_ood |   lr_10_id |   lr_10_ood |   knn_100_id |   knn_100_ood |   lr_100_id |   lr_100_ood |   knn_acc_diff_10 |   knn_acc_diff_100 |   lr_acc_diff_10 |   lr_acc_diff_100 |
 |:--------------|------------:|-------------:|-----------:|------------:|-------------:|--------------:|------------:|-------------:|------------------:|-------------------:|-----------------:|------------------:|
 | DINO          |   0.132205  |    0.186979  |  0.143488  |   0.177724  |    0.244665  |     0.186651  |   0.214619  |    0.279171  |       -0.0547735  |         0.0580138  |      -0.0342364  |       -0.0645523  |
@@ -452,6 +510,7 @@ The result of classification experiment with KNN and logistic regression on Data
 | data2vec      |   0.0383861 |    0.0132037 |  0.0279617 |   0.0185319 |    0.0470935 |     0.0133907 |   0.0448859 |    0.0231591 |        0.0251824  |         0.0337028  |       0.0094298  |        0.0217269  |
 
 ### FMoWDataset
+
 | model         |   knn_10_id |   knn_10_ood |   lr_10_id |   lr_10_ood |   knn_100_id |   knn_100_ood |   lr_100_id |   lr_100_ood |   knn_acc_diff_10 |   knn_acc_diff_100 |   lr_acc_diff_10 |   lr_acc_diff_100 |
 |:--------------|------------:|-------------:|-----------:|------------:|-------------:|--------------:|------------:|-------------:|------------------:|-------------------:|-----------------:|------------------:|
 | CLIP          |   0.194403  |    0.188981  |  0.12404   |   0.132034  |    0.314646  |     0.305862  |   0.254083  |    0.242401  |       0.00542139  |         0.00878429 |     -0.00799375  |       0.0116822   |
@@ -591,7 +650,9 @@ For ISIC dataset, mask based self-supervised model like Data2vec which perform n
 
 In this project, we see DINO representation show a surprising result. It looks like DINO use less data in self-supervised way to get representation and surpass CILP that use a lot of data, but the reason why this can happen still remains unclear. According to paper of DINO, its learned representation is able to refect semantic of the image. 
 
-<img src="team19/dino.png" width="400"/>
+<!-- <img src="team19/dino.png" width="400"/> -->
+![dino]({{ '/assets/images/team19/dino.png' | relative_url }}){: style="width: 400px; max-width: 100%;"}
+*Fig 16. dino representation*
 
 However, due to DINO performance and CILP perforance are similar in many dataset, directly visiualize attention map and assess it manually may not be a good way to make fair comparsion. Due to limited time and compute we have, we haven't think of any ways to explain why DINO have such a good performance even when pretraining is less and what would happen if we use CLIP method with some modification on only ImageNet (same as DINO), for example, we can apply different kind of augmenatation and in language supervision part we can combine both labels and augmentation into one sentance as language supervision sentence. Maybe CLIP can still achieve similar parformance or even better performance, but this kind of experiment need a lot of time and compute that we don't have. 
 
